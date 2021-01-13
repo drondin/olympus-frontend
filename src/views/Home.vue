@@ -2,7 +2,7 @@
   <div class="block">
     <h1 class="mb-4 main-title">OLYMPUS</h1>
     <p class="mb-4"><b class="warn">This is a private presale.</b>  If you have not been invited, your transaction will fail and waste your transaction fee!</p>
-    <p class="mb-2">Cap Reached in {{ $store.state.settings.remainingEth }} ETH</p>
+    <p class="mb-2">Cap Reached in {{ $store.state.settings.remainingEth }} DAI</p>
     <p class="mb-2">
       Balance: <span class="hasEffect" @click="maxStake">{{ $store.state.settings.balance }}</span>
     </p>
