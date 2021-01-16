@@ -25,6 +25,8 @@ if (ethereum) {
 
 const state = {
   saleAddr: '0xb72027693a5b717b9e28ea5e12ec59b67c944df7',
+  pOlySaleAddr: '',
+  daiAddr: '0x6b175474e89094c44da98b954eedeac495271d0f',
   loading: false,
   address: null,
   name: '',
@@ -69,7 +71,9 @@ const actions = {
         const signer = provider.getSigner();
         const address = await signer.getAddress();
         const name = await provider.lookupAddress(address);
-        const balance = await provider.getBalance(address);
+        const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
+        const balance = await daiContract.balanceOf(address);
+        //const balance = await provider.getBalance(address);
         const network = await provider.getNetwork();
         commit('set', { address });
         commit('set', {
@@ -94,25 +98,46 @@ const actions = {
     commit('set', { exchangeRates });
   },
 
-  async approve({ commit }) {
-    const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-    const address = process.env.VUE_APP_DAI_ADDRESS;
-    const signer = provider.getSigner();
-    // @ts-ignore
-    const erc20 = new ethers.Contract(address, ierc20Abi, provider);
-    const erc20WithSigner = erc20.connect(signer);
-    const tx = await erc20WithSigner.approve(factoryAddress, parseEther((1e9).toString()));
-    console.log(tx.hash);
-    await tx.wait();
-  },
   async SendEther({ commit }, payload) {
     const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
     const signer = provider.getSigner();
-    await signer.sendTransaction({
-      to: crowdSale.address,
-      value: ethers.utils.parseEther(payload.value.toString())
-    });
+
+    alert((payload.value * (1e18) ).toString());
+    //await signer.sendTransaction({
+      //to: crowdSale.address,
+      //value: ethers.utils.parseEther(payload.value.toString())
+    //});
   },
+  
+  // Will buy the POly or approve if needed
+  async SendDai({ commit }, payload ) {
+    const signer = provider.getSigner();  
+
+    const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
+    const crowdSaleWithSigner = crowdSale.connect(signer);
+      
+    //const sale = await new ethers.Contract(state.pOlySaleAddr, pOlySale, provider);
+    const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
+    const daiContractWithSigner = daiContract.connect(signer);
+
+    const allowance = await daiContract.allowance(state.address, state.saleAddr);
+
+    if(allowance == 0){
+      alert("approve " + parseEther((1e9).toString()));
+      await daiContractWithSigner.approve(state.saleAddr, parseEther((1e9).toString()));      
+    }
+
+    if(allowance > 0) {
+      alert((payload.value * (1e18) ).toString() + " oly"); 
+      await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
+    }
+
+    //await daiContract.approve(state.pOlySaleAddr, parseEther((1e9).toString()));
+
+    //alert((payload.value * (1e18) ).toString() + " oly");     
+    //await sale.buyPOly((payload.value * (1e18) ).toString());
+  },
+
   async calculateRemainingEther({ commit }) {
     const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
     const minimumEth = await crowdSale.MINIMAL_PROVIDE_AMOUNT();
@@ -124,22 +149,6 @@ const actions = {
       providedEth: ethers.utils.formatEther(providedEth)
     });
   },
-  async calculateClaim({ commit }) {
-    const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
-    const signer = provider.getSigner();
-    const totalProvided = await crowdSale.totalProvided();
-    const totalDistributeAmount = await crowdSale.TOTAL_DISTRIBUTE_AMOUNT();
-    const userProvided = await crowdSale.provided(signer.address);
-    const claim = (totalDistributeAmount * totalDistributeAmount) / userProvided;
-    commit('set', { claim: ethers.utils.formatEther(claim.toString()) });
-  },
-  async loadBalanceIn({ commit }, payload) {
-    /*const potionToken = new ethers.Contract(payload, synthAbi, provider);
-    const balance = await potionToken.balanceOf(state.address);
-    const balances = state.balances;
-    balances[payload] = parseFloat(ethers.utils.formatEther(balance));
-    commit('set', { balances });*/
-  }
 };
 
 export default {

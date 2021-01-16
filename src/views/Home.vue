@@ -6,9 +6,7 @@
     <p class="mb-2">
       Balance: <span class="hasEffect" @click="maxStake">{{ $store.state.settings.balance }}</span>
     </p>
-    <p class="mb-4">
-      Olympus Claim: <span>{{ $store.state.settings.claim }}</span>
-    </p>
+
     <form @submit.prevent="handleSubmit" class="form">
       <div class="mb-0">
     
@@ -65,10 +63,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['SendEther']),
+    ...mapActions(['SendDai']),
     handleSubmit() {
-      this.SendEther({
-        address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
+      this.SendDai({
+        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
         value: this.form.quantity
       });
     },
