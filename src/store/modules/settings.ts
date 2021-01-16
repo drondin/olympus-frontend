@@ -12,6 +12,7 @@ import {
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as mimirTokenSale } from '@/helpers/abi/mimirTokenSale.json';
+import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 
 const parseEther = ethers.utils.parseEther;
 
@@ -97,45 +98,27 @@ const actions = {
     const exchangeRates = await getExchangeRatesFromCoinGecko();
     commit('set', { exchangeRates });
   },
-
-  async SendEther({ commit }, payload) {
-    const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
-    const signer = provider.getSigner();
-
-    alert((payload.value * (1e18) ).toString());
-    //await signer.sendTransaction({
-      //to: crowdSale.address,
-      //value: ethers.utils.parseEther(payload.value.toString())
-    //});
-  },
   
   // Will buy the POly or approve if needed
   async SendDai({ commit }, payload ) {
     const signer = provider.getSigner();  
 
-    const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
+    const crowdSale = await new ethers.Contract(state.pOlySaleAddr, pOlyTokenSale, provider);
     const crowdSaleWithSigner = crowdSale.connect(signer);
-      
-    //const sale = await new ethers.Contract(state.pOlySaleAddr, pOlySale, provider);
+          
     const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
     const daiContractWithSigner = daiContract.connect(signer);
 
-    const allowance = await daiContract.allowance(state.address, state.saleAddr);
+    const allowance = await daiContract.allowance(state.address, state.pOlySaleAddr);
 
-    if(allowance == 0){
-      alert("approve " + parseEther((1e9).toString()));
+    if(allowance == 0){     
       await daiContractWithSigner.approve(state.saleAddr, parseEther((1e9).toString()));      
     }
 
-    if(allowance > 0) {
-      alert((payload.value * (1e18) ).toString() + " oly"); 
+    if(allowance > 0) {      
       await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
     }
 
-    //await daiContract.approve(state.pOlySaleAddr, parseEther((1e9).toString()));
-
-    //alert((payload.value * (1e18) ).toString() + " oly");     
-    //await sale.buyPOly((payload.value * (1e18) ).toString());
   },
 
   async calculateRemainingEther({ commit }) {
