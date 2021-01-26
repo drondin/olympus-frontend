@@ -11,6 +11,7 @@
       <div class="mb-0">
     
         <input
+          v-if = "settings.authorized && settings.address && settings.allowanceTx<1"
           type="number"
           class="input mb-4"
           placeholder="Quantity"
@@ -20,15 +21,19 @@
         <div class="d-flex"></div>
       </div>
       <button
-        v-if="settings.address"
+        v-if="settings.authorized && settings.address && settings.allowanceTx<1"
         :disabled="!isValid"
         type="submit"
         class="button button-primary mb-2"
       >
         Enter Presale
       </button>
-      <a v-else class="button button-primary mb-2" @click="modalLoginOpen = true">Connect wallet</a>
+      <a v-if="!settings.address" class="button button-primary mb-2" @click="modalLoginOpen = true">Connect wallet</a>
+      <p v-if="!settings.authorized && settings.address"><b class="warn">Your account is not on the Pre-sale list. You cannot participate in this sale.</b></p>
     </form>
+    <p v-if="settings.allowanceTx===1">Please wait. Waiting for {{$store.state.settings.confirmations}} confirmations</p>
+    <p v-if="settings.saleTx===1"><b>Transaction submitted. Waiting for {{$store.state.settings.confirmations}} confirmations...</b></p>
+    <p v-if="settings.saleTx===2"><b>Token Purchase Complete!</b></p>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
     <ModalMakepotion
       v-if="isValid"

@@ -13,7 +13,6 @@ import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as mimirTokenSale } from '@/helpers/abi/mimirTokenSale.json';
 import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
-
 const parseEther = ethers.utils.parseEther;
 
 const ethereum = window['ethereum'];
@@ -26,7 +25,7 @@ if (ethereum) {
 
 const state = {
   saleAddr: '0xb72027693a5b717b9e28ea5e12ec59b67c944df7',
-  pOlySaleAddr: '',
+  pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
   daiAddr: '0x6b175474e89094c44da98b954eedeac495271d0f',
   loading: false,
   address: null,
@@ -39,7 +38,11 @@ const state = {
   network: {},
   exchangeRates: {},
   allowances: {},
-  balances: {}
+  balances: {},
+  authorized: false,
+  allowanceTx: 0,
+  saleTx: 0,
+  confirmations: 1,
 };
 
 const mutations = {
@@ -71,14 +74,19 @@ const actions = {
         await ethereum.enable();
         const signer = provider.getSigner();
         const address = await signer.getAddress();
-        const name = await provider.lookupAddress(address);
+        console.log('error address: '+address);
+        // const name = await provider.lookupAddress(address);
+        // Throws errors with non ENS compatible testnets
         const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
         //const balance = await provider.getBalance(address);
         const network = await provider.getNetwork();
+        const saleContract = new ethers.Contract(state.pOlySaleAddr,pOlyTokenSale,provider);
+        const authorized = await saleContract.approvedBuyers(address);
         commit('set', { address });
+        commit('set', { authorized: Boolean(authorized) });
         commit('set', {
-          name,
+          // name,
           balance: ethers.utils.formatEther(balance),
           network,
           loading: false
@@ -110,14 +118,31 @@ const actions = {
     const daiContractWithSigner = daiContract.connect(signer);
 
     const allowance = await daiContract.allowance(state.address, state.pOlySaleAddr);
+    console.log(allowance +":"+parseEther(payload.value).toString())
+    if(allowance != parseEther( payload.value ).toString()){     
+      const approveTx = await daiContractWithSigner.approve(state.pOlySaleAddr,parseEther( payload.value ).toString());
+      commit('set',{allowanceTx:1})
+      await approveTx.wait(state.confirmations);
+      // await daiContractWithSigner.approve(state.saleAddr, parseEther((1e9).toString()));      
+    }
+    
+    commit('set',{allowanceTx:2})
 
-    if(allowance == 0){     
-      await daiContractWithSigner.approve(state.saleAddr, parseEther((1e9).toString()));      
+    // We have approved funds. Now execute the buy function pn Sale Contract.
+    const purchaseAmnt = parseEther( payload.value )
+    try {
+      const saleTx = await crowdSaleWithSigner.buyPOly(purchaseAmnt);
+      commit('set', {saleTx:1})
+      await saleTx.wait(state.confirmations);
+      commit('set', {saleTx:2, balance:state.balance-Number(payload.value)})
+    } catch(error){
+      console.log(error);
+      commit('set',{ allowanceTx:0, saleTx:0 })
     }
 
-    if(allowance > 0) {      
-      await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
-    }
+//    if(allowance > 0) {      
+//      await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
+//    }
 
   },
 
