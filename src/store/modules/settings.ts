@@ -86,8 +86,7 @@ const actions = {
         commit('set', { authorized: Boolean(authorized) });
         commit('set', {
           // name,
-          //balance: ethers.utils.formatEther(balance),
-          balance: (Math.floor(balance / 10000000000000000) / 100),
+          balance: ethers.utils.formatEther(balance),
           network,
           loading: false
         });        
