@@ -23,8 +23,7 @@ if (ethereum) {
   });
 }
 
-const state = {
-  saleAddr: '0xb72027693a5b717b9e28ea5e12ec59b67c944df7',
+const state = {  
   pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
   daiAddr: '0x6b175474e89094c44da98b954eedeac495271d0f',
   loading: false,
@@ -119,16 +118,15 @@ const actions = {
 
     const allowance = await daiContract.allowance(state.address, state.pOlySaleAddr);
     console.log(allowance +":"+parseEther(payload.value).toString())
-    if(allowance != parseEther( payload.value ).toString()){     
-      const approveTx = await daiContractWithSigner.approve(state.pOlySaleAddr,parseEther( payload.value ).toString());
+    if(allowance < parseEther( payload.value ).toString()){     
+      const approveTx = await daiContractWithSigner.approve(state.pOlySaleAddr, parseEther((1e9).toString()));
       commit('set',{allowanceTx:1})
-      await approveTx.wait(state.confirmations);
-      // await daiContractWithSigner.approve(state.saleAddr, parseEther((1e9).toString()));      
+      await approveTx.wait(state.confirmations);           
     }
     
     commit('set',{allowanceTx:2})
 
-    // We have approved funds. Now execute the buy function pn Sale Contract.
+    // We have approved funds. Now execute the buy function on Sale Contract.
     const purchaseAmnt = parseEther( payload.value )
     try {
       const saleTx = await crowdSaleWithSigner.buyPOly(purchaseAmnt);
@@ -143,20 +141,7 @@ const actions = {
 //    if(allowance > 0) {      
 //      await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
 //    }
-
-  },
-
-  async calculateRemainingEther({ commit }) {
-    const crowdSale = await new ethers.Contract(state.saleAddr, mimirTokenSale, provider);
-    const minimumEth = await crowdSale.MINIMAL_PROVIDE_AMOUNT();
-    const providedEth = await provider.getBalance(state.saleAddr);
-    const remainingEth = minimumEth - providedEth;
-    commit('set', {
-      remainingEth: ethers.utils.formatEther(remainingEth.toString()),
-      minimumEth: ethers.utils.formatEther(minimumEth),
-      providedEth: ethers.utils.formatEther(providedEth)
-    });
-  },
+  }
 };
 
 export default {
