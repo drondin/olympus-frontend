@@ -78,7 +78,7 @@ const actions = {
         // Throws errors with non ENS compatible testnets
         const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
-        //const balance = await provider.getBalance(address);
+        //const balance = balanceBefore.toFixed(2);        
         const network = await provider.getNetwork();
         const saleContract = new ethers.Contract(state.pOlySaleAddr,pOlyTokenSale,provider);
         const authorized = await saleContract.approvedBuyers(address);
@@ -86,11 +86,11 @@ const actions = {
         commit('set', { authorized: Boolean(authorized) });
         commit('set', {
           // name,
-          balance: ethers.utils.formatEther(balance),
+          //balance: ethers.utils.formatEther(balance),
+          balance: (Math.floor(balance / 10000000000000000) / 100),
           network,
           loading: false
-        });
-        await dispatch('calculateRemainingEther');
+        });        
       } catch (error) {
         console.error(error);
       }
