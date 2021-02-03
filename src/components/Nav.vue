@@ -24,17 +24,17 @@
      
     </div>
     <div class="mb-4 mt-4">
-    <!--  <div class="mainnav">
+ <!-- <div class="mainnav">
         <router-link :to="{ name: 'home' }" class="button button-secondary">
           Home
         </router-link>
-        <router-link :to="{ name: 'about' }" class="button button-secondary">
-          About
+        <router-link :to="{ name: 'presale' }" class="button button-secondary">
+          Presale
         </router-link>
         <router-link :to="{ name: 'projects' }" class="button button-secondary">
           Projects
         </router-link>
-      </div>-->
+      </div> -->
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
   </nav>

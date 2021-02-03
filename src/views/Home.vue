@@ -1,36 +1,18 @@
 <template>
   <div class="block">
-    <h1 class="mb-4 main-title">OLYMPUS</h1>
-    <p class="mb-4"><b class="warn">This is a private presale.</b>  If you have not been invited, your transaction will fail and waste your transaction fee!</p>    
-    <p class="mb-2">
-      Dai Balance: <span class="hasEffect" @click="maxStake">{{ Math.floor($store.state.settings.balance * 100) / 100 }}</span>
-    </p>
+    <h1 class="mb-4 main-title">OLYMPUS </h1>
+   
+          <a v-if="!settings.address" class="button-large-ps circle-button button button-primary" @click="modalLoginOpen = true">
+            Connect wallet
+          </a>
 
-    <form @submit.prevent="handleSubmit" class="form">
-      <div class="mb-0">
-    
-        <input
-          v-if = "settings.authorized && settings.address && settings.allowanceTx<1"
-          type="number"
-          class="input mb-4"
-          placeholder="Quantity"
-          step="0.000000000000000001"
-          v-model="form.quantity"
-        />
-        <div class="d-flex"></div>
-      </div>
-      <button
-        v-if="settings.authorized && settings.address && settings.allowanceTx<1"
-        :disabled="!isValid"
-        type="submit"
-        class="button button-primary mb-2"
-      >
-        Enter Presale
-      </button>
-      <a v-if="!settings.address" class="button button-primary mb-2" @click="modalLoginOpen = true">Connect wallet</a>
-      <p v-if="!settings.authorized && settings.address"><b class="warn">Your account is not on the Pre-sale list. You cannot participate in this sale.</b></p>
-    </form>
-    <p v-if="settings.allowanceTx===1">Please wait. Waiting for {{$store.state.settings.confirmations}} confirmations</p>
+          
+           <router-link  v-if="settings.address" :to="{ name: 'presale' }" class="button-large-ps circle-button button button-primary">
+          Presale
+               </router-link>
+
+          
+           <p v-if="settings.allowanceTx===1">Please wait. Waiting for {{$store.state.settings.confirmations}} confirmations</p>
     <p v-if="settings.saleTx===1"><b>Transaction submitted. Waiting for {{$store.state.settings.confirmations}} confirmations...</b></p>
     <p v-if="settings.saleTx===2"><b>Token Purchase Complete!</b></p>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
@@ -67,6 +49,7 @@ export default {
     }
   },
   methods: {
+    
     ...mapActions(['SendDai']),
     handleSubmit() {
       this.SendDai({
@@ -85,3 +68,4 @@ export default {
   cursor: pointer;
 }
 </style>
+

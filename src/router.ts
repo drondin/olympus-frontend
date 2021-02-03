@@ -15,6 +15,7 @@ import Radar from './views/Radar.vue';
 import Renascent from './views/Renascent.vue';
 import Rules from './views/Rules.vue';
 import Telikos from './views/Telikos.vue';
+import Presale from './views/Presale.vue';
 
 
 Vue.use(VueRouter);
@@ -34,7 +35,8 @@ const routes: Array<RouteConfig> = [
   { path: '/radar', name: 'radar', component: Radar },
   { path: '/renascent', name: 'renascent', component: Renascent },
   { path: '/rules', name: 'rules', component: Rules },
-  { path: '/telikos', name: 'telikos', component: Telikos }
+  { path: '/telikos', name: 'telikos', component: Telikos },
+  { path: '/presale', name: 'presale', component: Presale }
   
 ];
 

@@ -1,4 +1,4 @@
-# Potion
+# Olympus
 
 ## Project setup
 ```
