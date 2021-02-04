@@ -7,7 +7,7 @@
           </a>
 
           
-           <router-link  v-if="settings.address" :to="{ name: 'presale' }" class="button-large-ps circle-button button button-primary">
+           <router-link  v-if="settings.authorized && settings.address" :to="{ name: 'presale' }" class="button-large-ps circle-button button button-primary">
           Presale
                </router-link>
 
