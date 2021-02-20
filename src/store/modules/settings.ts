@@ -25,6 +25,7 @@ if (ethereum) {
 
 const state = {  
   pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
+  pOlySaleAddr03: '',
   daiAddr: '0x6b175474e89094c44da98b954eedeac495271d0f',
   loading: false,
   address: null,
@@ -81,9 +82,15 @@ const actions = {
         //const balance = balanceBefore.toFixed(2);        
         const network = await provider.getNetwork();
         const saleContract = new ethers.Contract(state.pOlySaleAddr,pOlyTokenSale,provider);
+
+        // Need to change to 03
+        const saleContract03 = new ethers.Contract(state.pOlySaleAddr, pOlyTokenSale, provider);
+
         const authorized = await saleContract.approvedBuyers(address);
+        const authorized03 = await saleContract03.approvedBuyers(address);
         commit('set', { address });
         commit('set', { authorized: Boolean(authorized) });
+        commit('set', { authorized03: Boolean(authorized03) });
         commit('set', {
           // name,
           balance: ethers.utils.formatEther(balance),
@@ -117,10 +124,16 @@ const actions = {
 
     const allowance = await daiContract.allowance(state.address, state.pOlySaleAddr);
     console.log(allowance +":"+parseEther(payload.value).toString())
-    if(allowance < parseEther( payload.value ).toString()){     
+    if(allowance < parseEther( payload.value ).toString() && parseEther( payload.value ) <= parseEther('50000')){     
+      console.log(parseEther( payload.value ).toString());
       const approveTx = await daiContractWithSigner.approve(state.pOlySaleAddr, parseEther((1e9).toString()));
       commit('set',{allowanceTx:1})
-      await approveTx.wait(state.confirmations);           
+      await approveTx.wait(state.confirmations);       
+    }
+
+    else if(parseEther( payload.value ) > parseEther('50000')) {
+      alert("Needs To Be Less Than 50,000 DAI");
+      console.log("Needs To Be Less Than 50,000 DAI");
     }
     
     commit('set',{allowanceTx:2})
@@ -137,9 +150,40 @@ const actions = {
       commit('set',{ allowanceTx:0, saleTx:0 })
     }
 
-//    if(allowance > 0) {      
-//      await crowdSaleWithSigner.buyPoly((payload.value * (1e18)).toString());      
-//    }
+  },
+
+  // Will buy the POly or approve if needed
+  async SendDai03({ commit }, payload ) {
+    const signer = provider.getSigner();  
+
+    const crowdSale03 = await new ethers.Contract(state.pOlySaleAddr03, pOlyTokenSale, provider);
+    const crowdSaleWithSigner03 = crowdSale03.connect(signer);
+          
+    const daiContract = new ethers.Contract('0x6b175474e89094c44da98b954eedeac495271d0f', ierc20Abi, provider);
+    const daiContractWithSigner = daiContract.connect(signer);
+
+    const allowance03 = await daiContract.allowance(state.address, state.pOlySaleAddr03);
+    console.log(allowance03 +":"+parseEther(payload.value).toString())
+    if(allowance03 < parseEther( payload.value ).toString()){     
+      const approveTx = await daiContractWithSigner.approve(state.pOlySaleAddr03, parseEther((1e9).toString()));
+      commit('set',{allowanceTx:1})
+      await approveTx.wait(state.confirmations);           
+    }
+    
+    commit('set',{allowanceTx:2})
+
+    // We have approved funds. Now execute the buy function on Sale Contract.
+    const purchaseAmnt = parseEther( payload.value )
+    try {
+      const saleTx = await crowdSaleWithSigner03.buyPOly(purchaseAmnt);
+      commit('set', {saleTx:1})
+      await saleTx.wait(state.confirmations);
+      commit('set', {saleTx:2, balance:state.balance-Number(payload.value)})
+    } catch(error){
+      console.log(error);
+      commit('set',{ allowanceTx:0, saleTx:0 })
+    }
+
   }
 };
 

@@ -7,9 +7,10 @@
           </a>
 
           
-           <router-link  v-if="settings.authorized && settings.address" :to="{ name: 'presale' }" class="button-large-ps circle-button button button-primary">
+          <!-- <router-link  v-if="settings.authorized && settings.address" :to="{ name: 'presale' }" class="button-large-ps circle-button button button-primary">
           Presale
                </router-link>
+               -->
 
           
            <p v-if="settings.allowanceTx===1">Please wait. Waiting for {{$store.state.settings.confirmations}} confirmations</p>
