@@ -131,10 +131,11 @@ const actions = {
       await approveTx.wait(state.confirmations);       
     }
 
-    else if(parseEther( payload.value ) > parseEther('50000')) {
-      alert("Needs To Be Less Than 50,000 DAI");
-      console.log("Needs To Be Less Than 50,000 DAI");
-    }
+      // Removing limit on payment amount
+    // else if(parseEther( payload.value ) > parseEther('50000')) {
+    //   alert("Needs To Be Less Than 50,000 DAI");
+    //   console.log("Needs To Be Less Than 50,000 DAI");
+    // }
     
     commit('set',{allowanceTx:2})
 
