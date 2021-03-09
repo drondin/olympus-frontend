@@ -7,7 +7,6 @@
         <router-view :key="$route.path" />
       </div>
     </div>
-    <div class="background-mountain"></div>
   </div>
 </template>
 

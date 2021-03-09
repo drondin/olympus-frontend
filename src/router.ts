@@ -15,6 +15,9 @@ import Radar from './views/Radar.vue';
 import Renascent from './views/Renascent.vue';
 import Rules from './views/Rules.vue';
 import Telikos from './views/Telikos.vue';
+import Community from './views/Community.vue';
+import Developers from './views/Developers.vue';
+import Governance from './views/Governance.vue';
 import Presale from './views/Presale.vue';
 
 
@@ -32,6 +35,9 @@ const routes: Array<RouteConfig> = [
   { path: '/learn', name: 'learn', component: Learn },
   { path: '/lucent', name: 'lucent', component: Lucent },
   { path: '/nftyearn', name: 'nftyearn', component: Nftyearn },
+  { path: '/community', name: 'community', component: Community },
+  { path: '/developers', name: 'developers', component: Developers },
+  { path: '/governance', name: 'governance', component: Governance },
   { path: '/radar', name: 'radar', component: Radar },
   { path: '/renascent', name: 'renascent', component: Renascent },
   { path: '/rules', name: 'rules', component: Rules },
