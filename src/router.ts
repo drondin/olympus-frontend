@@ -17,6 +17,7 @@ import Rules from './views/Rules.vue';
 import Telikos from './views/Telikos.vue';
 import Community from './views/Community.vue';
 import Developers from './views/Developers.vue';
+import Dapp from './views/Dapp.vue';
 import Governance from './views/Governance.vue';
 import Presale from './views/Presale.vue';
 
@@ -32,6 +33,7 @@ const routes: Array<RouteConfig> = [
   { path: '/iyield', name: 'iyield', component: Iyield },
   { path: '/enreach', name: 'enreach', component: Enreach },
   { path: '/eris', name: 'eris', component: Eris },
+  { path: '/Dapp', name: 'dapp', component: Dapp },
   { path: '/learn', name: 'learn', component: Learn },
   { path: '/lucent', name: 'lucent', component: Lucent },
   { path: '/nftyearn', name: 'nftyearn', component: Nftyearn },

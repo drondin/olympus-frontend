@@ -27,7 +27,7 @@
       </div>
 
       <div class="py-4">
-        <router-link :to="{ name: 'main' }" class="button button-primary">
+        <router-link :to="{ name: 'dapp' }" class="button button-primary">
           Enter App
         </router-link></div>
        <!-- <div class="py-4">
@@ -41,9 +41,6 @@
         </div> -->
       </div>
      
-    </div>
-    <div class="mb-4 mt-4">
-
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
   </nav>

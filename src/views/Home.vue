@@ -50,7 +50,7 @@
       <p>Olympus is a floating algorithmic currency. This means that it has mechanisms to promote stability and predictablility without directly pegging to any asset. However, we take it one step further with the introduction of adjustable policy; the DAO can move certain variables up and down to target growth and profitability or stability and predictability.</p>
       </div>
     </dif>
-    <dv class="row-flex-image feature-image"><img src="~/@/assets/Whatmakesolyuniue.png" alt=""></dv>
+    <div class="row-flex-image feature-image"><img src="~/@/assets/Whatmakesolyuniue.png" alt=""></div>
   </div>
 
   <div class="block">
@@ -97,6 +97,19 @@
     </div>
   </div>
 
+
+
+  <div class="block row-responsive no-pad">
+        <div class="row-flex-image feature-image"><img src="~/@/assets/worldofopp-image.png" alt=""></div>
+
+    <dif class="row-flex-max feature-row">
+      <div class="row-flex-desc"><h2>A world of opportunity</h2>
+      <p>The Olympus reserve system enables new implementations of a multitude of DeFi primitives. Interest and liquidation-free leverage and borrowing, counterparty-free options and derivatives, trustless undercollateralized lending and more are possible. The future is bright.</p>
+      </div>
+    </dif>
+  </div>
+
+  <footer></footer>
   
 </div>
 </template>
