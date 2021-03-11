@@ -41,6 +41,7 @@ const routes: Array<RouteConfig> = [
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
   { path: '/stake', name: 'stake', component: Stake },
   { path: '/bond', name: 'bond', component: Bond },
+  { path: '/presale', name: 'presale', component: Presale },
   { path: '/swap', name: 'swap', component: Swap },
   { path: '/learn', name: 'learn', component: Learn },
   { path: '/lucent', name: 'lucent', component: Lucent },

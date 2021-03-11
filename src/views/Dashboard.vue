@@ -22,22 +22,7 @@
         </div>
 
         <div class="dapp-menu-links">
-          <div class="dapp-nav">
-
-        <router-link :to="{ name: 'dashboard' }" class="button button-dapp-menu">
-          Dashboard
-        </router-link>
-        <router-link :to="{ name: 'stake' }" class="button button-dapp-menu">
-          Stake
-        </router-link>
-        <router-link :to="{ name: 'bond' }" class="button button-dapp-menu">
-          Bond
-        </router-link>
-        <router-link :to="{ name: 'swap' }" class="button button-dapp-menu">
-          Swap (coming soon)
-        </router-link></div>
-
-
+          <Dav />
 
         </div>
 
@@ -51,7 +36,8 @@
         </div>
       </div>
       <div class="wrapper">
-        
+        <div class="dapp-center-modal"></div>
+
 
       </div>
 

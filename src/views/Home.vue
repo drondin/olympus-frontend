@@ -5,7 +5,7 @@
     <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
     <p class="centered-text hero-desc">Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an infinite supply system.</p>
-     <router-link :to="{ name: 'main' }" style="margin:2rem auto;max-width:150px;" class="button button-primary button-centered">
+     <router-link :to="{ name: 'dapp' }" style="margin:2rem auto;max-width:150px;" class="button button-primary button-centered">
           Enter App
         </router-link>
   </div>
