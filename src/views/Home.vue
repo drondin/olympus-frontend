@@ -1,5 +1,6 @@
 <template>
 <div class="column">
+<Nav />
   <div class="block hero">
     <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
@@ -109,7 +110,10 @@
     </dif>
   </div>
 
-  <footer></footer>
+  <footer>
+    
+
+  </footer>
   
 </div>
 </template>

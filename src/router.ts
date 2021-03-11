@@ -18,6 +18,10 @@ import Telikos from './views/Telikos.vue';
 import Community from './views/Community.vue';
 import Developers from './views/Developers.vue';
 import Dapp from './views/Dapp.vue';
+import Dashboard from './views/Dashboard.vue';
+import Stake from './views/Stake.vue';
+import Bond from './views/Bond.vue';
+import Swap from './views/Swap.vue';
 import Governance from './views/Governance.vue';
 import Presale from './views/Presale.vue';
 
@@ -33,7 +37,11 @@ const routes: Array<RouteConfig> = [
   { path: '/iyield', name: 'iyield', component: Iyield },
   { path: '/enreach', name: 'enreach', component: Enreach },
   { path: '/eris', name: 'eris', component: Eris },
-  { path: '/Dapp', name: 'dapp', component: Dapp },
+  { path: '/app', name: 'dapp', component: Dapp },
+  { path: '/dashboard', name: 'dashboard', component: Dashboard },
+  { path: '/stake', name: 'stake', component: Stake },
+  { path: '/bond', name: 'bond', component: Bond },
+  { path: '/swap', name: 'swap', component: Swap },
   { path: '/learn', name: 'learn', component: Learn },
   { path: '/lucent', name: 'lucent', component: Lucent },
   { path: '/nftyearn', name: 'nftyearn', component: Nftyearn },
