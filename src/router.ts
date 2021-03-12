@@ -28,6 +28,7 @@ import Presale from './views/Presale.vue';
 
 Vue.use(VueRouter);
 
+//These should only be urls we intend to represent ROBIT!!!!
 const routes: Array<RouteConfig> = [
   { path: '/', name: 'home', component: Home },
   { path: '/about', name: 'about', component: About },

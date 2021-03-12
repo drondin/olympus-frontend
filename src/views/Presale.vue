@@ -13,7 +13,7 @@
           <div class="wallet-menu">
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
-            {{ name || shorten(address) }}
+            {{ shorten(address) }}
           </a>
           <a v-else class="dapp-sidebar-button-connect button button-primary" @click="modalLoginOpen = true">
             Connect wallet
@@ -41,11 +41,11 @@
 
             <div class="swap-input-column">
 
-              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>DAI</p> </div>
+              <div class="balance-row"><p>Balance</p><p class="balance-data">{{$store.state.settings.balance}}</p><p>DAI</p> </div>
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
-                  <input placeholder="0.0" class="swap-input" type="text">
+                  <input v-model='value' placeholder="0.0" class="swap-input" type="text">
                   
                   </div>
 
@@ -63,22 +63,25 @@
 
               <div class="swap-ourput-row">
                   <div class="swap-output-container">
-                  <input placeholder="0.0" class="swap-output" type="text">
+                  <input  v-model='purchaseAmount' placeholder="0.0" class="swap-output" type="text">
                   </div>
               </div>
 
               <div class="swap-price-data-column">
                 <div class="swap-price-data-row">
                   <p class="price-label">Current Price</p>
-                  <p class="price-data">50 DAI</p>
+                  <p class="price-data">1 DAI</p>
                 </div><div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
-                  <p class="price-data">50 OHM</p>
+                  <p class="price-data">1 OHM</p>
                 </div>
               </div>
 
-              <div class="swap-button-container">
-                <div class="swap-button">SWAP</div>
+              <div v-if='hasAllowance' class="swap-button-container">
+                <div class="swap-button" @click='sendDai'>SWAP</div>
+              </div>
+              <div v-else class="swap-button-container">
+                <div class="swap-button" @click='seekApproval'>Approve</div>
               </div>
 
             </div>
@@ -94,13 +97,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { ethers } from 'ethers';
+import { shorten } from '@/helpers/utils.ts';
 
 export default {
   data() {
     return {
-      form: {
-        quantity: ''
-      },
+      value: '',
       modalLoginOpen: false,
       modalMakepotionOpen: false
     };
@@ -108,24 +111,42 @@ export default {
   computed: {
     ...mapState(['settings']),
     isValid() {
-      return parseFloat(this.form.quantity);
+      return parseFloat(this.value);
     },
     maxStrike() {
       const exchangeRate = this.settings.exchangeRates[this.form.asset];
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
+    },
+    hasAllowance() {
+
+      if(parseFloat(this.value)) {
+        console.log(this.$store.state.settings.allowance); 
+        return this.$store.state.settings.allowance >= ethers.utils.parseEther(this.value);
+
+      }
+      return false;
+    },
+    purchaseAmount() {
+      return this.value;
+    },
+    address() {
+      return this.$store.state.settings.address
     }
   },
   methods: {
     
-    ...mapActions(['SendDai']),
-    handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
-        value: this.form.quantity
-      });
-    },
+    ...mapActions(['getOHM', 'getApproval']),
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
+    },
+    shorten(addr) { 
+      return shorten(addr);
+    },
+    async seekApproval() {
+        await this.getApproval(this.value);
+    },
+    async sendDai() {
+      await this.getOHM(this.value);
     }
   }
 };
