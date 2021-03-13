@@ -22,7 +22,7 @@
         </div>
 
         <div class="dapp-menu-links">
-        <Dav />
+          <Dav />
 
         </div>
 
@@ -36,10 +36,74 @@
         </div>
       </div>
       <div class="wrapper">
-        
+        <div class="dapp-center-modal">
+          <div class="dapp-modal-wrapper">
 
+            <div class="swap-input-column">
+              
+              <div class="stake-toggle-row">
+                <toggle-switch
+                  :options="myOptions"
+                  @change="updateMap($event.value)"
+                  @selected="selectedMethod()"
+                  v-model="selectedMapOption"
+                  :value="selectedMapOption"
+                  :group="switchGroup"
+                  /> 
+              </div>
+
+              <div class="swap-input-row">
+                <div class="stake-input-container">
+                  <input placeholder="Type an amount" class="stake-input" type="text">
+                  
+                  </div>
+              </div>
+
+              <div class="stake-amount-preset-row">
+                <div class="stake-amount-preset-button">
+                  25%
+                </div>
+                <div class="stake-amount-preset-button">
+                  50%
+                </div>
+                <div class="stake-amount-preset-button">
+                  75%
+                </div>
+                <div class="stake-amount-preset-button">
+                  100%
+                </div>
+              </div>
+
+             
+
+              <div class="stake-price-data-column">
+                <div class="stake-price-data-row">
+                  <p class="price-label">Balance</p>
+                  <p class="price-data">12,200 OLY</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Staked</p>
+                  <p class="price-data">500 OLY</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Upcoming rebase</p>
+                  <p class="price-data">2%</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Upcoming APY</p>
+                  <p class="price-data">261,329,284,342%</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Current index</p>
+                  <p class="price-data">10 OLY</p>
+                </div>
+              </div>
+
+              <div class="stake-button-container">
+                <div class="stake-button">Stake</div>
+              </div>
+
+            </div>
+            
+          </div>
+        </div>
       </div>
-
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
 
@@ -52,13 +116,43 @@ import { mapState, mapActions } from 'vuex';
 export default {
   data() {
     return {
+      myOptions: {
+        layout: {
+          color: 'white',
+          backgroundColor: '#282828',
+          selectedColor: 'white',
+          selectedBackgroundColor: 'green',
+          borderColor: 'white',
+          fontFamily: 'Arial',
+          fontWeight: 'normal',
+          fontWeightSelected: 'bold',
+          squareCorners: false,
+          noBorder: false
+        },
+        size: {
+          fontSize: 2,
+          height: 4,
+          padding: 1,
+          width: 20,
+          borderRadius: 5,
+        },
+        items: {
+          delay: .4,
+          preSelected: 'unknown',
+          disabled: false,
+          labels: [
+            {name: 'Stake', color: 'white', backgroundColor: 'red'}, 
+            {name: 'Unstake', color: 'white', backgroundColor: 'green'}
+          ]
+        }
+      },
       form: {
         quantity: ''
       },
       modalLoginOpen: false,
       modalMakepotionOpen: false
     };
-  },
+  }, 
   computed: {
     ...mapState(['settings']),
     isValid() {
@@ -69,6 +163,7 @@ export default {
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
     }
   },
+
   methods: {
     
     ...mapActions(['SendDai']),
@@ -83,10 +178,10 @@ export default {
     }
   }
 };
+
 </script>
 <style scoped>
 .hasEffect {
   cursor: pointer;
 }
 </style>
-

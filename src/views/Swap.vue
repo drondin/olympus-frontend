@@ -36,10 +36,56 @@
         </div>
       </div>
       <div class="wrapper">
-        
+        <div class="dapp-center-modal">
+          <div class="dapp-modal-wrapper">
 
+            <div class="swap-input-column">
+
+              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>DAI</p> </div>
+
+              <div class="swap-input-row">
+                <div class="swap-input-container">
+                  <input placeholder="0.0" class="swap-input" type="text">
+                  
+                  </div>
+
+                  <div class="cur-max-box">
+                    <img src="~/@/assets/dai.svg" alt="">
+                    <div class="max-button">
+                      100%
+                    </div>
+                    </div>
+              </div>
+
+              <div class="swap-arrow">
+                <img src="~/@/assets/Arrow.svg" alt="" class="social-icon-small">
+              </div>
+
+              <div class="swap-ourput-row">
+                  <div class="swap-output-container">
+                  <input placeholder="0.0" class="swap-output" type="text">
+                  </div>
+              </div>
+
+              <div class="swap-price-data-column">
+                <div class="swap-price-data-row">
+                  <p class="price-label">Current Price</p>
+                  <p class="price-data">50 DAI</p>
+                </div><div class="swap-price-data-row">
+                  <p class="price-label">You will receive</p>
+                  <p class="price-data">50 OHM</p>
+                </div>
+              </div>
+
+              <div class="swap-button-container">
+                <div class="swap-button">Swap</div>
+              </div>
+
+            </div>
+            
+          </div>
+        </div>
       </div>
-
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
 
@@ -89,4 +135,3 @@ export default {
   cursor: pointer;
 }
 </style>
-

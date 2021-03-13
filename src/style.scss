@@ -414,7 +414,7 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
 .dapp-center-modal{
   position:relative;
   width:500px;
-  height:425px;
+  min-height:425px;
   margin:auto;
   border-radius:2rem;
   background-color:#424242dd;
@@ -438,6 +438,11 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   padding:0.5rem 1rem;
 
 }
+.stake-input-container{
+  display:flex;
+  padding:0.5rem 1rem;
+
+}
 .swap-input{
   background:transparent;
   border:unset;
@@ -445,6 +450,38 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   width:50%;
   &:focus{color:#aaa;}
 }
+
+.stake-input{  background:transparent;
+  border:unset;
+  color:#555;
+  &:focus{color:#aaa;}}
+
+.stake-amount-preset-button{
+  width:64px;
+  display:flex;flex-flow:wrap;justify-content:center;
+background:white;color:black;line-height:36px;border-radius:20px;text-align:center;
+padding:0rem 1rem;&:hover{color:white;background:black;}
+}
+.stake-amount-preset-row{
+  padding:1rem 0rem;
+  display:flex;
+  flex-flow:row;
+  justify-content:space-between;
+}
+
+
+.stake-button-container{display:flex;flex-flow:row;justify-content:center;}
+
+.stake-button{
+  cursor:pointer;background-color:#282828;
+padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
+&:hover{background-color:white;color:black;}}
+
+.stake-price-data-column{
+  margin:1rem 0px;display:flex;flex-flow:column;justify-content:space-between;}
+.stake-price-data-row{
+  display:flex;flex-flow:row;justify-content:space-between;}
+
 
 .swap-output-container{
   display:flex;
@@ -455,7 +492,9 @@ input{
   &::placeholder{color:#555;}
 }
 .swap-button-container{display:flex;flex-flow:row;justify-content:center;}
-.swap-button{cursor:pointer;background-color:#282828;
+
+.swap-button{
+  cursor:pointer;background-color:#282828;
 padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
 &:hover{background-color:white;color:black;}}
 
@@ -466,7 +505,8 @@ padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px soli
   .max-button{margin:0px 0.5rem;width:64px;
   display:flex;flex-flow:wrap;justify-content:center;
 background:white;color:black;line-height:36px;border-radius:20px;text-align:center;
-padding:0rem 1rem;}
+padding:0rem 1rem;
+&:hover{color:white;background:black;}}
 }
 
 .swap-output{
@@ -491,7 +531,7 @@ padding:0rem 1rem;}
 }
 
 .swap-price-data-column{
-  margin:2rem 0px;display:flex;flex-flow:column;justify-content:space-between;}
+  margin:1rem 0px;display:flex;flex-flow:column;justify-content:space-between;}
 .swap-price-data-row{
   display:flex;flex-flow:row;justify-content:space-between;}
 
