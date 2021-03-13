@@ -469,6 +469,30 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
   justify-content:space-between;
 }
 
+.stake-toggle-row{
+  margin:1rem auto;
+  .toggle-switch{
+    border-radius:2rem;overflow:hidden;
+    li{
+      label{font-family: 'Square', 'cursive';}
+
+      &:first-child{
+          label{
+            border-width:2px!important;
+            border-top-left-radius:2rem!important;
+            border-bottom-left-radius:2rem!important; 
+            .selected{border-radius:2rem!important;}}
+        }
+      &:last-child{
+          label{            
+            border-width:2px!important;
+            border-bottom-right-radius:2rem!important;
+            border-top-right-radius:2rem!important; 
+            .selected{border-radius:2rem!important;}}
+        }
+      }
+    }
+  }
 
 .stake-button-container{display:flex;flex-flow:row;justify-content:center;}
 

@@ -125,15 +125,16 @@ export default {
           borderColor: 'white',
           fontFamily: 'Arial',
           fontWeight: 'normal',
+          lineHeight: '1',
           fontWeightSelected: 'bold',
           squareCorners: false,
           noBorder: false
         },
         size: {
-          fontSize: 2,
-          height: 4,
-          padding: 1,
-          width: 20,
+          fontSize: 1,
+          height: 2.5,
+          padding: 0.3,
+          width: 15,
           borderRadius: 5,
         },
         items: {
@@ -141,8 +142,8 @@ export default {
           preSelected: 'unknown',
           disabled: false,
           labels: [
-            {name: 'Stake', color: 'white', backgroundColor: 'red'}, 
-            {name: 'Unstake', color: 'white', backgroundColor: 'green'}
+            {name: 'Stake', color: 'black', backgroundColor: 'white'}, 
+            {name: 'Unstake', color: 'black', backgroundColor: 'white'}
           ]
         }
       },
