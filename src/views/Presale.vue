@@ -77,9 +77,6 @@
                   
                   <p class="price-label">Current Price</p>
                   <p class="price-data">4 DAI</p>
-                </div><div class="swap-price-data-row">
-                  <p class="price-label">You will receive</p>
-                  <p class="price-data">1 OHM</p>
                 </div>
               </div>
 
