@@ -24,10 +24,12 @@ import Bond from './views/Bond.vue';
 import Swap from './views/Swap.vue';
 import Governance from './views/Governance.vue';
 import Presale from './views/Presale.vue';
+import Presale03 from './views/Presale03.vue';
 
 
 Vue.use(VueRouter);
 
+//These should only be urls we intend to represent ROBIT!!!!
 const routes: Array<RouteConfig> = [
   { path: '/', name: 'home', component: Home },
   { path: '/about', name: 'about', component: About },
@@ -53,7 +55,8 @@ const routes: Array<RouteConfig> = [
   { path: '/renascent', name: 'renascent', component: Renascent },
   { path: '/rules', name: 'rules', component: Rules },
   { path: '/telikos', name: 'telikos', component: Telikos },
-  { path: '/presale', name: 'presale', component: Presale }
+  { path: '/presale', name: 'presale', component: Presale },
+  { path: '/sale', name: 'sale', component: Presale03 }
   
 ];
 

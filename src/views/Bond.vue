@@ -54,8 +54,8 @@
 
               <div class="swap-input-row">
                 <div class="stake-input-container">
-                  <input placeholder="Type an amount" class="stake-input" type="text">
-                   <input placeholder="Type an amount" class="stake-input" type="text">
+                  <input placeholder="Type an amount" class="bond-input" type="text">
+                  <input placeholder="Type an amount" class="redeem-input" type="text">
                   
                   </div>
               </div>
@@ -100,6 +100,23 @@
 
             </div>
             
+          </div>
+
+          <div class="bond-data">
+            <div class="bond-data-row">
+              <div class="bond-data-column">
+                <p>Debt Ratio</p>
+                <p>xxxx</p>
+              </div>
+              <div class="bond-data-column">
+                <p>Vesting Term</p>
+                <p>xxxx</p>
+              </div>
+              <div class="bond-data-column">
+                <p>Discount</p>
+                <p>xxxx</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
