@@ -55,6 +55,7 @@
               <div class="swap-input-row">
                 <div class="stake-input-container">
                   <input placeholder="Type an amount" class="stake-input" type="text">
+                   <input placeholder="Type an amount" class="stake-input" type="text">
                   
                   </div>
               </div>
@@ -92,8 +93,9 @@
                 </div>
               </div>
 
-              <div class="stake-button-container">
-                <div class="stake-button">Approve</div>
+              <div class="redeem-button-container">
+                <div class="redeem-button">Redeem</div>
+                <div class="withdraw-button">Withdraw & Forfeit</div>
               </div>
 
             </div>

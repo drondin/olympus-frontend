@@ -446,8 +446,8 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
 .swap-input{
   background:transparent;
   border:unset;
+  width: 100%;
   color:#555;
-  width:50%;
   &:focus{color:#aaa;}
 }
 
@@ -494,9 +494,21 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
     }
   }
 
-.stake-button-container{display:flex;flex-flow:row;justify-content:center;}
+  .stake-button-container{display:flex;flex-flow:row;justify-content:center;}
+  .redeem-button-container{display:flex;flex-flow:row;justify-content:space-evenly;}
 
-.stake-button{
+.stake-button{  font-size:0.8rem;
+  cursor:pointer;background-color:#282828;
+padding:0.5rem 2rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
+&:hover{background-color:white;color:black;}}
+
+.withdraw-button{
+  cursor:pointer;background-color:#282828;
+  font-size:0.8rem;
+padding:0.5rem 1rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
+&:hover{background-color:white;color:black;}}
+
+.redeem-button{font-size:0.8rem;
   cursor:pointer;background-color:#282828;
 padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
 &:hover{background-color:white;color:black;}}
@@ -518,6 +530,7 @@ input{
 .swap-button-container{display:flex;flex-flow:row;justify-content:center;}
 
 .swap-button{
+  font-size:0.8rem;
   cursor:pointer;background-color:#282828;
 padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px solid white;
 &:hover{background-color:white;color:black;}}

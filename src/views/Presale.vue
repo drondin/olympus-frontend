@@ -78,7 +78,7 @@
               </div>
 
               <div class="swap-button-container">
-                <div class="swap-button">SWAP</div>
+                <div class="swap-button">Swap</div>
               </div>
 
             </div>
