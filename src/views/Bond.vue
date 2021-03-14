@@ -40,45 +40,60 @@
           <div class="dapp-modal-wrapper">
 
             <div class="swap-input-column">
-
-              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>DAI</p> </div>
+              
+              <div class="stake-toggle-row">
+                <toggle-switch
+                  :options="myOptions"
+                  @change="updateMap($event.value)"
+                  @selected="selectedMethod()"
+                  v-model="selectedMapOption"
+                  :value="selectedMapOption"
+                  :group="switchGroup"
+                  /> 
+              </div>
 
               <div class="swap-input-row">
-                <div class="swap-input-container">
-                  <input placeholder="0.0" class="swap-input" type="text">
+                <div class="stake-input-container">
+                  <input placeholder="Type an amount" class="stake-input" type="text">
                   
                   </div>
-
-                  <div class="cur-max-box">
-                    <img src="~/@/assets/dai.svg" alt="">
-                    <div class="max-button">
-                      100%
-                    </div>
-                    </div>
               </div>
 
-              <div class="swap-arrow">
-                <img src="~/@/assets/Arrow.svg" alt="" class="social-icon-small">
-              </div>
-
-              <div class="swap-ourput-row">
-                  <div class="swap-output-container">
-                  <input placeholder="0.0" class="swap-output" type="text">
-                  </div>
-              </div>
-
-              <div class="swap-price-data-column">
-                <div class="swap-price-data-row">
-                  <p class="price-label">Current Price</p>
-                  <p class="price-data">50 DAI</p>
-                </div><div class="swap-price-data-row">
-                  <p class="price-label">You will receive</p>
-                  <p class="price-data">50 OHM</p>
+              <div class="stake-amount-preset-row">
+                <div class="stake-amount-preset-button">
+                  25%
+                </div>
+                <div class="stake-amount-preset-button">
+                  50%
+                </div>
+                <div class="stake-amount-preset-button">
+                  75%
+                </div>
+                <div class="stake-amount-preset-button">
+                  100%
                 </div>
               </div>
 
-              <div class="swap-button-container">
-                <div class="swap-button">SWAP</div>
+             
+
+              <div class="stake-price-data-column">
+                <div class="stake-price-data-row">
+                  <p class="price-label">Balance</p>
+                  <p class="price-data">0.257 SLP</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Value</p>
+                  <p class="price-data">600 OLY</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Bond Price</p>
+                  <p class="price-data">15 OLY</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Market Price</p>
+                  <p class="price-data">16 OLY</p>
+                </div>
+              </div>
+
+              <div class="stake-button-container">
+                <div class="stake-button">Approve</div>
               </div>
 
             </div>
@@ -98,13 +113,44 @@ import { mapState, mapActions } from 'vuex';
 export default {
   data() {
     return {
+      myOptions: {
+        layout: {
+          color: 'white',
+          backgroundColor: '#282828',
+          selectedColor: 'white',
+          selectedBackgroundColor: 'green',
+          borderColor: 'white',
+          fontFamily: 'Arial',
+          fontWeight: 'normal',
+          lineHeight: '1',
+          fontWeightSelected: 'bold',
+          squareCorners: false,
+          noBorder: false
+        },
+        size: {
+          fontSize: 1,
+          height: 2.5,
+          padding: 0.3,
+          width: 15,
+          borderRadius: 5,
+        },
+        items: {
+          delay: .4,
+          preSelected: 'unknown',
+          disabled: false,
+          labels: [
+            {name: 'Bond', color: 'black', backgroundColor: 'white'}, 
+            {name: 'Redeem', color: 'black', backgroundColor: 'white'}
+          ]
+        }
+      },
       form: {
         quantity: ''
       },
       modalLoginOpen: false,
       modalMakepotionOpen: false
     };
-  },
+  }, 
   computed: {
     ...mapState(['settings']),
     isValid() {
@@ -115,6 +161,7 @@ export default {
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
     }
   },
+
   methods: {
     
     ...mapActions(['SendDai']),
@@ -129,6 +176,7 @@ export default {
     }
   }
 };
+
 </script>
 <style scoped>
 .hasEffect {
