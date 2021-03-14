@@ -45,7 +45,7 @@
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
-                  <input v-model='value' placeholder="0.0" class="swap-input" type="text">
+                  <input @change="updateQuote" v-model='value' placeholder="0.0" class="swap-input" type="text">
                   
                   </div>
 
@@ -63,14 +63,14 @@
 
               <div class="swap-ourput-row">
                   <div class="swap-output-container">
-                  <input  v-model='purchaseAmount' placeholder="0.0" class="swap-output" type="text">
+                  <input  v-model='$store.state.settings.amount' placeholder="0.0" class="swap-output" type="text">
                   </div>
               </div>
 
               <div class="swap-price-data-column">
                 <div class="swap-price-data-row">
                   <p class="price-label">Current Price</p>
-                  <p class="price-data">1 DAI</p>
+                  <p class="price-data">5 DAI</p>
                 </div><div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
                   <p class="price-data">1 OHM</p>
@@ -120,22 +120,20 @@ export default {
     hasAllowance() {
 
       if(parseFloat(this.value)) {
-        console.log(this.$store.state.settings.allowance); 
-        return this.$store.state.settings.allowance >= ethers.utils.parseEther(this.value);
-
+        this.updateQuote();
+        return parseInt(this.$store.state.settings.allowance) >= parseInt(ethers.utils.parseEther(this.value));
       }
       return false;
     },
-    purchaseAmount() {
-      return this.value;
-    },
     address() {
+      if(this.$store.state.settings.address)
       return this.$store.state.settings.address
+      return "Connect Wallet"
     }
   },
   methods: {
     
-    ...mapActions(['getOHM', 'getApproval']),
+    ...mapActions(['getOHM', 'getApproval', 'calculateSaleQuote']),
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
     },
@@ -147,6 +145,9 @@ export default {
     },
     async sendDai() {
       await this.getOHM(this.value);
+    },
+    async updateQuote() {
+      await this.calculateSaleQuote(this.value);
     }
   }
 };

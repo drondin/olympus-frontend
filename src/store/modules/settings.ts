@@ -29,7 +29,7 @@ const state = {
   pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
   daiAddr: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   approval: 0,
-  OHMPresaleAddr: '',
+  OHMPresaleAddr: '0x0e762067f824E9DB190aD3565E3bf8Cde314d893',
   loading: false,
   address: null,
   name: '',
@@ -37,6 +37,7 @@ const state = {
   claim: 0,
   minimumEth: 0,
   providedEth: 0,
+  amount: 0,
   remainingEth: 0,
   network: {},
   exchangeRates: {},
@@ -85,7 +86,7 @@ const actions = {
         //const balance = balanceBefore.toFixed(2);        
         const network = await provider.getNetwork();
         const allowance = await daiContract.allowance(address, state.OHMPresaleAddr)!;
-        
+        console.log("Allowance", allowance);
         commit('set', { address });
         commit('set', {
           // name,
@@ -114,25 +115,39 @@ const actions = {
     const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, signer);
     const daiContract = new ethers.Contract(state.daiAddr, ierc20Abi, signer);
 
-    const presaleTX = await presale.purchaseOHM(ethers.utils.parseEther(value).toString());
+    const presaleTX = await presale.purchaseaOHM(ethers.utils.parseEther(value).toString());
     await presaleTX.wait(console.log("Success"));
+    const balance = await daiContract.balanceOf(state.address);
+    commit('set', {
+      // name,
+      balance: ethers.utils.formatEther(balance)})    
   },
 
-  async getApproval({commit}, value) {
+  async getApproval({commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const daiContract = await new ethers.Contract(state.daiAddr, ierc20Abi, signer);
     if(value <= 0) return;
 
-    const approveTx = await daiContract.approve(state.pOlySaleAddr, parseEther((1e9).toString()));
+    const approveTx = await daiContract.approve(state.OHMPresaleAddr, ethers.utils.parseEther(value).toString());
     commit('set',{allowanceTx:1})
-    await approveTx.wait(state.confirmations);           
+    await approveTx.wait();
+    await dispatch('getAllowances')
 
   },
 
   async getAllowances({commit}) {
+    if(state.address) {
     const diaContract = await new ethers.Contract(state.daiAddr, ierc20Abi, provider);
     const allowance = await diaContract.allowance(state.address, state.OHMPresaleAddr);
     commit('set', {allowance});
+    }
+  },
+
+  async calculateSaleQuote({commit}, value) {
+      const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, provider);
+      const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'gwei'));
+      
+      commit('set', {amount});  
   },
 
   // Will buy the POly or approve if needed
