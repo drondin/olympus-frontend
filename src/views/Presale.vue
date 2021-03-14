@@ -51,7 +51,7 @@
 
                   <div class="cur-max-box">
                     <img src="~/@/assets/dai.svg" alt="">
-                    <div class="max-button">
+                    <div class="max-button" @click='maxAlloc'>
                       100%
                     </div>
                     </div>
@@ -68,9 +68,15 @@
               </div>
 
               <div class="swap-price-data-column">
+                <p>Note: This can only be done once.</p>
                 <div class="swap-price-data-row">
+                  <p class="price-label">Max Purchase</p>
+                  <p class="price-data">{{$store.state.settings.allotment}} OHM</p>
+                </div>
+                <div class="swap-price-data-row">
+                  
                   <p class="price-label">Current Price</p>
-                  <p class="price-data">5 DAI</p>
+                  <p class="price-data">4 DAI</p>
                 </div><div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
                   <p class="price-data">1 OHM</p>
@@ -91,12 +97,6 @@
       </div>
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
-    <ModalMakepotion
-      v-if="isValid"
-      :open="modalMakepotionOpen"
-      :form="form"
-      @close="modalMakepotionOpen = false"
-    />
   </div>
 </template>
 
@@ -138,10 +138,7 @@ export default {
   },
   methods: {
     
-    ...mapActions(['getOHM', 'getApproval', 'calculateSaleQuote']),
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    },
+    ...mapActions(['getOHM', 'getApproval', 'calculateSaleQuote', 'getMaxPurchase']),
     shorten(addr) { 
       return shorten(addr);
     },
@@ -153,6 +150,11 @@ export default {
     },
     async updateQuote() {
       await this.calculateSaleQuote(this.value);
+    },
+    async maxAlloc() {
+      await this.getMaxPurchase();
+      this.value = this.$store.state.settings.maxPurchase;
+      await this.updateQuote(); 
     }
   }
 };

@@ -47,6 +47,8 @@ const state = {
   allowanceTx: 0,
   saleTx: 0,
   confirmations: 1,
+  allotment: 0,
+  maxPurchase: 0,
 };
 
 const mutations = {
@@ -87,6 +89,7 @@ const actions = {
         const network = await provider.getNetwork();
         const allowance = await daiContract.allowance(address, state.OHMPresaleAddr)!;
         console.log("Allowance", allowance);
+        dispatch('getAllotmentPerBuyer')
         commit('set', { address });
         commit('set', {
           // name,
@@ -145,10 +148,24 @@ const actions = {
 
   async calculateSaleQuote({commit}, value) {
       const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, provider);
-      const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'gwei'));
-      
-      commit('set', {amount});  
+      const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'ether'));
+      commit('set', {amount:ethers.utils.formatUnits(amount.toString(), 'gwei').toString()});  
   },
+
+  async getAllotmentPerBuyer({commit}) {
+    const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, provider);
+    const allotment = await presale.getAllotmentPerBuyer()
+    commit('set', {allotment:ethers.utils.formatUnits(allotment, 'gwei')});
+  },
+
+  async getMaxPurchase({commit, dispatch}) {
+      const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, provider);
+      const salePrice = await presale.salePrice();
+      const total = state.allotment * salePrice;    
+
+      commit('set', {maxPurchase:ethers.utils.formatUnits(total.toString(), 'ether')})
+  }
+
 
   // Will buy the POly or approve if needed
  /* async SendDai({ commit }, payload ) {
