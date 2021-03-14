@@ -91,7 +91,12 @@
       </div>
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
-
+    <ModalMakepotion
+      v-if="isValid"
+      :open="modalMakepotionOpen"
+      :form="form"
+      @close="modalMakepotionOpen = false"
+    />
   </div>
 </template>
 
@@ -128,7 +133,7 @@ export default {
     address() {
       if(this.$store.state.settings.address)
       return this.$store.state.settings.address
-      return "Connect Wallet"
+      return null
     }
   },
   methods: {
