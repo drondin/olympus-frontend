@@ -13,7 +13,7 @@
           <div class="wallet-menu">
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
-            {{ name || shorten(address) }}
+            {{ shorten(address) }}
           </a>
           <a v-else class="dapp-sidebar-button-connect button button-primary" @click="modalLoginOpen = true">
             Connect wallet
@@ -58,7 +58,6 @@
                   
                   </div>
               </div>
-
               <div class="stake-amount-preset-row">
                 <div class="stake-amount-preset-button">
                   25%
@@ -79,10 +78,10 @@
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">12,200 OLY</p>
+                  <p class="price-data">{{$store.state.settings.ohmBalance}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Staked</p>
-                  <p class="price-data">500 OLY</p>
+                  <p class="price-data">{{$store.state.settings.sohmBalance}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming rebase</p>
                   <p class="price-data">2%</p>
@@ -91,12 +90,12 @@
                   <p class="price-data">261,329,284,342%</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Current index</p>
-                  <p class="price-data">10 OLY</p>
+                  <p class="price-data">10 OHM</p>
                 </div>
               </div>
 
               <div class="stake-button-container">
-                <div class="stake-button">Stake</div>
+                <div class="stake-button" @click='executeStake'>Stake</div>
               </div>
 
             </div>
@@ -112,6 +111,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { shorten } from '@/helpers/utils.ts';
+
 
 export default {
   data() {
@@ -147,33 +148,42 @@ export default {
           ]
         }
       },
-      form: {
-        quantity: ''
-      },
+      quantity: '',
+      stakeToggle: true,
       modalLoginOpen: false,
-      modalMakepotionOpen: false
     };
   }, 
+  created() {
+      this.selectedMapOption = 'Stake'
+  },
   computed: {
     ...mapState(['settings']),
     isValid() {
       return parseFloat(this.form.quantity);
     },
-    maxStrike() {
-      const exchangeRate = this.settings.exchangeRates[this.form.asset];
-      return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
-    }
+    address() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.settings.address
+      return null
+    },  
   },
 
   methods: {
     
     ...mapActions(['SendDai']),
-    handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
-        value: this.form.quantity
-      });
+    async executeStake() {
+        switch(this.selectedMapOption) {
+          case 'Staked':
+            await this.stakeOHM();
+            break;
+          case 'Unstake':
+            await this.unstakeOHM();
+        }
+        //updatestats        
     },
+    shorten(addr) { 
+      return shorten(addr);
+    },    
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
     }
