@@ -12,18 +12,7 @@
           </router-link>
         </div>
          <div class="mainnav">
-        <router-link :to="{ name: 'developers' }" class="button button-secondary">
-          Developers
-        </router-link>
-        <router-link :to="{ name: 'learn' }" class="button button-secondary">
-          Learn
-        </router-link>
-        <router-link :to="{ name: 'governance' }" class="button button-secondary">
-          Governance
-        </router-link>
-        <router-link :to="{ name: 'community' }" class="button button-secondary">
-          Community
-        </router-link>
+      
       </div>
 
       <div class="py-4">

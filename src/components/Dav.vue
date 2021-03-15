@@ -1,24 +1,24 @@
 <template>
-  <dnav>
+  <dav>
      <div class="dapp-nav">
 
         <router-link :to="{ name: 'presale' }" class="button button-dapp-menu">
           Presale
         </router-link>
         <router-link :to="{ name: 'stake' }" class="button button-dapp-menu">
-          Stake (coming soon)
+          Stake 
         </router-link>
         <router-link :to="{ name: 'bond' }" class="button button-dapp-menu">
-          Bond (coming soon)
+          Bond 
         </router-link>
         <router-link :to="{ name: 'swap' }" class="button button-dapp-menu">
-          Swap (coming soon)
+          Swap
         </router-link>
         <router-link :to="{ name: 'dashboard' }" class="button button-dapp-menu">
           Dash (coming soon)
         </router-link>
         </div>
- </dnav>
+ </dav>
 </template>
 
 <script>

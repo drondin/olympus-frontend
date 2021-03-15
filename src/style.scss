@@ -422,6 +422,8 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   display:flex;
   flex-flow:wrap;
   justify-content:center;
+  overflow:hidden;
+
 }
 
 .dapp{
@@ -456,6 +458,20 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   color:#555;
   &:focus{color:#aaa;}}
 
+
+  .bond-input{  background:transparent;
+    border:unset;
+    color:#555;
+    &:focus{color:#aaa;}}
+  
+    .redeem-input{  background:transparent;
+      border:unset;
+      color:#555;
+      &:focus{color:#aaa;}}
+    
+.bond-data-row{width:500px;
+background-color:black;display:flex;flex-flow:row;justify-content: space-evenly;padding: 2rem 0rem;}
+.bond-data-column{text-align:center;}
 .stake-amount-preset-button{
   width:64px;
   display:flex;flex-flow:wrap;justify-content:center;
@@ -525,7 +541,7 @@ padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px soli
 
 }
 input{
-  &::placeholder{color:#555;}
+  &::placeholder{color:#555;} 
 }
 .swap-button-container{display:flex;flex-flow:row;justify-content:center;}
 
