@@ -39,7 +39,7 @@ const routes: Array<RouteConfig> = [
   { path: '/iyield', name: 'iyield', component: Iyield },
   { path: '/enreach', name: 'enreach', component: Enreach },
   { path: '/eris', name: 'eris', component: Eris },
-  { path: '/app', name: 'dapp', component: Dapp },
+  
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
   { path: '/stake', name: 'stake', component: Stake },
   { path: '/bond', name: 'bond', component: Bond },
@@ -55,6 +55,7 @@ const routes: Array<RouteConfig> = [
   { path: '/renascent', name: 'renascent', component: Renascent },
   { path: '/rules', name: 'rules', component: Rules },
   { path: '/telikos', name: 'telikos', component: Telikos }, */
+  { path: '/app', name: 'dapp', component: Dapp },
   { path: '/presale', name: 'presale', component: Presale },
   { path: '/sale', name: 'sale', component: Presale03 }
   
