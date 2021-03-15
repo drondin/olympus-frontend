@@ -31,7 +31,9 @@
         </div>
       </div>
       <div class="wrapper">
-        <div class="dapp-center-modal"></div>
+        <div class="dapp-center-modal">
+          <h1>COMING SOON!</h1>
+        </div>
 
 
       </div>
