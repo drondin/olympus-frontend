@@ -142,17 +142,7 @@ export default {
     }
   },
   methods: {
-    
-    ...mapActions(['SendDai']),
-    handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
-        value: this.form.quantity
-      });
-    },
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    }
+
   }
 };
 </script>

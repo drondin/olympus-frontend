@@ -14,6 +14,7 @@ import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as mimirTokenSale } from '@/helpers/abi/mimirTokenSale.json';
 import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
+import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 
 const parseEther = ethers.utils.parseEther;
 
@@ -26,14 +27,18 @@ if (ethereum) {
 }
 
 const state = {  
-  pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
-  daiAddr: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  //pOlySaleAddr: '0xf1837904605Ee396CFcE13928b1800cE0AbF1357',
+  daiAddr: '0x8887bbd1092802e80f5084d3d360911e25b9b487',
+  ohmAddr: '0x8887bbd1092802e80f5084d3d360911e25b9b487',
+  stakingAddr: '0x342f01b176E84e876D73EF3C5db9024cEfB244e1',
+  sohmAddr: '0xe4911e147a6062ef4b9ba6e79e24a55e5191e412',
   approval: 0,
-  OHMPresaleAddr: '0x0e762067f824E9DB190aD3565E3bf8Cde314d893',
+  OHMPresaleAddr: '0x90d1dd1fa2fddd5076850f342f31717a0556fdf7',  
   loading: false,
   address: null,
   name: '',
   balance: 0,
+  ohmBalance: 0,
   claim: 0,
   minimumEth: 0,
   providedEth: 0,
@@ -42,6 +47,8 @@ const state = {
   network: {},
   exchangeRates: {},
   allowance: 0,
+  stakeAllowance: 0,
+  unstakeAllowance: 0,
   balances: {},
   authorized: false,
   allowanceTx: 0,
@@ -85,19 +92,30 @@ const actions = {
         // Throws errors with non ENS compatible testnets
         const daiContract = new ethers.Contract(state.daiAddr, ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
+
+        const ohmContract = new ethers.Contract(state.ohmAddr, ierc20Abi, provider);
+        const ohmBalance = await ohmContract.balanceOf(address);
+        const sohmContract = new ethers.Contract(state.sohmAddr, ierc20Abi, provider);
+        const sohmBalance = await sohmContract.balanceOf(address);
         //const balance = balanceBefore.toFixed(2);        
         const network = await provider.getNetwork();
         const allowance = await daiContract.allowance(address, state.OHMPresaleAddr)!;
+        const stakeAllowance = await ohmContract.allowance(address, state.stakingAddr)!;
+        const unstakeAllowance = await sohmContract.allowance(address, state.stakingAddr)!;
+
         console.log("Allowance", allowance);
+        console.log("stakeAllowance", stakeAllowance);
         dispatch('getAllotmentPerBuyer')
         commit('set', { address });
         commit('set', {
           // name,
           balance: ethers.utils.formatEther(balance),
           network,
-          loading: false
+          loading: false,
+          ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
+          sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
         });        
-        commit('set', { allowance });
+        commit('set', { allowance, stakeAllowance, unstakeAllowance });
       } catch (error) {
         console.error(error);
       }
@@ -146,6 +164,40 @@ const actions = {
     }
   },
 
+  async getStakeApproval({commit, dispatch}, value) {
+    const signer = provider.getSigner();  
+    const ohmContract = await new ethers.Contract(state.ohmAddr, ierc20Abi, signer);
+    if(value <= 0) return;
+
+    const approveTx = await ohmContract.approve(state.stakingAddr, ethers.utils.parseUnits(value, 'gwei').toString());
+    await approveTx.wait();
+    await dispatch('getStakeAllowances')
+  },
+
+  async getStakeAllowances({commit}) {
+    if(state.address) {
+    const ohmContract = await new ethers.Contract(state.ohmAddr, ierc20Abi, provider);
+    const stakeAllowance = await ohmContract.allowance(state.address, state.stakingAddr);
+    commit('set', {stakeAllowance});
+    }
+  },
+  async getunStakeApproval({commit, dispatch}, value) {
+    const signer = provider.getSigner();  
+    const sohmContract = await new ethers.Contract(state.sohmAddr, ierc20Abi, signer);
+    if(value <= 0) return;
+
+    const approveTx = await sohmContract.approve(state.stakingAddr, ethers.utils.parseUnits(value, 'gwei').toString());
+    await approveTx.wait();
+    await dispatch('getunStakeAllowances')
+  },
+
+  async getunStakeAllowances({commit}) {
+    if(state.address) {
+    const sohmContract = await new ethers.Contract(state.sohmAddr, ierc20Abi, provider);
+    const unstakeAllowance = await sohmContract.allowance(state.address, state.stakingAddr);
+    commit('set', {unstakeAllowance});
+    }
+  },  
   async calculateSaleQuote({commit}, value) {
       const presale = await new ethers.Contract(state.OHMPresaleAddr, OHMPreSale, provider);
       const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'ether'));
@@ -164,7 +216,38 @@ const actions = {
       const total = state.allotment * salePrice;    
 
       commit('set', {maxPurchase:ethers.utils.formatUnits(total.toString(), 'ether')})
-  }
+  },
+
+  async stakeOHM({commit}, value) {
+    const signer = provider.getSigner();      
+    const staking = await new ethers.Contract(state.stakingAddr, OlympusStaking, signer);
+
+    const stakeTx = await staking.stakeOLY(ethers.utils.parseUnits(value, 'gwei'));
+    await stakeTx.wait();
+    const ohmContract = new ethers.Contract(state.ohmAddr, ierc20Abi, provider);
+    const ohmBalance = await ohmContract.balanceOf(state.address);
+    const sohmContract = new ethers.Contract(state.sohmAddr, ierc20Abi, provider);
+    const sohmBalance = await sohmContract.balanceOf(state.address);   
+    commit('set', {
+      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
+      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
+    });          
+  },
+  async unstakeOHM({commit}, value) {
+    const signer = provider.getSigner();      
+    const staking = await new ethers.Contract(state.stakingAddr, OlympusStaking, signer);
+    console.log(ethers.utils.parseUnits(value, 'gwei').toString())
+    const stakeTx = await staking.unstakeOLY(ethers.utils.parseUnits(value, 'gwei'));
+    await stakeTx.wait();
+    const ohmContract = new ethers.Contract(state.ohmAddr, ierc20Abi, provider);
+    const ohmBalance = await ohmContract.balanceOf(state.address);
+    const sohmContract = new ethers.Contract(state.sohmAddr, ierc20Abi, provider);
+    const sohmBalance = await sohmContract.balanceOf(state.address);   
+    commit('set', {
+      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
+      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
+    });          
+  }  
 
 
   // Will buy the POly or approve if needed

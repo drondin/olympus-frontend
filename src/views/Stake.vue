@@ -39,31 +39,28 @@
               <div class="stake-toggle-row">
                 <toggle-switch
                   :options="myOptions"
-                  @change="updateMap($event.value)"
-                  @selected="selectedMethod()"
                   v-model="selectedMapOption"
                   :value="selectedMapOption"
-                  :group="switchGroup"
                   /> 
               </div>
 
               <div class="swap-input-row">
                 <div class="stake-input-container">
-                  <input placeholder="Type an amount" class="stake-input" type="text">
+                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="text">
                   
                   </div>
               </div>
               <div class="stake-amount-preset-row">
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
                   25%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
                   50%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
                   75%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
                   100%
                 </div>
               </div>
@@ -79,19 +76,22 @@
                   <p class="price-data">{{$store.state.settings.sohmBalance}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming rebase</p>
-                  <p class="price-data">2%</p>
+                  <p class="price-data">2%</p><!-- profit / staked supply -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming APY</p>
-                  <p class="price-data">261,329,284,342%</p>
+                  <p class="price-data">261,329,284,342%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Current index</p>
                   <p class="price-data">10 OHM</p>
                 </div>
               </div>
 
-              <div class="stake-button-container">
-                <div class="stake-button" @click='executeStake'>Stake</div>
+              <div  v-if='hasAllowance'  class="stake-button-container">
+                <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
               </div>
+              <div v-else class="stake-button-container">
+                <div class="stake-button" @click='seekApproval'>Approve</div>
+              </div>              
 
             </div>
             
@@ -107,6 +107,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { shorten } from '@/helpers/utils.ts';
+import { ethers } from 'ethers';
 
 
 export default {
@@ -143,14 +144,12 @@ export default {
           ]
         }
       },
+      selectedMapOption: 'Stake',
       quantity: '',
       stakeToggle: true,
       modalLoginOpen: false,
     };
   }, 
-  created() {
-      this.selectedMapOption = 'Stake'
-  },
   computed: {
     ...mapState(['settings']),
     isValid() {
@@ -161,21 +160,53 @@ export default {
       return this.$store.state.settings.address
       return null
     },  
+    hasAllowance() {
+
+      if(parseFloat(this.quantity)) {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+              return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+          case 'Unstake':
+              return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));            
+        }
+      }
+      return false;
+    },    
   },
 
   methods: {
     
-    ...mapActions(['SendDai']),
-    async executeStake() {
+    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval']),
+    async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
-          case 'Staked':
-            await this.stakeOHM();
+          case 'Stake':
+            await this.stakeOHM(this.quantity.toString());
             break;
           case 'Unstake':
-            await this.unstakeOHM();
+            await this.unstakeOHM(this.quantity.toString());
         }
         //updatestats        
     },
+    setStake(value) {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+            this.quantity = this.$store.state.settings.ohmBalance * value / 100;
+            break;
+          case 'Unstake':
+            this.quantity = this.$store.state.settings.sohmBalance * value / 100;
+        }      
+        
+    },
+    async seekApproval() {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+            await this.getStakeApproval(this.quantity.toString());
+            break;
+          case 'Unstake':
+            await this.getunStakeApproval(this.quantity.toString());
+        }
+        
+    },    
     shorten(addr) { 
       return shorten(addr);
     },    

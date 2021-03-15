@@ -21,11 +21,11 @@
           </div>
         </div>
 
+
         <div class="dapp-menu-links">
           <Dav />
 
         </div>
-
         <div class="dapp-menu-social">
          <Social />
         </div>
@@ -131,9 +131,7 @@ export default {
   methods: {
     
     ...mapActions(['getOHM', 'getApproval', 'calculateSaleQuote', 'getMaxPurchase']),
-    shorten(addr) { 
-      return shorten(addr);
-    },
+    shorten,
     async seekApproval() {
         await this.getApproval(this.value);
     },
