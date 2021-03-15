@@ -32,7 +32,7 @@ Vue.use(VueRouter);
 //These should only be urls we intend to represent ROBIT!!!!
 const routes: Array<RouteConfig> = [
   { path: '/', name: 'home', component: Home },
-  { path: '/about', name: 'about', component: About },
+  /* { path: '/about', name: 'about', component: About },
   { path: '/projects', name: 'projects', component: Projects },
   { path: '/auditdao', name: 'auditdao', component: Auditdao },
   { path: '/chains', name: 'chains', component: Chains },
@@ -54,7 +54,7 @@ const routes: Array<RouteConfig> = [
   { path: '/radar', name: 'radar', component: Radar },
   { path: '/renascent', name: 'renascent', component: Renascent },
   { path: '/rules', name: 'rules', component: Rules },
-  { path: '/telikos', name: 'telikos', component: Telikos },
+  { path: '/telikos', name: 'telikos', component: Telikos }, */
   { path: '/presale', name: 'presale', component: Presale },
   { path: '/sale', name: 'sale', component: Presale03 }
   
