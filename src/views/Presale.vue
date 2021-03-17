@@ -74,14 +74,15 @@
                   <p class="price-data">8 DAI</p>
                 </div>
               </div>
-
+            <span v-if='$store.state.settings.whitelisted == true'>
               <div v-if='hasAllowance' class="swap-button-container">
                 <div class="swap-button" @click='sendDai'>SWAP</div>
               </div>
               <div v-else class="swap-button-container">
                 <div class="swap-button" @click='seekApproval'>Approve</div>
               </div>
-
+            </span>
+            <span v-else>You are not whitelisted for the presale.</span>
             </div>
             
           </div>

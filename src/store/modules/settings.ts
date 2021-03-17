@@ -17,6 +17,8 @@ import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 
+import { whitelist } from '@/helpers/whitelist.json';
+
 const parseEther = ethers.utils.parseEther;
 
 let provider;
@@ -35,6 +37,7 @@ const state = {
   loading: false,
   address: null,
   name: '',
+  whitelisted: false,
   balance: 0,
   ohmBalance: 0,
   claim: 0,
@@ -95,12 +98,14 @@ const actions = {
         // const name = await provider.lookupAddress(address);
         // Throws errors with non ENS compatible testnets
         const network = await provider.getNetwork();
-        console.log(network.chainId)
         store.commit('set', { network: network});        
         
         let ohmContract, ohmBalance=0, allowance=0;
         let sohmContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0;
-
+        
+        if(whitelist.includes(address)) 
+          commit('set', {whitelisted: true})
+        
         const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
@@ -161,6 +166,7 @@ const actions = {
   async getApproval({commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const daiContract = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, signer);
+    
     if(value <= 0) return;
 
     const approveTx = await daiContract.approve(addresses[state.network.chainId].PRESALE_ADDRESS, ethers.utils.parseEther(value).toString());
