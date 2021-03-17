@@ -71,7 +71,7 @@
                 <div class="swap-price-data-row">
                   
                   <p class="price-label">Current Price</p>
-                  <p class="price-data">4 DAI</p>
+                  <p class="price-data">8 DAI</p>
                 </div>
               </div>
 
