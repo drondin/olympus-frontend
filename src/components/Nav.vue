@@ -12,11 +12,17 @@
           </router-link>
         </div>
          <div class="mainnav">
-      
+       <div @mouseover="onOver" @mouseleave="onLeave">
+    <b-dropdown id="dropdown-1" text="Dropdown Button" ref="dropdown" class="m-md-2">
+       <b-dropdown-item>First Action</b-dropdown-item>
+       <b-dropdown-item>Second Action</b-dropdown-item>
+       <b-dropdown-item>Third Action</b-dropdown-item>
+    </b-dropdown>
+    </div>
       </div>
 
       <div class="py-4">
-        <router-link :to="{ name: 'stake' }" class="button button-primary">
+        <router-link :to="{ name: 'presale' }" class="button button-primary">
           Enter App
         </router-link></div>
        <!-- <div class="py-4">

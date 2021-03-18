@@ -378,6 +378,7 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
 .button-dapp-menu{
   display:flex;
   border-radius:2rem;
+  font-weight:500;
   @extend .button-secondary;
   font-family: 'Square', 'cursive';
 }

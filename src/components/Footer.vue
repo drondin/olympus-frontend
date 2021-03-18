@@ -21,10 +21,10 @@
         <a href="#how">
          <p>How it works</p>
         </a>
-            <router-link :to="{ name: 'blog' }" class="">
+        <a href="https://olympusdao.medium.com/">
          <p>Blog</p>
-        </router-link>
-            
+          </a>
+
         </div>
         <div class="footer-menu-column">
             <h4>Governance</h4>
