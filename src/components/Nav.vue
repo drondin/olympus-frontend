@@ -16,7 +16,7 @@
       </div>
 
       <div class="py-4">
-        <router-link :to="{ name: 'presale' }" class="button button-primary">
+        <router-link :to="{ name: 'stake' }" class="button button-primary">
           Enter App
         </router-link></div>
        <!-- <div class="py-4">
