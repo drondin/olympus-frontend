@@ -441,10 +441,11 @@ footer{
 }
 
 .footer-row{
-  max-width:1000px;
+  width:1000px;
   display:flex;
   flex-flow:row;
   justify-content:space-evenly;
+  margin:auto;
 }
 
 .footer-menu{
@@ -913,7 +914,7 @@ input.input:read-only {
 
 @media screen and (max-width:1000px){
 .row-responsive{flex-flow:wrap;}
-.footer-row{flex-flow:wrap-reverse;}
+.footer-row{flex-flow:wrap-reverse;width:auto;}
 .footer-menu{flex-flow:wrap;}
 .footer-menu-column{padding:2rem;}
 footer{height:auto;padding:2rem 0rem}
