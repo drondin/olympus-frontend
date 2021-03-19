@@ -230,6 +230,7 @@ nav{
   text-transform: capitalize;
   border:2px solid $secondary;
   transform:translateY(0px);
+  min-width:140px;
   transition:box-shadow 200ms, transform 200ms linear;
   &:hover{
   }
@@ -908,4 +909,44 @@ input.input:read-only {
 
 .highlight:hover {
   background-color: $secondary;
+}
+
+@media screen and (max-width:1000px){
+.row-responsive{flex-flow:wrap;}
+.footer-row{flex-flow:wrap-reverse;}
+.footer-menu{flex-flow:wrap;}
+.footer-menu-column{padding:2rem;}
+footer{height:auto;padding:2rem 0rem}
+.feature-image{width:100%;}
+.works-module-responsive{
+  flex-flow:wrap;justify-content: center;  margin:2rem;
+  .works-icon{margin: 2rem;}
+  .works-desc{max-width:300px;h3{margin-bottom:1rem;}}
+}
+.wrapper {
+  width: 100%;
+  height: calc(100% - 300px);
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  right: 0px;
+  top: 300px;}
+  .dapp-sidebar {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-flow: row;
+    background-color: #212121;
+    opacity: 0.8;
+    box-shadow: inset 0px 0px 50px black;
+}
+.dapp-menu-top{width:250px;}
+.dapp-menu-social {
+  width: 250px;}
+  .dapp-menu-links{height:100%;}
+  .dapp-center-modal{width:auto;padding:0rem 2rem;}
 }
