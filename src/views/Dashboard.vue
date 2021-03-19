@@ -8,7 +8,9 @@
 
         <div class="dapp-menu-top">
           <div class="branding-header">
+          <router-link :to="{ name: 'home' }" class="">
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
+          </router-link>
           </div>
           <div class="wallet-menu">
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
@@ -32,7 +34,7 @@
       </div>
       <div class="wrapper">
         <div class="dapp-center-modal">
-          <h1>COMING SOON!</h1>
+          <h1 style="line-height:25rem;">COMING SOON!</h1>
         </div>
 
 

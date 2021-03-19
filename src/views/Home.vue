@@ -11,7 +11,7 @@
   </div>
   <div class="block">
     <div class="row-responsive flex-centered" id="what">
-      <h3 class="centered-text pb-8">Olympus Is</h3>
+      <h3 class="centered-text py-8">Olympus Is</h3>
       </div>
     <div class="row-responsive flex-centered">
 
@@ -56,7 +56,7 @@
 
   <div class="block">
     <div class="row-responsive flex-centered" id="how">
-      <h3 class="centered-text pb-8">How It Works</h3>
+      <h3 class="centered-text py-8">How It Works</h3>
       </div>
     <div class="row-responsive flex-centered">
       <div class="works-module-responsive">
