@@ -35,8 +35,6 @@ html, body, #app {
     -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height:1.6rem;  
-  text-shadow:0px 0px 0.5px;
-
 }
 
 #app {
@@ -339,7 +337,6 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   height: 14px;
   background-color: $primary;
   display: inline-block;
-  margin-bottom: -2px;
 }
 
 .mainnav {
@@ -650,7 +647,7 @@ padding:0rem 1rem;
   opacity:0.8;
   box-shadow:inset 0px 0px 50px black;
 }
-
+.dapp-sidebar-button-connected{border-radius:2rem;}
 .dapp-menu-social{   
   width: 100%;
   display: flex;
