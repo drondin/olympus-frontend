@@ -10,7 +10,7 @@
     <div class="footer-menu">
         <div class="footer-menu-column">
             <h4>Developers</h4>
-            <a href=""><p>Gitbook</p></a>
+            <a href="https://ohmzeus.gitbook.io/olympus/"><p>Gitbook</p></a>
             <a href=""><p>Github</p></a>
         </div>
         <div class="footer-menu-column">
@@ -40,7 +40,7 @@
             <h4>Community</h4>
             <a href="https://twitter.com/OlympusDAO"><p>Twitter</p></a>
             <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
-            <a href=""><p>Telegram</p></a>
+            <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
         </div>
     
     </div>

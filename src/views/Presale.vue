@@ -12,6 +12,7 @@
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
           </router-link>          </div>
           <div class="wallet-menu">
+            <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
             {{ shorten(address) }}
@@ -126,7 +127,12 @@ export default {
     },
     address() {
       if(this.$store.state.settings.address)
-      return this.$store.state.settings.address
+      return this.settings.address
+      return null
+    },
+    disconnect() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.address.initial
       return null
     }
   },
