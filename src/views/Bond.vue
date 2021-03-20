@@ -8,7 +8,9 @@
 
         <div class="dapp-menu-top">
           <div class="branding-header">
+            <router-link :to="{ name: 'home' }" class="button button-dapp-menu">
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
+          </router-link>
           </div>
           <div class="wallet-menu">
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">

@@ -5,13 +5,13 @@
     <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
     <p class="centered-text hero-desc">Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an infinite supply system.</p>
-     <router-link :to="{ name: 'presale' }" style="margin:2rem auto;max-width:150px;" class="button button-primary button-centered">
-          Enter App
+     <router-link :to="{ name: 'presale' }" style="margin:2rem auto;max-width:200px;" class="button button-primary button-centered">
+          Enter Olympus
         </router-link>
   </div>
   <div class="block">
-    <div class="row-responsive flex-centered">
-      <h3 class="centered-text pb-8">Olympus Is</h3>
+    <div class="row-responsive flex-centered" id="what">
+      <h3 class="centered-text py-8">Olympus Is</h3>
       </div>
     <div class="row-responsive flex-centered">
 
@@ -26,7 +26,7 @@
       </div>
       <div class="feature-box-module" style="">
         <div class="feature-block-image">
-          <img src="~/@/assets/community-banner.png" alt="">
+          <img src="~/@/assets/Algo--banner.png" alt="">
           </div>
           <div class="feature-block-desc">
             <h3>Algorithmically Managed</h3>
@@ -55,8 +55,8 @@
   </div>
 
   <div class="block">
-    <div class="row-responsive flex-centered">
-      <h3 class="centered-text pb-8">How It Works</h3>
+    <div class="row-responsive flex-centered" id="how">
+      <h3 class="centered-text py-8">How It Works</h3>
       </div>
     <div class="row-responsive flex-centered">
       <div class="works-module-responsive">
@@ -110,10 +110,8 @@
     </dif>
   </div>
 
-  <footer>
-    
-
-  </footer>
+  <Footer />
+  
   
 </div>
 </template>
@@ -142,6 +140,7 @@ export default {
     }
   },
   methods: {
+    
 
   }
 };

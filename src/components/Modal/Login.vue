@@ -1,27 +1,16 @@
 <template>
   <Modal :open="open" @close="$emit('close')">
     <div class="modal-body px-4">
-      <h2 class="mb-5">Select wallet</h2>
-      <button
-        class="d-flex text-left mb-7 button button-select"
-        @click="service = !service ? 'metamask' : ''"
-        :class="{ active: service === 'metamask' }"
-      >
-        <span class="flex-auto">MetaMask</span>
-        <img src="~/@/assets/metamask.svg" height="30" class="mt-2 pt-1" />
-      </button>
-      <div class="d-flex mb-2">
-        <button class="button button-outline col-6 mr-2" @click="$emit('close')">Cancel</button>
-        <button
-          class="button button-primary col-6 ml-2"
-          @click="handleLogin"
-          :disabled="!service || isLoading"
-        >
+      <div class="wallet-button"       @click="handleLogin"
+          :disabled="!service || isLoading">
+          <div class="wallet-column py-4">
+                    <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
+                <div class="flex-auto py-2" style="color:black;" >MetaMask</div>
+                <div class="flex-auto" style="color:#c5c5c5">Connect to your MetaMask Wallet</div>
+          </div>
           <VueLoadingIndicator v-if="isLoading" class="big" />
-          <template v-else>Confirm</template>
-        </button>
+          </div>
       </div>
-    </div>
   </Modal>
 </template>
 
@@ -33,7 +22,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      service: ''
+      service: 'metamask'
     };
   },
   methods: {
@@ -46,3 +35,4 @@ export default {
   }
 };
 </script>
+w

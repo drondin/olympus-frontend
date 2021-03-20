@@ -8,7 +8,9 @@
 
         <div class="dapp-menu-top">
           <div class="branding-header">
+
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
+          
           </div>
           <div class="wallet-menu">
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">

@@ -8,9 +8,11 @@
 
         <div class="dapp-menu-top">
           <div class="branding-header">
+             <router-link :to="{ name: 'home' }" class="">
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
-          </div>
+          </router-link>          </div>
           <div class="wallet-menu">
+            <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
             {{ shorten(address) }}
@@ -71,17 +73,18 @@
                 <div class="swap-price-data-row">
                   
                   <p class="price-label">Current Price</p>
-                  <p class="price-data">4 DAI</p>
+                  <p class="price-data">8 DAI</p>
                 </div>
               </div>
-
+            <span v-if='$store.state.settings.whitelisted == true'>
               <div v-if='hasAllowance' class="swap-button-container">
                 <div class="swap-button" @click='sendDai'>SWAP</div>
               </div>
               <div v-else class="swap-button-container">
                 <div class="swap-button" @click='seekApproval'>Approve</div>
               </div>
-
+            </span>
+            <span v-else>You are not whitelisted for the presale.</span>
             </div>
             
           </div>
@@ -124,7 +127,12 @@ export default {
     },
     address() {
       if(this.$store.state.settings.address)
-      return this.$store.state.settings.address
+      return this.settings.address
+      return null
+    },
+    disconnect() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.address.initial
       return null
     }
   },

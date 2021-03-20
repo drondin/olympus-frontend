@@ -14,7 +14,7 @@ const addresses = {
         OHM_ADDRESS: null,
         STAKING_ADDRESS: null,
         SOHM_ADDRESS: null,
-        PRESALE_ADDRESS: '0x0e762067f824E9DB190aD3565E3bf8Cde314d893',  
+        PRESALE_ADDRESS: '0xcBb60264fe0AC96B0EFa0145A9709A825afa17D8',  
     }
 };
 
