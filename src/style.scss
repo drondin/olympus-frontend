@@ -596,7 +596,8 @@ padding:0.5rem 3rem;border-radius:2rem;text-transform:capitalize;border:2px soli
 
 .cur-max-box{
   padding:8px;
-  display:flex;flex-flow:row;
+  display:flex;flex-flow:row;justify-content: flex-end;
+  margin-right: -0.5rem;
   img{height:100%;}
   .max-button{margin:0px 0.5rem;width:64px;
   display:flex;flex-flow:wrap;justify-content:center;

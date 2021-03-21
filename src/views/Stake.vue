@@ -13,6 +13,7 @@
           </router-link>
           </div>
           <div class="wallet-menu">
+            <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
             {{ shorten(address) }}
@@ -214,6 +215,11 @@ export default {
     },    
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
+    },
+    disconnect() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.address.initial
+      return null
     }
   }
 };

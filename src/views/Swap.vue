@@ -38,7 +38,7 @@
 
             <div class="swap-input-column">
 
-              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>DAI</p> </div>
+              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>AlphaOHM</p> </div>
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
@@ -47,7 +47,7 @@
                   </div>
 
                   <div class="cur-max-box">
-                    <img src="~/@/assets/dai.svg" alt="">
+                    <img src="~/@/assets/alpha.svg" alt="">
                     <div class="max-button">
                       100%
                     </div>
@@ -62,15 +62,15 @@
                   <div class="swap-output-container">
                   <input placeholder="0.0" class="swap-output" type="text">
                   </div>
+                  <div class="cur-max-box" style="margin-right:0.25rem;filter:invert(1);width:50px;transform:scale(0.8);">
+                    <img class="social-icon-small" src="~/@/assets/logo.svg" alt="">
+                    </div>
               </div>
 
               <div class="swap-price-data-column">
-                <div class="swap-price-data-row">
-                  <p class="price-label">Current Price</p>
-                  <p class="price-data">50 DAI</p>
-                </div><div class="swap-price-data-row">
+               <div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
-                  <p class="price-data">50 OHM</p>
+                  <p class="price-data">50 AOHM</p>
                 </div>
               </div>
 
@@ -123,6 +123,11 @@ export default {
     },
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
+    },
+    disconnect() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.address.initial
+      return null
     }
   }
 };
