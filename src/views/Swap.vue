@@ -38,17 +38,18 @@
 
             <div class="swap-input-column">
 
-              <div class="balance-row"><p>Balance</p><p class="balance-data">1,000</p><p>AlphaOHM</p> </div>
+              <!-- <div class="balance-row"><p>Balance</p><p class="balance-data">{{ $store.state.settings.aOHMBalance }}</p><p>AlphaOHM</p> </div> -->
+              <div class="balance-row"><p>Balance</p><p class="balance-data">{{$store.state.settings.aOHMBalance}}</p><p>AlphaOHM</p> </div>
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
-                  <input placeholder="0.0" class="swap-input" type="text">
+                  <input placeholder="0.0" id="swap-input-id" class="swap-input" type="text">
                   
                   </div>
 
                   <div class="cur-max-box">
                     <img src="~/@/assets/alpha.svg" alt="">
-                    <div class="max-button">
+                    <div class="max-button" @click='maxSwap'>
                       100%
                     </div>
                     </div>
@@ -70,12 +71,12 @@
               <div class="swap-price-data-column">
                <div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
-                  <p class="price-data">50 AOHM</p>
+                  <p class="price-data"> OHM</p>
                 </div>
               </div>
 
               <div class="swap-button-container">
-                <div class="swap-button">SWAP</div>
+                <div @click='migrate' class="swap-button">SWAP</div>
               </div>
 
             </div>
@@ -114,15 +115,23 @@ export default {
   },
   methods: {
     
-    ...mapActions(['SendDai']),
+    ...mapActions(['migrateToOHM', 'getMaxSwap']),
     handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
+      this.migrateToOHM({
         value: this.form.quantity
       });
     },
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
+
+  async migrate() {
+    const ohmToMigrate = document.getElementById('swap-input-id').value;
+    await this.migrateToOHM( ohmToMigrate );
+    alert( ohmToMigrate  );
+  },
+
+    async maxSwap() {
+      await this.getMaxSwap();
+      this.value = this.$store.state.settings.maxSwap;
+      document.getElementById('swap-input-id').value = this.value;
     },
     disconnect() {
       if(this.$store.state.settings.address)

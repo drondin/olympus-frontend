@@ -16,6 +16,7 @@ import { abi as mimirTokenSale } from '@/helpers/abi/mimirTokenSale.json';
 import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
+import { abi as MigrateToOHM } from '@/helpers/abi/MigrateToOHM.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 
@@ -57,6 +58,8 @@ const state = {
   confirmations: 1,
   allotment: 0,
   maxPurchase: 0,
+  maxSwap: 0,
+  amountSwap: 0
 };
 
 const mutations = {
@@ -98,7 +101,11 @@ const actions = {
         // const name = await provider.lookupAddress(address);
         // Throws errors with non ENS compatible testnets
         const network = await provider.getNetwork();
-        store.commit('set', { network: network});        
+        store.commit('set', { network: network});     
+        
+        const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
+        const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( address );
+        const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
         
         let ohmContract, ohmBalance=0, allowance=0;
         let sohmContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0;
@@ -108,6 +115,7 @@ const actions = {
         
         const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
+        console.log(balance)
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
 
         if(addresses[network.chainId].OHM_ADDRESS) {
@@ -128,6 +136,7 @@ const actions = {
         commit('set', {
           // name,
           balance: ethers.utils.formatEther(balance),
+          aOHMBalance: aOHMBalance,
           network,
           loading: false,
           ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
@@ -267,7 +276,37 @@ const actions = {
       ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
       sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
     });          
-  }  
+  },
+
+  async getMaxSwap({commit, dispatch}) {
+    const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
+    const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( state.address );
+    const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
+
+    commit('set', { maxSwap: aOHMBalance });
+},
+
+
+  async migrateToOHM ({ commit }, value) {
+    const signer = provider.getSigner();
+    const migrateContact = await new ethers.Contract(addresses[state.network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
+
+    const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
+    const aOHMContractWithSigner = aOHMContract.connect(signer);
+    
+    const allowance = await aOHMContract.allowance( state.address, addresses[state.network.chainId].MIGRATE_ADDRESS)
+    alert( allowance);
+
+    if( allowance < value *  1000000000 ) {     
+      const approveTx = await aOHMContractWithSigner.approve(addresses[state.network.chainId].MIGRATE_ADDRESS, parseEther((1e9).toString()));
+      commit('set',{allowanceTx:1})
+      await approveTx.wait(state.confirmations);       
+    }
+
+    const migrateTx = await migrateContact.migrate( value * 1000000000 );
+    await migrateTx.wait();
+
+  }
 };
 
 export default {
@@ -275,3 +314,4 @@ export default {
   mutations,
   actions
 };
+
