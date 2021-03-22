@@ -43,7 +43,7 @@
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
-                  <input placeholder="0.0" id="swap-input-id" class="swap-input" type="text">
+                  <input v-on:change='updateValuesOnInChange' placeholder="0.0" id="swap-input-id" class="swap-input" type="text">
                   
                   </div>
 
@@ -61,7 +61,7 @@
 
               <div class="swap-ourput-row">
                   <div class="swap-output-container">
-                  <input placeholder="0.0" class="swap-output" type="text">
+                  <input v-on:change='updateValuesOnOutChange' placeholder="0.0" id="swap-output-id" class="swap-output" type="text">
                   </div>
                   <div class="cur-max-box" style="margin-right:0.25rem;filter:invert(1);width:50px;transform:scale(0.8);">
                     <img class="social-icon-small" src="~/@/assets/logo.svg" alt="">
@@ -71,12 +71,12 @@
               <div class="swap-price-data-column">
                <div class="swap-price-data-row">
                   <p class="price-label">You will receive</p>
-                  <p class="price-data"> OHM</p>
+                  <p id="output-ohm-id" class="price-data"> 0.0 OHM</p>
                 </div>
               </div>
 
               <div class="swap-button-container">
-                <div @click='migrate' class="swap-button">SWAP</div>
+                <div @click='migrate' class="swap-button">MIGRATE</div>
               </div>
 
             </div>
@@ -132,13 +132,28 @@ export default {
       await this.getMaxSwap();
       this.value = this.$store.state.settings.maxSwap;
       document.getElementById('swap-input-id').value = this.value;
+      document.getElementById('swap-output-id').value = this.value;
+      document.getElementById('output-ohm-id').innerHTML = this.value + " OHM";
+
     },
+
     disconnect() {
       if(this.$store.state.settings.address)
       return this.$store.state.address.initial
       return null
+    },
+
+    updateValuesOnInChange() {
+      document.getElementById('swap-output-id').value = document.getElementById('swap-input-id').value;
+      document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-input-id').value + " OHM";
+    },
+
+    updateValuesOnOutChange() {
+      document.getElementById('swap-input-id').value = document.getElementById('swap-output-id').value;
+      document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-output-id').value + " OHM";
     }
-  }
+  },
+
 };
 </script>
 <style scoped>
