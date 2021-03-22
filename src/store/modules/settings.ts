@@ -295,7 +295,6 @@ const actions = {
     const aOHMContractWithSigner = aOHMContract.connect(signer);
     
     const allowance = await aOHMContract.allowance( state.address, addresses[state.network.chainId].MIGRATE_ADDRESS)
-    alert( allowance);
 
     if( allowance < value *  1000000000 ) {     
       const approveTx = await aOHMContractWithSigner.approve(addresses[state.network.chainId].MIGRATE_ADDRESS, parseEther((1e9).toString()));

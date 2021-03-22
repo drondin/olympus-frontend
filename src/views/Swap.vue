@@ -134,7 +134,6 @@ export default {
   async migrate() {
     const ohmToMigrate = document.getElementById('swap-input-id').value;
     await this.migrateToOHM( ohmToMigrate );
-    alert( ohmToMigrate  );
   },
 
     async maxSwap() {
