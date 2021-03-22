@@ -48,7 +48,7 @@
    
     <div class="footer-app-button">
 
-        <router-link :to="{ name: 'presale' }" class="button button-primary">
+        <router-link :to="{ name: 'migrate' }" class="button button-primary">
           Enter App
         </router-link>
 

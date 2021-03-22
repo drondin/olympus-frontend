@@ -13,9 +13,10 @@
           </router-link>
           </div>
           <div class="wallet-menu">
+            <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
-            {{ name || shorten(address) }}
+            {{ shorten(address) }}
           </a>
           <a v-else class="dapp-sidebar-button-connect button button-primary" @click="modalLoginOpen = true">
             Connect wallet
@@ -92,6 +93,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { shorten } from '@/helpers/utils.ts';
 
 export default {
   data() {
@@ -108,6 +110,13 @@ export default {
     isValid() {
       return parseFloat(this.form.quantity);
     },
+
+    address() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.settings.address
+      return null
+    }, 
+
     maxStrike() {
       const exchangeRate = this.settings.exchangeRates[this.form.asset];
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
@@ -147,6 +156,10 @@ export default {
       document.getElementById('swap-output-id').value = document.getElementById('swap-input-id').value;
       document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-input-id').value + " OHM";
     },
+
+    shorten(addr) { 
+      return shorten(addr);
+    },    
 
     updateValuesOnOutChange() {
       document.getElementById('swap-input-id').value = document.getElementById('swap-output-id').value;

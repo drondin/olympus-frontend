@@ -37,8 +37,6 @@
         <div class="dapp-center-modal">
           <h1 style="line-height:25rem;">COMING SOON!</h1>
         </div>
-
-
       </div>
 
     </div>

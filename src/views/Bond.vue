@@ -8,7 +8,7 @@
 
         <div class="dapp-menu-top">
           <div class="branding-header">
-            <router-link :to="{ name: 'home' }" class="button button-dapp-menu">
+            <router-link :to="{ name: 'home' }" class="">
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
           </router-link>
           </div>
@@ -33,7 +33,14 @@
                     <Social />
         </div>
       </div>
+
       <div class="wrapper">
+        <div class="dapp-center-modal">
+          <h1 style="line-height:25rem;">COMING SOON!</h1>
+        </div>
+      </div>
+
+      <!-- <div class="wrapper">
         <div class="dapp-center-modal">
           <div class="dapp-modal-wrapper">
 
@@ -117,7 +124,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
 
