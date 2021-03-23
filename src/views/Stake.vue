@@ -79,13 +79,13 @@
                   <p class="price-data">{{$store.state.settings.sohmBalance}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming rebase</p>
-                  <p class="price-data">2%</p><!-- profit / staked supply -->
+                  <p class="price-data">0 OHM</p><!-- profit / staked supply -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming APY</p>
-                  <p class="price-data">261,329,284,342%</p> <!-- 1+rebase^1095-1 -->
+                  <p class="price-data">0%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Current index</p>
-                  <p class="price-data">10 OHM</p>
+                  <p class="price-data">1 OHM</p>
                 </div>
               </div>
 

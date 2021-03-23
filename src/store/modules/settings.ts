@@ -17,6 +17,7 @@ import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 import { abi as MigrateToOHM } from '@/helpers/abi/MigrateToOHM.json';
+import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 
@@ -108,7 +109,8 @@ const actions = {
         const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
         
         let ohmContract, ohmBalance=0, allowance=0;
-        let sohmContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0;
+        let sohmContract, sohmMainContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0, circSupply=0;
+        let stakingContract, profit=0;
         
         if(whitelist.includes(address)) 
           commit('set', {whitelisted: true})
@@ -125,8 +127,15 @@ const actions = {
         }          
         if(addresses[network.chainId].SOHM_ADDRESS) {        
           sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+          sohmMainContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, sOHM, provider);
+
           sohmBalance = await sohmContract.balanceOf(address);
           unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
+          circSupply = await sohmMainContract.circulatingSupply();
+        }
+        if(addresses[network.chainId].STAKING_ADDRESS) {        
+          stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
+          profit = await stakingContract.ohmToDistributeNextEpoch();
         }
         //const balance = balanceBefore.toFixed(2);        
         console.log("Allowance", allowance);
@@ -198,7 +207,7 @@ const actions = {
     const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, signer);
     if(value <= 0) return;
 
-    const approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits(value, 'gwei').toString());
+    const approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
     await approveTx.wait();
     await dispatch('getStakeAllowances')
   },
@@ -215,7 +224,7 @@ const actions = {
     const sohmContract = await new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, signer);
     if(value <= 0) return;
 
-    const approveTx = await sohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits(value, 'gwei').toString());
+    const approveTx = await sohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
     await approveTx.wait();
     await dispatch('getunStakeAllowances')
   },
