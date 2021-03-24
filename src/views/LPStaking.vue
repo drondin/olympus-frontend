@@ -47,13 +47,18 @@
                   /> 
               </div>
 
-              <div class="swap-input-row">
+              <div v-if="isUnstake==false" class="swap-input-row">
                 <div class="stake-input-container">
-                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="text">
-                  
-                  </div>
+                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="text">  
+                </div>
+
+                <div v-if="isUnstake==true">
+                </div>
+                
               </div>
-              <div class="stake-amount-preset-row">
+
+              
+              <div v-if="isUnstake==false" class="stake-amount-preset-row">
                 <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
                   25%
                 </div>
@@ -90,6 +95,9 @@
               </div>
 
               <div  v-if='hasAllowance'  class="stake-button-container">
+                <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+              </div>
+              <div  v-else-if='isUnstake==true'  class="stake-button-container">
                 <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
               </div>
               <div v-else class="stake-button-container">
@@ -169,10 +177,25 @@ export default {
         switch(this.selectedMapOption) {
           case 'Stake':
               return parseInt(this.$store.state.settings.lpStakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));          
+          case 'Unstake':
+              return true;
         }
+        
       }
       return false;
-    },    
+    },   
+    
+    isUnstake() {
+
+        if(this.selectedMapOption) {
+            switch(this.selectedMapOption) {       
+                case 'Unstake':
+                    return true;
+            }
+        }
+    return false;
+    }
+
   },
 
   methods: {
