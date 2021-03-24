@@ -78,10 +78,10 @@
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI LP</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Staked</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpStaked, 4 ) }} OHM / DAI LP</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpStaked, 4 ) }} OHM / DAI SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Pending Rewards</p>
                   <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
@@ -90,7 +90,7 @@
                   <p class="price-data">{{($store.state.settings.lpStakingAPY).toFixed(4)}}%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Total Staked</p>
-                  <p class="price-data">{{ trim( $store.state.settings.totalLPStaked, 4 ) }} OHM/DAI</p>
+                  <p class="price-data">{{ trim( $store.state.settings.totalLPStaked, 4 ) }} OHM / DAI SLP</p>
                 </div>
               </div>
 
