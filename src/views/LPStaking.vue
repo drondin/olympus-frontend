@@ -98,7 +98,9 @@
                 <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
               </div>
               <div  v-else-if='isUnstake==true'  class="stake-button-container">
-                <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+                <div class="stake-button" @click='executeStake'>{{selectedMapOption}} / Claim</div>
+                
+                <div class="stake-button" @click='claimLPRewards'>Claim Rewards</div>
               </div>
               <div v-else class="stake-button-container">
                 <div class="stake-button" @click='seekApproval'>Approve</div>
@@ -200,7 +202,7 @@ export default {
 
   methods: {
     
-    ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP']),
+    ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
     async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
@@ -211,6 +213,11 @@ export default {
         }
         //updatestats        
     },
+
+    async claimLPRewards() {
+        await this.claimRewards();
+    },
+
     setStake(value) {
         switch(this.selectedMapOption) {
           case 'Stake':

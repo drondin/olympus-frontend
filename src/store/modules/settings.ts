@@ -374,6 +374,14 @@ const actions = {
     });  
   },
 
+  async claimRewards() {
+    const signer = provider.getSigner();      
+    const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
+    const claimTx = await staking.claimRewards();
+    await claimTx.wait();
+
+  },
+
 
 
   async getMaxSwap({commit, dispatch}) {
