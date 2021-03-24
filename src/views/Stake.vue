@@ -73,10 +73,10 @@
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">{{$store.state.settings.ohmBalance}} OHM</p>
+                  <p class="price-data">{{trim( $store.state.settings.ohmBalance, 4 )}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Staked</p>
-                  <p class="price-data">{{$store.state.settings.sohmBalance}} OHM</p>
+                  <p class="price-data">{{trim( $store.state.settings.sohmBalance, 4 )}} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming rebase</p>
                   <p class="price-data">0 OHM</p><!-- profit / staked supply -->
@@ -200,6 +200,14 @@ export default {
         }      
         
     },
+
+    trim(number, precision){
+        const array = number.toString().split(".");
+        array.push(array.pop().substring(0, precision));
+        const trimmedNumber =  array.join(".");
+        return(trimmedNumber);
+    },
+
     async seekApproval() {
         switch(this.selectedMapOption) {
           case 'Stake':
