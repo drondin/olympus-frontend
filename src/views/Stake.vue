@@ -73,16 +73,16 @@
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">{{trim( $store.state.settings.ohmBalance, 4 )}} OHM</p>
+                  <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Staked</p>
-                  <p class="price-data">{{trim( $store.state.settings.sohmBalance, 4 )}} OHM</p>
+                  <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming rebase</p>
-                  <p class="price-data">0 OHM</p><!-- profit / staked supply -->
+                  <p class="price-data">{{ trim( $store.state.settings.stakingRebase, 4 ) }}% </p><!-- profit / staked supply -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Upcoming APY</p>
-                  <p class="price-data">0%</p> <!-- 1+rebase^1095-1 -->
+                  <p class="price-data">{{ $store.state.settings.stakingAPY }}%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Current index</p>
                   <p class="price-data">1 OHM</p>
@@ -179,7 +179,7 @@ export default {
 
   methods: {
     
-    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval']),
+    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY']),
     async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':

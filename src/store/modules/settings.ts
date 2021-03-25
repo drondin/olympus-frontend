@@ -19,6 +19,7 @@ import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 import { abi as MigrateToOHM } from '@/helpers/abi/MigrateToOHM.json';
 import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
+import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 
@@ -114,6 +115,7 @@ const actions = {
         let stakingContract, profit=0;
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
+        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0;
         
         if(whitelist.includes(address)) 
           commit('set', {whitelisted: true})
@@ -168,6 +170,25 @@ const actions = {
           stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
           profit = await stakingContract.ohmToDistributeNextEpoch();
         }
+
+        if(addresses[network.chainId].DISTRIBUTOR_ADDRESS) {        
+          distributorContract = new ethers.Contract(addresses[network.chainId].DISTRIBUTOR_ADDRESS, DistributorContract, provider);
+          sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+
+          circSupply = await sohmMainContract.circulatingSupply();
+
+          stakingReward = await distributorContract.getCurrentRewardForNextEpoch();
+
+          stakingRebase = stakingReward / circSupply;
+
+
+          stakingAPY =  1.0066 ^ 1095;
+          console.log(stakingAPY)
+
+          stakingAPY = stakingAPY * 100;
+
+          stakingRebase = stakingRebase * 100;
+        }
         //const balance = balanceBefore.toFixed(2);        
         console.log("Allowance", allowance);
         console.log("stakeAllowance", stakeAllowance);
@@ -185,7 +206,10 @@ const actions = {
           lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
           lpStaked: ethers.utils.formatUnits(lpStaked, 'ether'),
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
-          lpStakingAPY: lpStakingAPY
+          lpStakingAPY: lpStakingAPY,
+          stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
+          stakingAPY: stakingAPY,
+          stakingRebase: stakingRebase
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance });
         dispatch('getAllotmentPerBuyer');
@@ -410,8 +434,8 @@ const actions = {
 
     const migrateTx = await migrateContact.migrate( value * 1000000000 );
     await migrateTx.wait();
+  },
 
-  }
 };
 
 export default {
