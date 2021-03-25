@@ -202,6 +202,9 @@ export default {
     },
 
     trim(number, precision){
+        if( number == undefined ) {
+          number = 0;
+        }
         const array = number.toString().split(".");
         array.push(array.pop().substring(0, precision));
         const trimmedNumber =  array.join(".");

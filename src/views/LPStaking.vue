@@ -87,7 +87,7 @@
                   <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">APY</p>
-                  <p class="price-data">{{($store.state.settings.lpStakingAPY).toFixed(4)}}%</p> <!-- 1+rebase^1095-1 -->
+                  <p class="price-data">{{trim( $store.state.settings.lpStakingAPY, 4 ) }}%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Total Staked</p>
                   <p class="price-data">{{ trim( $store.state.settings.totalLPStaked, 4 ) }} OHM / DAI SLP</p>
@@ -236,6 +236,9 @@ export default {
     },
 
     trim(number, precision){
+        if( number == undefined ) {
+          number = 0
+        }
         const array = number.toString().split(".");
         array.push(array.pop().substring(0, precision));
         const trimmedNumber =  array.join(".");
