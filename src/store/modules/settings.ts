@@ -116,6 +116,7 @@ const actions = {
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
         let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0;
+        let distributorContractSigner, currentIndex=0;
         
         if(whitelist.includes(address)) 
           commit('set', {whitelisted: true})
@@ -182,12 +183,15 @@ const actions = {
           stakingRebase = stakingReward / circSupply;
 
 
-          stakingAPY =  1.0066 ^ 1095;
+          stakingAPY = Math.pow( ( 1 + stakingRebase ), 1095);
+    
           console.log(stakingAPY)
 
           stakingAPY = stakingAPY * 100;
 
           stakingRebase = stakingRebase * 100;
+
+          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');          
         }
         //const balance = balanceBefore.toFixed(2);        
         console.log("Allowance", allowance);
@@ -209,7 +213,8 @@ const actions = {
           lpStakingAPY: lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
           stakingAPY: stakingAPY,
-          stakingRebase: stakingRebase
+          stakingRebase: stakingRebase,
+          currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance });
         dispatch('getAllotmentPerBuyer');
