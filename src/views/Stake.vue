@@ -92,12 +92,6 @@
                 </div>
 
                 <div class="stake-price-data-row">
-                  <p class="price-label">Upcoming rebase</p>
-                  <p class="price-data">{{ trim($store.state.settings.stakingRebase, 4) }}%</p>
-                  <!-- profit / staked supply -->
-                </div>
-
-                <div class="stake-price-data-row">
                   <p class="price-label">Rebase block</p>
                   <p class="price-data">
                     {{
@@ -110,6 +104,12 @@
                         : ''
                     }}
                   </p>
+                </div>
+
+                <div class="stake-price-data-row">
+                  <p class="price-label">Upcoming rebase</p>
+                  <p class="price-data">{{ trim($store.state.settings.stakingRebase, 4) }}%</p>
+                  <!-- profit / staked supply -->
                 </div>
 
                 <div class="stake-price-data-row">
