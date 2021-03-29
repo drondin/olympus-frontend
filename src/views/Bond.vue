@@ -82,7 +82,7 @@
 
              
 
-              <div class="stake-price-data-column">
+              <div v-if="isRedeem==false" class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
@@ -95,6 +95,22 @@
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Market Price</p>
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} OHM</p>
+                </div>
+              </div>
+
+              <div v-else class="stake-price-data-column">
+                <div class="stake-price-data-row">
+                  <p class="price-label">Balance</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Bond MaturationBlock</p>
+                  <p id="bond-value-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Principle Deposited</p>
+                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.principleDeposited, 4 ) }} OHM / DAI SLP</p>
+                </div><div class="stake-price-data-row">
+                  <p class="price-label">Interest Due</p>
+                  <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.interestDue, 4 ) }} OHM</p>
                 </div>
               </div>
 

@@ -121,7 +121,7 @@ const actions = {
         let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         let bondingCalcContract, bondValue=0;
-        let bondingContract, vestingTerm=0, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, bondDiscount;
+        let bondingContract, vestingTerm=0, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, principleDeposited=0, bondMaturationBlock=0, bondDiscount;
         let pairContract;
         
         if(whitelist.includes(address)) 
@@ -170,6 +170,12 @@ const actions = {
           debtRatio = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
 
           lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
+
+          const bondDetails = await bondingContract.getDepositorInfo( address );
+
+          interestDue = bondDetails[1];
+          principleDeposited = bondDetails[0];
+          bondMaturationBlock = bondDetails[2];
         }  
 
         
@@ -273,7 +279,10 @@ const actions = {
           bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
           bondPrice: bondPrice,
           marketPrice: ethers.utils.formatUnits(marketPrice, 'gwei'),
-          debtRatio: debtRatio
+          debtRatio: debtRatio,
+          interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
+          principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
+          bondMaturationBlock: bondMaturationBlock
           
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
