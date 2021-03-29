@@ -49,7 +49,7 @@
 
               <div class="swap-input-row">
                 <div class="stake-input-container">
-                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="text">
+                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
                   
                   </div>
               </div>

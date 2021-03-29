@@ -44,7 +44,7 @@
 
               <div class="swap-input-row">
                 <div class="swap-input-container">
-                  <input v-on:change='updateValuesOnInChange' placeholder="0.0" id="swap-input-id" class="swap-input" type="text">
+                  <input v-on:change='updateValuesOnInChange' placeholder="0.0" id="swap-input-id" class="swap-input" type="number">
                   
                   </div>
 
@@ -62,7 +62,7 @@
 
               <div class="swap-ourput-row">
                   <div class="swap-output-container">
-                  <input v-on:change='updateValuesOnOutChange' placeholder="0.0" id="swap-output-id" class="swap-output" type="text">
+                  <input v-on:change='updateValuesOnOutChange' placeholder="0.0" id="swap-output-id" class="swap-output" type="number">
                   </div>
                   <div class="cur-max-box" style="margin-right:0.25rem;filter:invert(1);width:50px;transform:scale(0.8);">
                     <img class="social-icon-small" src="~/@/assets/logo.svg" alt="">
