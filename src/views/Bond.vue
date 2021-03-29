@@ -12,7 +12,7 @@
             <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
           </router-link>
           </div>
-         <div class="wallet-menu">
+          <div class="wallet-menu">
             <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
           <a v-if="address" class="dapp-sidebar-button-connected button button-info">
             <span class="login-bullet mr-2 ml-n2" />
@@ -34,13 +34,13 @@
         </div>
       </div>
 
-      <div class="wrapper">
+       <!-- <div class="wrapper">
         <div class="dapp-center-modal">
           <h1 style="line-height:25rem;">COMING SOON!</h1>
         </div>
-      </div>
+      </div>  -->
 
-      <!-- <div class="wrapper">
+       <div class="wrapper">
         <div class="dapp-center-modal">
           <div class="dapp-modal-wrapper">
 
@@ -49,33 +49,33 @@
               <div class="stake-toggle-row">
                 <toggle-switch
                   :options="myOptions"
-                  @change="updateMap($event.value)"
-                  @selected="selectedMethod()"
                   v-model="selectedMapOption"
                   :value="selectedMapOption"
-                  :group="switchGroup"
                   /> 
               </div>
 
-              <div class="swap-input-row">
+              <div v-if="isRedeem==false" class="swap-input-row">
+
                 <div class="stake-input-container">
-                  <input placeholder="Type an amount" class="bond-input" type="text">
-                  <input placeholder="Type an amount" class="redeem-input" type="text">
-                  
-                  </div>
+                  <input v-on:change='onInputChange' id="bond-input-id" placeholder="Type an amount" class="bond-input" type="number">                
+                </div>
+
+                <div v-if="isRedeem==true">
+                </div>
+
               </div>
 
-              <div class="stake-amount-preset-row">
-                <div class="stake-amount-preset-button">
+              <div v-if="isRedeem==false" class="stake-amount-preset-row">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
                   25%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
                   50%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
                   75%
                 </div>
-                <div class="stake-amount-preset-button">
+                <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
                   100%
                 </div>
               </div>
@@ -85,22 +85,27 @@
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">0.257 SLP</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Value</p>
-                  <p class="price-data">600 OLY</p>
+                  <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Bond Price</p>
-                  <p class="price-data">15 OLY</p>
+                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Market Price</p>
-                  <p class="price-data">16 OLY</p>
+                  <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} OHM</p>
                 </div>
               </div>
 
-              <div class="redeem-button-container">
-                <div class="redeem-button">Redeem</div>
-                <div class="withdraw-button">Withdraw & Forfeit</div>
+              <div v-if="isRedeem==true" class="redeem-button-container">
+                <div class="redeem-button" @click='redeem' >Redeem</div>
+                <div class="withdraw-button" @click='forfeit' >Withdraw & Forfeit</div>
+              </div>
+
+              <div v-else class="redeem-button-container">
+                <div v-if="hasAllowance" id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
+                <div v-else id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
               </div>
 
             </div>
@@ -111,11 +116,11 @@
             <div class="bond-data-row">
               <div class="bond-data-column">
                 <p>Debt Ratio</p>
-                <p>xxxx</p>
+                <p>{{ $store.state.settings.debtRatio }}</p>
               </div>
               <div class="bond-data-column">
                 <p>Vesting Term</p>
-                <p>xxxx</p>
+                <p>{{ $store.state.settings.vestingTerm }}</p>
               </div>
               <div class="bond-data-column">
                 <p>Discount</p>
@@ -124,7 +129,7 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div> 
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
 
@@ -133,6 +138,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { shorten } from '@/helpers/utils.ts';
+import { ethers } from 'ethers';
 
 export default {
   data() {
@@ -168,11 +175,10 @@ export default {
           ]
         }
       },
-      form: {
-        quantity: ''
-      },
+      selectedMapOption: 'Bond',
+      quantity: '',
+      bondToggle: true,
       modalLoginOpen: false,
-      modalMakepotionOpen: false
     };
   }, 
   computed: {
@@ -180,21 +186,46 @@ export default {
     isValid() {
       return parseFloat(this.form.quantity);
     },
+
+    address() {
+      if(this.$store.state.settings.address)
+      return this.$store.state.settings.address
+      return null
+    }, 
+
     maxStrike() {
       const exchangeRate = this.settings.exchangeRates[this.form.asset];
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
+    },
+
+    isRedeem() {
+      if(this.selectedMapOption) {
+        switch(this.selectedMapOption) {    
+            case 'Redeem':
+              return true;
+        }
+      }
+
+      return false;
+    },
+
+    hasAllowance() {
+      if(parseFloat(this.quantity)) {
+        switch(this.selectedMapOption) {
+          case 'Bond':
+              return parseInt(this.$store.state.settings.lpBondAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));          
+        }
+        
+      }
+      return false;
     }
+
   },
+  
 
   methods: {
     
-    ...mapActions(['SendDai']),
-    handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
-        value: this.form.quantity
-      });
-    },
+    ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'calcBondDetails']),
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
     },
@@ -202,7 +233,82 @@ export default {
       if(this.$store.state.settings.address)
       return this.$store.state.address.initial
       return null
-    }
+    },
+    shorten(addr) { 
+      return shorten(addr);
+    },
+
+    async setStake(value) {
+        switch(this.selectedMapOption) {
+          case 'Bond':
+            this.quantity = this.$store.state.settings.lpBalance * value / 100;
+            document.getElementById('bond-input-id').value = this.quantity;
+            break;
+        }      
+
+      let amount = document.getElementById('bond-input-id').value;
+      amount = amount * 1000000000000000000;
+      alert(amount);
+      await this.calcBondDetails( amount.toString() );
+        
+    },
+
+    async onInputChange() {
+      let amount = document.getElementById('bond-input-id').value;
+      amount = amount * 1000000000000000000;
+      alert(amount);
+      await this.calcBondDetails( amount.toString() );
+    },
+
+    async seekApproval() {
+        switch(this.selectedMapOption) {
+          case 'Bond':
+
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+            else {
+              await this.getLPBondApproval(this.quantity.toString());
+            }
+            
+            break;
+        }
+        
+    },
+
+    async bond() {
+      switch(this.selectedMapOption) {
+          case 'Bond':
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+
+            else {
+              await this.bondLP(this.quantity.toString());
+            }
+            
+            break;
+        }
+    },
+
+    async redeem() {
+      await this.redeemBond();
+    },
+
+    async forfeit() {
+      await this.forfeitBond();
+    },
+
+    trim(number, precision){
+        if( number == undefined ) {
+          number = 0
+        }
+        const array = number.toString().split(".");
+        array.push(array.pop().substring(0, precision));
+        const trimmedNumber =  array.join(".");
+        return(trimmedNumber);
+    },
+
   }
 };
 

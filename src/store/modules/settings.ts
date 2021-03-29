@@ -20,6 +20,9 @@ import { abi as MigrateToOHM } from '@/helpers/abi/MigrateToOHM.json';
 import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
+import { abi as BondContract } from '@/helpers/abi/BondContract.json';
+import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
+import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 
@@ -117,6 +120,9 @@ const actions = {
         let lpContract, lpBalance=0, lpStakeAllowance;
         let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
+        let bondingCalcContract, bondValue=0;
+        let bondingContract, vestingTerm=0, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, bondDiscount;
+        let pairContract;
         
         if(whitelist.includes(address)) 
           commit('set', {whitelisted: true})
@@ -125,6 +131,48 @@ const actions = {
         const balance = await daiContract.balanceOf(address);
         console.log(balance)
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
+
+        if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
+          bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
+
+          bondValue = await bondingCalcContract.principleValuation( addresses[network.chainId].LP_ADDRESS, await lpContract.balanceOf( address ) );
+        }  
+
+        if(addresses[network.chainId].BOND_ADDRESS) {
+          bondingContract = new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, provider);
+          bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+          pairContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, PairContract, provider);
+          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
+          ohmContract = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+          
+          lpBalance = await lpContract.balanceOf(address);
+
+          const totalLP = await lpContract.totalSupply();
+
+          //alert(totalLP);
+
+          const reserves = await pairContract.getReserves();
+
+          bondValue = await bondingCalcContract.principleValuation( addresses[network.chainId].LP_ADDRESS, await lpContract.balanceOf( address ) );
+
+          marketPrice = reserves[0] / reserves[1];
+          
+          bondPrice = ( 2 * reserves[0] * ( lpBalance / totalLP ) ) / bondValue;
+         // alert(reserves);
+          
+          vestingTerm = await bondingContract.bondingPeriodInBlocks();
+
+          const totalDebtDo = await bondingContract.totalDebt();
+
+          const ohmTotalSupply = await ohmContract.totalSupply();
+
+          debtRatio = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
+
+          lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
+        }  
+
+        
 
         if(addresses[network.chainId].LP_ADDRESS) {
           lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
@@ -220,9 +268,15 @@ const actions = {
           stakingRebase: stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           nextEpochBlock: nextEpochBlock,
-          currentBlock: currentBlock
+          currentBlock: currentBlock,
+          vestingTerm: vestingTerm,
+          bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
+          bondPrice: bondPrice,
+          marketPrice: ethers.utils.formatUnits(marketPrice, 'gwei'),
+          debtRatio: debtRatio
+          
         });        
-        commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance });
+        commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
         dispatch('getAllotmentPerBuyer');
       } catch (error) {
         console.error(error);
@@ -237,6 +291,35 @@ const actions = {
   async getExchangeRates({ commit }) {
     const exchangeRates = await getExchangeRatesFromCoinGecko();
     commit('set', { exchangeRates });
+  },
+
+  async calcBondDetails({ commit }, amount ) {
+    const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
+    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+    const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
+    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
+    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+    
+    const lpBalance = await lpContract.balanceOf(state.address);
+
+    const totalLP = await lpContract.totalSupply();
+
+    //alert(totalLP);
+
+    const reserves = await pairContract.getReserves();
+
+    const bondValue = await bondingCalcContract.principleValuation( addresses[state.network.chainId].LP_ADDRESS, amount );
+
+    const marketPrice = reserves[0] / reserves[1];
+    
+    const bondPrice = ( 2 * reserves[0] * ( lpBalance / totalLP ) ) / bondValue;
+
+    commit('set', {
+      bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
+      bondPrice: bondPrice,
+      marketPrice: ethers.utils.formatUnits(marketPrice, 'gwei'),
+    });
+
   },
 
   async getOHM({commit}, value) {
@@ -293,6 +376,17 @@ const actions = {
     await dispatch('getLPStakeAllowance')
   },
 
+  async getLPBondApproval({ commit, dispatch }, value ) {
+    const signer = provider.getSigner();  
+    const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, signer);
+    if(value <= 0) return;
+
+    const approveTx = await lpContract.approve(addresses[state.network.chainId].BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
+    await approveTx.wait();
+    await dispatch('getLPBondAllowance')
+
+  },
+
   async getStakeAllowances({commit}) {
     if(state.address) {
     const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
@@ -306,6 +400,14 @@ const actions = {
       const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
       const lpStakeAllowance = await lpContract.allowance(state.address, addresses[state.network.chainId].LPSTAKING_ADDRESS);
       commit('set', {lpStakeAllowance});
+    }
+  },
+
+  async getLPBondAllowance({commit}) {
+    if(state.address) {
+      const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
+      const lpBondAllowance = await lpContract.allowance(state.address, addresses[state.network.chainId].BOND_ADDRESS);
+      commit('set', {lpBondAllowance});
     }
   },
 
@@ -417,7 +519,33 @@ const actions = {
 
   },
 
+  async bondLP({commit}, value) {
+    const signer = provider.getSigner();
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
+    const bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
+    await bondTx.wait();
 
+    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
+    const lpBalance = await lpContract.balanceOf(state.address);
+    commit('set', {
+      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether')
+    });
+  },
+
+  async redeemBond() {
+    const signer = provider.getSigner();
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
+    const redeemTx = await bonding.redeemBond( );
+    await redeemTx.wait();
+
+  },
+
+  async forfeitBond() {
+    const signer = provider.getSigner();
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
+    const forfeitTx = await bonding.withdrawPrincipleAndForfeitInterest( );
+    await forfeitTx.wait();
+  },
 
   async getMaxSwap({commit, dispatch}) {
     const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);

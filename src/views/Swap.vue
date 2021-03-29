@@ -122,6 +122,7 @@ export default {
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
     }
   },
+  
   methods: {
     
     ...mapActions(['migrateToOHM', 'getMaxSwap']),
