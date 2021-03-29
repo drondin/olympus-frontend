@@ -183,10 +183,24 @@ export default {
     async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
-            await this.stakeOHM(this.quantity.toString());
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+
+            else {
+              await this.stakeOHM(this.quantity.toString());
+            }
+      
             break;
           case 'Unstake':
-            await this.unstakeOHM(this.quantity.toString());
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+
+            else {
+              await this.unstakeOHM(this.quantity.toString());
+            }
+        
         }
         //updatestats        
     },
@@ -214,10 +228,22 @@ export default {
     async seekApproval() {
         switch(this.selectedMapOption) {
           case 'Stake':
-            await this.getStakeApproval(this.quantity.toString());
+            if( isNaN( this.quantity )) {
+              return;
+            }
+
+            else {
+              await this.getStakeApproval(this.quantity.toString());
+            }
             break;
           case 'Unstake':
-            await this.getunStakeApproval(this.quantity.toString());
+            if( isNaN( this.quantity )) {
+              return;
+            }
+            else {
+              await this.getunStakeApproval(this.quantity.toString());
+            }
+          
         }
         
     },    

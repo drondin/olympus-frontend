@@ -133,7 +133,15 @@ export default {
 
   async migrate() {
     const ohmToMigrate = document.getElementById('swap-input-id').value;
-    await this.migrateToOHM( ohmToMigrate );
+
+    if( isNaN( ohmToMigrate ) ) {
+      return;
+    }
+
+    else {
+      await this.migrateToOHM( ohmToMigrate );
+    }
+    
   },
 
     async maxSwap() {

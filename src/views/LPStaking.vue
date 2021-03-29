@@ -206,7 +206,14 @@ export default {
     async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
-            await this.stakeLP(this.quantity.toString());
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+
+            else {
+              await this.stakeLP(this.quantity.toString());
+            }
+            
             break;
           case 'Unstake':
             await this.unstakeLP();
@@ -229,7 +236,14 @@ export default {
     async seekApproval() {
         switch(this.selectedMapOption) {
           case 'Stake':
-            await this.getLPStakeApproval(this.quantity.toString());
+
+            if( isNaN( this.quantity ) ) {
+              return;
+            }
+            else {
+              await this.getLPStakeApproval(this.quantity.toString());
+            }
+            
             break;
         }
         
