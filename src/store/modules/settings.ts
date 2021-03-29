@@ -62,7 +62,7 @@ const state = {
   allotment: 0,
   maxPurchase: 0,
   maxSwap: 0,
-  amountSwap: 0
+  amountSwap: 0,
 };
 
 const mutations = {
@@ -115,7 +115,7 @@ const actions = {
         let stakingContract, profit=0;
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
-        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0;
+        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         
         if(whitelist.includes(address)) 
@@ -191,7 +191,11 @@ const actions = {
 
           stakingRebase = stakingRebase * 100;
 
-          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');          
+          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2'); 
+          
+          nextEpochBlock = await distributorContract.nextEpochBlock();
+
+          currentBlock = await provider.getBlockNumber();
         }
         //const balance = balanceBefore.toFixed(2);        
         console.log("Allowance", allowance);
@@ -215,6 +219,8 @@ const actions = {
           stakingAPY: stakingAPY,
           stakingRebase: stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
+          nextEpochBlock: nextEpochBlock,
+          currentBlock: currentBlock
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance });
         dispatch('getAllotmentPerBuyer');

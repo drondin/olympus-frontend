@@ -72,6 +72,9 @@
 
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
+                  <p class="price-label">Blocks To Next Epoch</p>
+                  <p class="price-data">{{ $store.state.settings.nextEpochBlock - $store.state.settings.currentBlock }} Blocks</p>
+                  </div><div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
@@ -179,7 +182,7 @@ export default {
 
   methods: {
     
-    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY']),
+    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
     async executeStake() {console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
@@ -188,6 +191,7 @@ export default {
             }
 
             else {
+              await this.getCurrentBlockNumber();
               await this.stakeOHM(this.quantity.toString());
             }
       
