@@ -323,7 +323,7 @@ const actions = {
 
     const marketPrice = reserves[1] / reserves[0];
     
-    const bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
+    const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
 
     commit('set', {
       bondValue: bondValue,
