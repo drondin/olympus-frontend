@@ -135,8 +135,7 @@ const actions = {
         if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
           bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
           lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-
-          bondValue = await bondingCalcContract.principleValuation( addresses[network.chainId].LP_ADDRESS, await lpContract.balanceOf( address ) );
+          
         }  
 
         if(addresses[network.chainId].BOND_ADDRESS) {
@@ -154,7 +153,7 @@ const actions = {
 
           const reserves = await pairContract.getReserves();
 
-          bondValue = await bondingCalcContract.principleValuation( addresses[network.chainId].LP_ADDRESS, await lpContract.balanceOf( address ) );
+          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );
 
           alert(reserves[0]);
           alert(reserves[1]);
@@ -279,7 +278,7 @@ const actions = {
           nextEpochBlock: nextEpochBlock,
           currentBlock: currentBlock,
           vestingTerm: vestingTerm,
-          bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
+          bondValue: bondValue,
           bondPrice: bondPrice,
           marketPrice: marketPrice / 1000000000,
           debtRatio: debtRatio,
@@ -320,14 +319,14 @@ const actions = {
 
     const reserves = await pairContract.getReserves();
 
-    const bondValue = await bondingCalcContract.principleValuation( addresses[state.network.chainId].LP_ADDRESS, amount );
+    const bondValue = await bondingContract.calculateBondInterest( amount );
 
     const marketPrice = reserves[1] / reserves[0];
     
     const bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
 
     commit('set', {
-      bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
+      bondValue: bondValue,
       bondPrice: bondPrice,
       marketPrice: marketPrice / 1000000000
     });

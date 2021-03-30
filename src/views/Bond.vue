@@ -88,10 +88,10 @@
                   <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Value</p>
-                  <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue, 4 ) }} OHM</p>
+                  <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Bond Price</p>
-                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice, 4 ) }} OHM</p>
+                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} OHM</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Market Price</p>
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} OHM</p>
