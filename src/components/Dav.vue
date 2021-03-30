@@ -10,7 +10,7 @@
           LP Staking 
         </router-link>
         <router-link :to="{ name: 'bond' }" class="button button-dapp-menu">
-          Bond (coming soon)
+          Bond
         </router-link>
         <router-link :to="{ name: 'dashboard' }" class="button button-dapp-menu">
           Dash (coming soon)
