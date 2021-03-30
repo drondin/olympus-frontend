@@ -104,10 +104,12 @@
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
-                </div><div class="stake-price-data-row">
+                </div>
+                <!-- <div class="stake-price-data-row">
                   <p class="price-label">Bond Maturation Block</p>
-                  <p id="bond-value-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
-                </div><div class="stake-price-data-row">
+                  <p class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
+                </div> -->
+                <div class="stake-price-data-row">
                   <p class="price-label">Principle Deposited</p>
                   <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.principleDeposited, 4 ) }} SLP</p>
                 </div><div class="stake-price-data-row">
@@ -145,7 +147,7 @@
               </div>
               <div class="bond-data-column">
                 <p>Discount</p>
-                <p>xxxx</p>
+                <p>{{ trim( $store.state.settings.bondDiscount * 100, 2 ) }}%</p>
               </div>
             </div>
           </div>

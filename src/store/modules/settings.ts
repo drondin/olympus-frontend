@@ -170,7 +170,9 @@ const actions = {
 
           lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
 
-          const bondDetails = await bondingContract.getDepositorInfo( address );
+          const bondDetails = await bondingContract.depositorInfo( address );          
+
+          bondDiscount = 1 - bondPrice / marketPrice;
 
           interestDue = bondDetails[2];
           principleDeposited = bondDetails[0];
@@ -282,7 +284,8 @@ const actions = {
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
           principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
           bondMaturationBlock: bondMaturationBlock,
-          lpBondAllowance: lpBondAllowance
+          lpBondAllowance: lpBondAllowance,
+          bondDiscount: bondDiscount
           
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
