@@ -12,8 +12,6 @@ import {
 } from '@/helpers/utils';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
-import { abi as mimirTokenSale } from '@/helpers/abi/mimirTokenSale.json';
-import { abi as pOlyTokenSale } from '@/helpers/abi/pOlyTokenSale.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 import { abi as MigrateToOHM } from '@/helpers/abi/MigrateToOHM.json';
@@ -107,7 +105,8 @@ const actions = {
         // const name = await provider.lookupAddress(address);
         // Throws errors with non ENS compatible testnets
         const network = await provider.getNetwork();
-        store.commit('set', { network: network});     
+        store.commit('set', { network: network}); 
+            
         
         const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
         const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( address );
@@ -138,6 +137,7 @@ const actions = {
           
         }  
 
+        
         if(addresses[network.chainId].BOND_ADDRESS) {
           bondingContract = new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, provider);
           bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
@@ -149,11 +149,9 @@ const actions = {
 
           const totalLP = await lpContract.totalSupply();
 
-          //alert(totalLP);
-
           const reserves = await pairContract.getReserves();
 
-          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );
+          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );          
 
           marketPrice = reserves[1] / reserves[0];
 
@@ -162,13 +160,17 @@ const actions = {
           
           vestingTerm = await bondingContract.bondingPeriodInBlocks();
 
+
           const totalDebtDo = await bondingContract.totalDebt();
 
           const ohmTotalSupply = await ohmContract.totalSupply();
 
+        
           debtRatio = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
 
+
           lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
+
 
           const bondDetails = await bondingContract.depositorInfo( address );          
 
@@ -179,7 +181,6 @@ const actions = {
           bondMaturationBlock = bondDetails[3];
         }  
 
-        
 
         if(addresses[network.chainId].LP_ADDRESS) {
           lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
@@ -284,7 +285,6 @@ const actions = {
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
           principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
           bondMaturationBlock: bondMaturationBlock,
-          lpBondAllowance: lpBondAllowance,
           bondDiscount: bondDiscount
           
         });        
