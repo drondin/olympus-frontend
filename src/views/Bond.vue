@@ -103,7 +103,7 @@
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
                 </div><div class="stake-price-data-row">
-                  <p class="price-label">Bond MaturationBlock</p>
+                  <p class="price-label">Bond Maturation Block</p>
                   <p id="bond-value-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Principle Deposited</p>

@@ -1,3 +1,5 @@
+
+
 import { ethers } from 'ethers';
 import provider from '@/helpers/provider';
 
@@ -11,8 +13,8 @@ const addresses = {
         AOHM_ADDRESS: '0x410D96DF0F9e778d0E3a7B93547e40f06e823618',
         MIGRATE_ADDRESS: '0x3BA7C6346b93DA485e97ba55aec28E8eDd3e33E2',
         LPSTAKING_ADDRESS: '0x797C6E26D099b971cc95138D55729a58B34c5e6B',
-        LP_ADDRESS: '0xc6d0e140a030e4efe2fb561160a9d0e9e349ca67',
-        BOND_ADDRESS: '0xAB8d51145FE37c81B0D5f2B2CE6c40d2e4B09E31',
+        LP_ADDRESS: '0x366c22dbb3a69025bc2c6216305f047ed5db9192',
+        BOND_ADDRESS: '0x665c5C521d07b315D5D0F1905437177827daBa0c',
         BONDINGCALC_ADDRESS: '0x6d5de2E6f3437b29f8Ffdb9b3f2BADb81B881dBc'
     },
     1: {
@@ -30,3 +32,4 @@ const addresses = {
 };
 
 export default addresses;
+

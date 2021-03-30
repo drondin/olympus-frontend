@@ -156,9 +156,12 @@ const actions = {
 
           bondValue = await bondingCalcContract.principleValuation( addresses[network.chainId].LP_ADDRESS, await lpContract.balanceOf( address ) );
 
-          marketPrice = reserves[0] / reserves[1];
-          
-          bondPrice = ( 2 * reserves[0] * ( lpBalance / totalLP ) ) / bondValue;
+          alert(reserves[0]);
+          alert(reserves[1]);
+
+          marketPrice = reserves[1] / reserves[0];
+
+          bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
          // alert(reserves);
           
           vestingTerm = await bondingContract.bondingPeriodInBlocks();
@@ -278,7 +281,7 @@ const actions = {
           vestingTerm: vestingTerm,
           bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
           bondPrice: bondPrice,
-          marketPrice: ethers.utils.formatUnits(marketPrice, 'gwei'),
+          marketPrice: marketPrice / 1000000000,
           debtRatio: debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
           principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
@@ -319,14 +322,14 @@ const actions = {
 
     const bondValue = await bondingCalcContract.principleValuation( addresses[state.network.chainId].LP_ADDRESS, amount );
 
-    const marketPrice = reserves[0] / reserves[1];
+    const marketPrice = reserves[1] / reserves[0];
     
-    const bondPrice = ( 2 * reserves[0] * ( lpBalance / totalLP ) ) / bondValue;
+    const bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
 
     commit('set', {
       bondValue: ethers.utils.formatUnits(bondValue, 'ether'),
       bondPrice: bondPrice,
-      marketPrice: ethers.utils.formatUnits(marketPrice, 'gwei'),
+      marketPrice: marketPrice / 1000000000
     });
 
   },
