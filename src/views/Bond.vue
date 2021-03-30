@@ -85,29 +85,31 @@
               <div v-if="isRedeem==false" class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">Value</p>
-                  <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Bond Price</p>
-                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} OHM</p>
+                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} DAI</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Market Price</p>
-                  <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} OHM</p>
+                  <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
+                </div>
+
+                <div class="stake-price-data-row">
+                  <p class="price-label">You Will Get</p>
+                  <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
                 </div>
               </div>
 
               <div v-else class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
+                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Bond Maturation Block</p>
                   <p id="bond-value-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Principle Deposited</p>
-                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.principleDeposited, 4 ) }} OHM / DAI SLP</p>
+                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.principleDeposited, 4 ) }} SLP</p>
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Interest Due</p>
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.interestDue, 4 ) }} OHM</p>
@@ -135,7 +137,7 @@
             <div class="bond-data-row">
               <div class="bond-data-column">
                 <p>Debt Ratio</p>
-                <p>{{ $store.state.settings.debtRatio }}</p>
+                <p>{{ trim( $store.state.settings.debtRatio / 10000000, 2 ) }}%</p>
               </div>
               <div class="bond-data-column">
                 <p>Vesting Term</p>

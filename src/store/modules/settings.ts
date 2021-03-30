@@ -172,9 +172,9 @@ const actions = {
 
           const bondDetails = await bondingContract.getDepositorInfo( address );
 
-          interestDue = bondDetails[1];
+          interestDue = bondDetails[2];
           principleDeposited = bondDetails[0];
-          bondMaturationBlock = bondDetails[2];
+          bondMaturationBlock = bondDetails[3];
         }  
 
         
