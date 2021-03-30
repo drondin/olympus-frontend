@@ -155,9 +155,6 @@ const actions = {
 
           bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );
 
-          alert(reserves[0]);
-          alert(reserves[1]);
-
           marketPrice = reserves[1] / reserves[0];
 
           bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
@@ -284,7 +281,8 @@ const actions = {
           debtRatio: debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
           principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
-          bondMaturationBlock: bondMaturationBlock
+          bondMaturationBlock: bondMaturationBlock,
+          lpBondAllowance: lpBondAllowance
           
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });

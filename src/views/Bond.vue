@@ -119,9 +119,12 @@
                 <div class="withdraw-button" @click='forfeit' >Withdraw & Forfeit</div>
               </div>
 
-              <div v-else class="redeem-button-container">
-                <div v-if="hasAllowance" id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
-                <div v-else id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
+              <div v-else-if="hasAllowance==true && isRedeem==false" class="redeem-button-container">
+                <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
+              </div>
+
+              <div v-else class="redeem-button-container" >              
+                <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
               </div>
 
             </div>
@@ -226,14 +229,14 @@ export default {
     },
 
     hasAllowance() {
-      if(parseFloat(this.quantity)) {
-        switch(this.selectedMapOption) {
-          case 'Bond':
-              return parseInt(this.$store.state.settings.lpBondAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));          
-        }
-        
+      const approval = this.$store.state.settings.lpBondAllowance;
+  
+      if(approval > 0 ) {
+       return true;        
       }
+
       return false;
+      
     }
 
   },
@@ -241,7 +244,7 @@ export default {
 
   methods: {
     
-    ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'calcBondDetails']),
+    ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
     maxStake() {
       this.form.quantity = this.$store.state.settings.balance;
     },
@@ -264,7 +267,6 @@ export default {
 
       let amount = document.getElementById('bond-input-id').value;
       amount = amount * 1000000000000000000;
-      alert(amount);
       await this.calcBondDetails( amount.toString() );
         
     },
@@ -272,7 +274,6 @@ export default {
     async onInputChange() {
       let amount = document.getElementById('bond-input-id').value;
       amount = amount * 1000000000000000000;
-      alert(amount);
       await this.calcBondDetails( amount.toString() );
     },
 
@@ -284,7 +285,7 @@ export default {
               return;
             }
             else {
-              await this.getLPBondApproval(this.quantity.toString());
+              await this.getLPBondApproval(document.getElementById('bond-input-id').value);
             }
             
             break;
@@ -300,7 +301,8 @@ export default {
             }
 
             else {
-              await this.bondLP(this.quantity.toString());
+              
+              await this.bondLP(document.getElementById('bond-input-id').value);
             }
             
             break;
