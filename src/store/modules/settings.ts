@@ -183,7 +183,7 @@ const actions = {
           vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
 
           interestDue = bondDetails[1];
-          bondMaturationBlock = bondDetails[3] + bondDetails[2];
+          bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
           pendingPayout = await bondingContract.calculatePendingPayout( address );
         }  
 
