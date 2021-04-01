@@ -228,7 +228,7 @@ export default {
     setStake(value) {
         switch(this.selectedMapOption) {
           case 'Stake':
-            this.quantity = this.$store.state.settings.lpBalance * value;
+            this.quantity = this.$store.state.settings.lpBalance * value / 100;
             break;
         }      
         

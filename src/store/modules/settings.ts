@@ -120,7 +120,7 @@ const actions = {
         let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         let bondingCalcContract, bondValue=0;
-        let bondingContract, vestingTerm=0, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, principleDeposited=0, bondMaturationBlock=0, bondDiscount;
+        let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
         let pairContract;
         
         if(whitelist.includes(address)) 
@@ -151,15 +151,20 @@ const actions = {
 
           const reserves = await pairContract.getReserves();
 
-          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );          
+          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );     
+          
 
           marketPrice = reserves[1] / reserves[0];
 
-          bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
-         // alert(reserves);
-          
-          vestingTerm = await bondingContract.bondingPeriodInBlocks();
+          if( lpBalance == 0 ) {
+            bondPrice = 0;
+            bondDiscount = 0;
+          }
 
+          else {
+            bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
+            bondDiscount = 1 - bondPrice / marketPrice;
+          }
 
           const totalDebtDo = await bondingContract.totalDebt();
 
@@ -174,11 +179,12 @@ const actions = {
 
           const bondDetails = await bondingContract.depositorInfo( address );          
 
-          bondDiscount = 1 - bondPrice / marketPrice;
 
-          interestDue = bondDetails[2];
-          principleDeposited = bondDetails[0];
-          bondMaturationBlock = bondDetails[3];
+          vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
+
+          interestDue = bondDetails[1];
+          bondMaturationBlock = bondDetails[3] + bondDetails[2];
+          pendingPayout = await bondingContract.calculatePendingPayout( address );
         }  
 
 
@@ -277,15 +283,15 @@ const actions = {
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           nextEpochBlock: nextEpochBlock,
           currentBlock: currentBlock,
-          vestingTerm: vestingTerm,
           bondValue: bondValue,
           bondPrice: bondPrice,
           marketPrice: marketPrice / 1000000000,
           debtRatio: debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
-          principleDeposited: ethers.utils.formatUnits(principleDeposited, 'ether'),
           bondMaturationBlock: bondMaturationBlock,
-          bondDiscount: bondDiscount
+          bondDiscount: bondDiscount,
+          pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
+          vestingPeriodInBlocks: vestingPeriodInBlocks
           
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
@@ -323,13 +329,30 @@ const actions = {
     const bondValue = await bondingContract.calculateBondInterest( amount );
 
     const marketPrice = reserves[1] / reserves[0];
+
+    let bondPrice;
+    let bondDiscount;
+
+
+    if( amount == 0 ) {
+      bondPrice = 0;
+      bondDiscount = 0;
+    }
+
+    else {
+      bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
+      bondDiscount = 1 - bondPrice / marketPrice;
+    }
+
     
-    const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
+   // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
+   // const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
       bondValue: bondValue,
       bondPrice: bondPrice,
-      marketPrice: marketPrice / 1000000000
+      marketPrice: marketPrice / 1000000000,
+      bondDiscount: bondDiscount
     });
 
   },

@@ -105,16 +105,17 @@
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
                 </div>
-                <!-- <div class="stake-price-data-row">
-                  <p class="price-label">Bond Maturation Block</p>
-                  <p class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
-                </div> -->
-                <div class="stake-price-data-row">
-                  <p class="price-label">Principle Deposited</p>
-                  <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.principleDeposited, 4 ) }} SLP</p>
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">Interest Due</p>
+              <div class="stake-price-data-row">
+                  <p class="price-label">Pending Rewards</p>
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.interestDue, 4 ) }} OHM</p>
+                </div>
+                <div class="stake-price-data-row">
+                  <p class="price-label">Claimable Rewards</p>
+                  <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.pendingPayout, 4 ) }} OHM</p>
+                </div>
+                <div class="stake-price-data-row">
+                  <p class="price-label">Full Bond Maturation</p>
+                  <p id="bond-market-price-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
                 </div>
               </div>
 
@@ -143,7 +144,7 @@
               </div>
               <div class="bond-data-column">
                 <p>Vesting Term</p>
-                <p>{{ $store.state.settings.vestingTerm }}</p>
+                <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
               </div>
               <div class="bond-data-column">
                 <p>Discount</p>
