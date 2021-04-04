@@ -84,7 +84,7 @@
                   <p class="price-label">Upcoming rebase</p>
                   <p class="price-data">{{ trim( $store.state.settings.stakingRebase, 4 ) }}% </p><!-- profit / staked supply -->
                 </div><div class="stake-price-data-row">
-                  <p class="price-label">Upcoming APY</p>
+                  <p class="price-label">Current APY</p>
                   <p class="price-data">{{ trim( $store.state.settings.stakingAPY, 2 )}}%</p> <!-- 1+rebase^1095-1 -->
                 </div><div class="stake-price-data-row">
                   <p class="price-label">Current index</p>
