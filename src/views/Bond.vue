@@ -120,8 +120,7 @@
               </div>
 
               <div v-if="isRedeem==true" class="redeem-button-container">
-                <div class="redeem-button" @click='redeem' >Redeem</div>
-                <div class="withdraw-button" @click='forfeit' >Withdraw & Forfeit</div>
+                <div class="redeem-button" @click='redeem' >Claim Rewards</div>
               </div>
 
               <div v-else-if="hasAllowance==true && isRedeem==false" class="redeem-button-container">
