@@ -1048,9 +1048,13 @@ footer{height:auto;padding:2rem 0rem}
 
 // NOTE: This is a slight modification on dapp-center-modal to work with Bootstrap grid system.
 .olympus-card {
-  border-radius:2rem;
+  border-radius:2rem !important;
   background-color:#424242dd;
   box-shadow: 0px 5px 20px rgba(0,0,0,0.5);
+}
+
+.card-body iframe {
+  width: 100%;
 }
 
 
