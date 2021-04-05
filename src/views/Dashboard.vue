@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="dapp" class="dapp overflow-hidden">
-      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" /> 
+      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
       <div v-else>
       </div>-->
       <div class="dapp-sidebar">
@@ -26,18 +26,67 @@
 
         <div class="dapp-menu-links">
           <Dav />
-
         </div>
 
         <div class="dapp-menu-social">
-                   <Social />
+          <Social />
         </div>
       </div>
-      <div class="wrapper">
-        <div class="dapp-center-modal">
-          <h1 style="line-height:25rem;">COMING SOON!</h1>
+
+
+      <div class="row">
+        <div class="col-md-2 offset-md-3">
+          <div class="card olympus-card">
+            <iframe src="https://duneanalytics.com/embeds/28707/57953/61c41a85-7bad-4a12-bcf6-9cfbb97ee785" title="Market Cap"></iframe>
+          </div>
+        </div>
+
+
+        <div class="col-md-2">
+          <div class="card olympus-card">
+            <iframe src="https://duneanalytics.com/embeds/28168/57095/a5003dd2-5680-42d4-a708-c0a7cbef87ba" title="Price"></iframe>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="card olympus-card">
+            <iframe src="https://duneanalytics.com/embeds/28599/57711/ea91c246-fbb0-4138-8200-b943782d954c" title="Supply"></iframe>
+          </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-3 offset-md-3">
+          <div class="card olympus-card" style="height:400px;">
+            <iframe src="https://duneanalytics.com/embeds/29153/58862/af89fc7b-f1df-4dbd-a568-85bcdc49dd99" title="Treasury value in DAI" style="height:400px;"></iframe>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card olympus-card" style="height:400px;">
+            <iframe src="https://duneanalytics.com/embeds/28286/57140/d3b6447c-f136-4fde-bdd9-c4e830b64dce" title="TVL" style="height:400px;"></iframe>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-3 offset-md-3">
+          <div class="card olympus-card" style="height:400px;">
+            <iframe src="https://duneanalytics.com/embeds/27661/55859/153510d7-7b3f-407b-bb07-c8735ac302a1" title="Holders over time" style="height:400px;"></iframe>
+
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card olympus-card" style="height:400px;">
+            <iframe src="https://duneanalytics.com/embeds/28756/58813/a3658bd2-39dc-4f19-bd2e-2a666c9d5b39" title="OHM staked/non-staked" style="height:400px;"></iframe>
+          </div>
+        </div>
+      </div>
+
 
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
@@ -69,7 +118,7 @@ export default {
     }
   },
   methods: {
-    
+
     ...mapActions(['SendDai']),
     handleSubmit() {
       this.SendDai({
@@ -93,4 +142,3 @@ export default {
   cursor: pointer;
 }
 </style>
-
