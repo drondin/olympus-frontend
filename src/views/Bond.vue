@@ -57,7 +57,14 @@
               <div v-if="isRedeem==false" class="swap-input-row">
 
                 <div class="stake-input-container">
-                  <input v-on:change='onInputChange' id="bond-input-id" placeholder="Type an amount" class="bond-input" type="number">                
+                  <input
+                    v-on:keydown="onInputChange"
+                    v-on:change="onInputChange"
+                    id="bond-input-id"
+                    placeholder="Type an amount"
+                    class="bond-input"
+                    type="number"
+                  />
                 </div>
 
                 <div v-if="isRedeem==true">
@@ -165,6 +172,12 @@ import { shorten } from '@/helpers/utils.ts';
 import { ethers } from 'ethers';
 
 export default {
+  async mounted() {
+    let amount = document.getElementById('bond-input-id').value;
+    amount = amount * 1000000000000000000;
+    await this.calcBondDetails( amount.toString() );
+  },
+
   data() {
     return {
       myOptions: {

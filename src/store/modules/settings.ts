@@ -159,9 +159,7 @@ const actions = {
           if( lpBalance == 0 ) {
             bondPrice = 0;
             bondDiscount = 0;
-          }
-
-          else {
+          } else {
             bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
             bondDiscount = 1 - bondPrice / marketPrice;
           }
@@ -313,40 +311,22 @@ const actions = {
 
   async calcBondDetails({ commit }, amount ) {
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
-    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+    // const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
     const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    
-    const lpBalance = await lpContract.balanceOf(state.address);
+    // const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+    // const lpBalance = await lpContract.balanceOf(state.address);
 
     const totalLP = await lpContract.totalSupply();
 
-    //alert(totalLP);
-
     const reserves = await pairContract.getReserves();
 
-    const bondValue = await bondingContract.calculateBondInterest( amount );
+    const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? '1000000000000000000' : amount);
 
     const marketPrice = reserves[1] / reserves[0];
 
-    let bondPrice;
-    let bondDiscount;
-
-
-    if( amount == 0 ) {
-      bondPrice = 0;
-      bondDiscount = 0;
-    }
-
-    else {
-      bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
-      bondDiscount = 1 - bondPrice / marketPrice;
-    }
-
-    
-   // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
-   // const bondDiscount = 1 - bondPrice / marketPrice;
+    const bondPrice = (2 * reserves[1] * ((amount === '0' ? 1000000000000000000 : amount) / totalLP)) / bondValue;
+    const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
       bondValue: bondValue,
@@ -354,7 +334,6 @@ const actions = {
       marketPrice: marketPrice / 1000000000,
       bondDiscount: bondDiscount
     });
-
   },
 
   async getOHM({commit}, value) {
