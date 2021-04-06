@@ -77,7 +77,7 @@
               </div>
 
               <div class="swap-button-container">
-                <div @click='redeemAlphaOHM' class="swap-button">RECLAIM</div>
+                <div hidden @click='redeemAlphaOHM' class="swap-button">RECLAIM</div>
               </div>
 
             </div>
