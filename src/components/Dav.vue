@@ -1,7 +1,7 @@
 <template>
        <div class="dapp-nav">
         <router-link :to="{ name: 'migrate' }" class="button button-dapp-menu">
-          Migrate
+          Reclaim AlphaOHM
         </router-link>
         <router-link :to="{ name: 'stake' }" class="button button-dapp-menu">
           Stake

@@ -122,6 +122,7 @@ const actions = {
         let bondingCalcContract, bondValue=0;
         let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
         let pairContract;
+        let migrateContract, aOHMAbleToClaim=0;
         
         if(whitelist.includes(address)) 
           commit('set', {whitelisted: true})
@@ -183,7 +184,13 @@ const actions = {
           interestDue = bondDetails[1];
           bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
           pendingPayout = await bondingContract.calculatePendingPayout( address );
-        }  
+        }
+        
+        if(addresses[network.chainId].MIGRATE_ADDRESS) {
+          migrateContract = new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, provider);
+
+          aOHMAbleToClaim = await migrateContract.senderInfo( address );
+        }
 
 
         if(addresses[network.chainId].LP_ADDRESS) {
@@ -289,7 +296,8 @@ const actions = {
           bondMaturationBlock: bondMaturationBlock,
           bondDiscount: bondDiscount,
           pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
-          vestingPeriodInBlocks: vestingPeriodInBlocks
+          vestingPeriodInBlocks: vestingPeriodInBlocks,
+          aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei')
           
         });        
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
@@ -311,22 +319,29 @@ const actions = {
 
   async calcBondDetails({ commit }, amount ) {
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
-    // const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
     const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    // const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    // const lpBalance = await lpContract.balanceOf(state.address);
+    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+    
+    const lpBalance = await lpContract.balanceOf(state.address);
 
     const totalLP = await lpContract.totalSupply();
+
+    //alert(totalLP);
 
     const reserves = await pairContract.getReserves();
 
     const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? '1000000000000000000' : amount);
 
     const marketPrice = reserves[1] / reserves[0];
-
+    
     const bondPrice = (2 * reserves[1] * ((amount === '0' ? 1000000000000000000 : amount) / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
+
+    
+   // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
+   // const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
       bondValue: bondValue,
@@ -334,6 +349,7 @@ const actions = {
       marketPrice: marketPrice / 1000000000,
       bondDiscount: bondDiscount
     });
+
   },
 
   async getOHM({commit}, value) {
@@ -589,6 +605,14 @@ const actions = {
     await migrateTx.wait();
   },
 
+  async reclaimAOHM() {
+    const signer = provider.getSigner();
+    const migrateContact = await new ethers.Contract(addresses[state.network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
+
+    const reclaimTx = await migrateContact.reclaim( );
+    await reclaimTx.wait();
+  }
+
 };
 
 export default {
@@ -596,4 +620,5 @@ export default {
   mutations,
   actions
 };
+
 
