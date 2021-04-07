@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="dapp" class="dapp overflow-hidden">
+    <div id="dapp" class="dapp overflow-hidden" style="height:100% !important;">
       <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
       <div v-else>
       </div>-->
