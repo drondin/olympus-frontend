@@ -73,21 +73,24 @@
                   </div>
                 </div>
               </div>
+
               <div class="col-md-5">
                 <div class="card olympus-card" style="height:400px;">
                   <div class="card-body">
-                    <iframe frameborder="0" src="https://duneanalytics.com/embeds/28286/57140/d3b6447c-f136-4fde-bdd9-c4e830b64dce" title="TVL" style="height:400px;"></iframe>
+                    <iframe frameborder="0" src="https://duneanalytics.com/embeds/29778/60051/6328b87b-183e-4456-888d-d91048ff8cff" title="Market value of Treasury" style="height:400px;"></iframe>
                   </div>
                 </div>
               </div>
+
+
             </div>
 
 
-            <div class="row mt-3">
+            <div class="row mt-3 mb-3">
               <div class="col-md-5 offset-md-1">
                 <div class="card olympus-card" style="height:400px;">
                   <div class="card-body">
-                    <iframe frameborder="0" src="https://duneanalytics.com/embeds/27661/55859/153510d7-7b3f-407b-bb07-c8735ac302a1" title="Holders over time" style="height:400px;"></iframe>
+                    <iframe frameborder="0" src="https://duneanalytics.com/embeds/28286/57140/b0e3c522-8ace-47e8-8ac9-bc4ebf10b8c7" title="Total Value Staking" style="height:400px;"></iframe>
                   </div>
                 </div>
               </div>
