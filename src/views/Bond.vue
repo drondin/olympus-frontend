@@ -214,16 +214,12 @@ export default {
         }
       },
       selectedMapOption: 'Bond',
-      quantity: '',
       bondToggle: true,
       modalLoginOpen: false,
     };
   }, 
   computed: {
     ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
-    },
 
     address() {
       if(this.$store.state.settings.address)
@@ -268,9 +264,6 @@ export default {
   methods: {
     
     ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    },
     disconnect() {
       if(this.$store.state.settings.address)
       return this.$store.state.address.initial
@@ -281,12 +274,11 @@ export default {
     },
 
     async setStake(value) {
-        switch(this.selectedMapOption) {
-          case 'Bond':
-            this.quantity = this.$store.state.settings.lpBalance * value / 100;
-            document.getElementById('bond-input-id').value = this.quantity;
-            break;
-        }
+      switch(this.selectedMapOption) {
+        case 'Bond':
+          document.getElementById('bond-input-id').value = this.$store.state.settings.lpBalance * value / 100;
+          break;
+      }
 
       let amount = document.getElementById('bond-input-id').value;
       if (amount) {
@@ -306,35 +298,32 @@ export default {
     },
 
     async seekApproval() {
-        switch(this.selectedMapOption) {
-          case 'Bond':
-
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
-            else {
-              await this.getLPBondApproval(document.getElementById('bond-input-id').value);
-            }
-            
-            break;
+      switch(this.selectedMapOption) {
+        case 'Bond':
+        if( isNaN( this.$store.state.settings.amount ) ) {
+          alert("The value entered is not a number. Please try again!");
+          return;
+        } else {
+          await this.getLPBondApproval(this.$store.state.settings.amount);
         }
-        
+
+        break;
+      }
+
     },
 
     async bond() {
       switch(this.selectedMapOption) {
-          case 'Bond':
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
+        case 'Bond':
+          if( isNaN( this.$store.state.settings.amount ) ) {
+            alert("The value entered is not a number. Please try again!");
+            return;
+          } else {
+            await this.bondLP( this.$store.state.settings.amount );
+          }
 
-            else {
-              
-              await this.bondLP(document.getElementById('bond-input-id').value);
-            }
-            
-            break;
-        }
+          break;
+      }
     },
 
     async redeem() {
