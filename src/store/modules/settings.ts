@@ -49,7 +49,7 @@ const state = {
   claim: 0,
   minimumEth: 0,
   providedEth: 0,
-  amount: 0,
+  amount: '',
   remainingEth: 0,
   network: {chainId: 0},
   exchangeRates: {},
@@ -324,7 +324,7 @@ const actions = {
 
   async calcBondDetails({ commit }, amount ) {
     // If the user hasn't entered anything, let's calculate a fraction of SLP
-    const enteredAmount = amount === '0' ? (ETHER / 1000000) : amount
+    const enteredAmount = (amount === '') ? (ETHER / 1000000) : amount;
 
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
     const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
@@ -342,6 +342,7 @@ const actions = {
     const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
+      amount: amount,
       bondValue: bondValue,
       bondPrice: bondPrice,
       marketPrice: marketPrice / 1000000000,

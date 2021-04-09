@@ -101,7 +101,7 @@
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
                 </div>
 
-                <div class="stake-price-data-row">
+                <div class="stake-price-data-row" v-if="hasEnteredAmount">
                   <p class="price-label">You Will Get</p>
                   <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
                 </div>
@@ -174,7 +174,9 @@ import { ethers } from 'ethers';
 export default {
   async mounted() {
     let amount = document.getElementById('bond-input-id').value;
-    amount = amount * this.$store.state.constants.ETHER;
+    if (amount) {
+      amount = (amount * this.$store.state.constants.ETHER)
+    }
     await this.calcBondDetails( amount.toString() );
   },
 
@@ -234,6 +236,10 @@ export default {
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
     },
 
+    hasEnteredAmount() {
+      return this.$store.state.settings.amount;
+    },
+
     isRedeem() {
       if(this.selectedMapOption) {
         switch(this.selectedMapOption) {    
@@ -283,14 +289,19 @@ export default {
         }
 
       let amount = document.getElementById('bond-input-id').value;
-      amount = amount * this.$store.state.constants.ETHER;
+      if (amount) {
+        amount = amount * this.$store.state.constants.ETHER;
+      }
       await this.calcBondDetails( amount.toString() );
 
     },
 
     async onInputChange() {
       let amount = document.getElementById('bond-input-id').value;
-      amount = amount * this.$store.state.constants.ETHER;
+
+      if (amount) {
+        amount = (amount * this.$store.state.constants.ETHER);
+      }
       await this.calcBondDetails( amount.toString() );
     },
 
