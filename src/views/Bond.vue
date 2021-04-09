@@ -58,7 +58,7 @@
 
                 <div class="stake-input-container">
                   <input
-                    v-on:keydown="onInputChange"
+                    v-on:keyup="onInputChange"
                     v-on:change="onInputChange"
                     id="bond-input-id"
                     placeholder="Type an amount"
