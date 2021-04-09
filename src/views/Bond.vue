@@ -101,7 +101,7 @@
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
                 </div>
 
-                <div class="stake-price-data-row" v-if="hasEnteredAmount">
+                <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
                   <p class="price-label">You Will Get</p>
                   <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
                 </div>
