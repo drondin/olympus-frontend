@@ -562,7 +562,11 @@ const actions = {
     try {
       bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
     } catch (error) {
-      alert(error.message);
+      if (error.code === -32603) {
+        alert("You may be trying to bond more than your balance! Error code: 32603. Message: ds-math-sub-underflow");
+      } else {
+        alert(error.message);
+      }
     }
 
     // Wait for tx to be minted
