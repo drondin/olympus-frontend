@@ -311,18 +311,21 @@ export default {
     },
 
     async bond() {
-      switch(this.selectedMapOption) {
-          case 'Bond':
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
+      const value = document.getElementById('bond-input-id').value;
 
-            else {
-              
-              await this.bondLP(document.getElementById('bond-input-id').value);
-            }
-            
-            break;
+      switch(this.selectedMapOption) {
+        case 'Bond':
+          if (value === '') {
+            alert("Please enter a value!");
+            return;
+          } else if( isNaN(value) ) {
+            alert("Please enter a valid value!");
+            return;
+          } else {
+            await this.bondLP(value);
+          }
+
+          break;
         }
     },
 
