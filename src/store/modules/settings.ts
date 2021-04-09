@@ -323,9 +323,14 @@ const actions = {
   },
 
   async calcBondDetails({ commit }, amount ) {
-    // If the user hasn't entered anything, let's calculate a fraction of SLP
-    const enteredAmount = (amount === '') ? (ETHER / 1000000) : amount;
+    let amountInWei;
+    if (amount === '') {
+      amountInWei = ETHER / 1000000;
+    } else {
+      amountInWei = amount * ETHER
+    }
 
+    // If the user hasn't entered anything, let's calculate a fraction of SLP
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
     const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
     const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
@@ -336,9 +341,9 @@ const actions = {
     const totalLP   = await lpContract.totalSupply();
     const reserves  = await pairContract.getReserves();
 
-    const bondValue    = await bondingContract.calculateBondInterest(enteredAmount.toString());
+    const bondValue    = await bondingContract.calculateBondInterest(amountInWei.toString());
     const marketPrice  = reserves[1] / reserves[0];
-    const bondPrice    = (2 * reserves[1] * (enteredAmount / totalLP)) / bondValue;
+    const bondPrice    = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
@@ -557,7 +562,11 @@ const actions = {
     try {
       bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
     } catch (error) {
-      alert(error.message);
+      if (error.code === -32603) {
+        alert("You may be trying to bond more than your balance! Error code: 32603. Message: ds-math-sub-underflow");
+      } else {
+        alert(error.message);
+      }
     }
 
     // Wait for tx to be minted
