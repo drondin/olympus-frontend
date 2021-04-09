@@ -304,23 +304,28 @@ export default {
             else {
               await this.getLPBondApproval(document.getElementById('bond-input-id').value);
             }
-            
+
             break;
         }
-        
+
     },
 
     async bond() {
       const value = document.getElementById('bond-input-id').value;
+      const bondInterest  = this.$store.state.settings.interestDue;
+      const bondRewardDue = this.$store.state.settings.pendingPayout;
 
       switch(this.selectedMapOption) {
         case 'Bond':
           if (value === '') {
             alert("Please enter a value!");
-            return;
           } else if( isNaN(value) ) {
             alert("Please enter a valid value!");
-            return;
+          } else if ( bondInterest || bondRewardDue ) {
+            const shouldProceed = confirm('You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
+            if (shouldProceed) {
+              await this.bondLP(value);
+            }
           } else {
             await this.bondLP(value);
           }
