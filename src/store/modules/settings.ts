@@ -558,13 +558,7 @@ const actions = {
     try {
       bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
     } catch (error) {
-      if (error.code === -32603) {
-        alert(error.message);
-        return;
-      } else {
-        alert('Something went wrong! Please try again.')
-        return;
-      }
+      alert(error.message);
     }
 
     // Wait for tx to be minted
