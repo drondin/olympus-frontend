@@ -551,10 +551,24 @@ const actions = {
 
   async bondLP({commit}, value) {
     const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
-    await bondTx.wait();
+    const  bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
 
+    // Deposit the bond
+    let bondTx;
+    try {
+      bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
+    } catch (error) {
+      if (error.code === -32603) {
+        alert(error.message);
+        return;
+      } else {
+        alert('Something went wrong! Please try again.')
+        return;
+      }
+    }
+
+    // Wait for tx to be minted
+    await bondTx.wait();
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const lpBalance = await lpContract.balanceOf(state.address);
     commit('set', {
