@@ -323,30 +323,23 @@ const actions = {
   },
 
   async calcBondDetails({ commit }, amount ) {
+    // If the user hasn't entered anything, let's calculate a fraction of SLP
+    const enteredAmount = amount === '0' ? (ETHER / 1000000) : amount
+
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
     const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
     const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    
+
     const lpBalance = await lpContract.balanceOf(state.address);
+    const totalLP   = await lpContract.totalSupply();
+    const reserves  = await pairContract.getReserves();
 
-    const totalLP = await lpContract.totalSupply();
-
-    //alert(totalLP);
-
-    const reserves = await pairContract.getReserves();
-
-    const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? ETHER.toString() : amount);
-
-    const marketPrice = reserves[1] / reserves[0];
-
-    const bondPrice = (2 * reserves[1] * ((amount === '0' ? ETHER : amount) / totalLP)) / bondValue;
+    const bondValue    = await bondingContract.calculateBondInterest(enteredAmount.toString());
+    const marketPrice  = reserves[1] / reserves[0];
+    const bondPrice    = (2 * reserves[1] * (enteredAmount / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
-
-
-   // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
-   // const bondDiscount = 1 - bondPrice / marketPrice;
 
     commit('set', {
       bondValue: bondValue,
