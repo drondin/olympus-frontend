@@ -10,6 +10,7 @@ import {
   revitalisePotion,
   withdrawPotion
 } from '@/helpers/utils';
+import { ETHER } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
@@ -48,7 +49,7 @@ const state = {
   claim: 0,
   minimumEth: 0,
   providedEth: 0,
-  amount: 0,
+  amount: '',
   remainingEth: 0,
   network: {chainId: 0},
   exchangeRates: {},
@@ -66,6 +67,10 @@ const state = {
   amountSwap: 0,
 };
 
+// Defines convenience function set() that can be used to update key property
+// with payload property.
+// TODO: might be better to use mutation-types.js instead
+// https://vuex.vuejs.org/guide/mutations.html#using-constants-for-mutation-types
 const mutations = {
   set(_state, payload) {
     Object.keys(payload).forEach(key => {
@@ -318,32 +323,26 @@ const actions = {
   },
 
   async calcBondDetails({ commit }, amount ) {
+    // If the user hasn't entered anything, let's calculate a fraction of SLP
+    const enteredAmount = (amount === '') ? (ETHER / 1000000) : amount;
+
     const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
     const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
     const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    
+
     const lpBalance = await lpContract.balanceOf(state.address);
+    const totalLP   = await lpContract.totalSupply();
+    const reserves  = await pairContract.getReserves();
 
-    const totalLP = await lpContract.totalSupply();
-
-    //alert(totalLP);
-
-    const reserves = await pairContract.getReserves();
-
-    const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? '1000000000000000000' : amount);
-
-    const marketPrice = reserves[1] / reserves[0];
-    
-    const bondPrice = (2 * reserves[1] * ((amount === '0' ? 1000000000000000000 : amount) / totalLP)) / bondValue;
+    const bondValue    = await bondingContract.calculateBondInterest(enteredAmount.toString());
+    const marketPrice  = reserves[1] / reserves[0];
+    const bondPrice    = (2 * reserves[1] * (enteredAmount / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
 
-    
-   // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
-   // const bondDiscount = 1 - bondPrice / marketPrice;
-
     commit('set', {
+      amount: amount,
       bondValue: bondValue,
       bondPrice: bondPrice,
       marketPrice: marketPrice / 1000000000,
@@ -551,10 +550,18 @@ const actions = {
 
   async bondLP({commit}, value) {
     const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
-    await bondTx.wait();
+    const  bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
 
+    // Deposit the bond
+    let bondTx;
+    try {
+      bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
+    } catch (error) {
+      alert(error.message);
+    }
+
+    // Wait for tx to be minted
+    await bondTx.wait();
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const lpBalance = await lpContract.balanceOf(state.address);
     commit('set', {
