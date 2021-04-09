@@ -275,17 +275,19 @@ export default {
     },
 
     async setStake(value) {
-        switch(this.selectedMapOption) {
-          case 'Bond':
-            this.quantity = this.$store.state.settings.lpBalance * value / 100;
-            document.getElementById('bond-input-id').value = this.quantity;
-            break;
-        }      
+      // Calculate suppliedQuantity and round it to avoid conflicts with uint.
+      let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
+      suppliedQuantity = Math.round( suppliedQuantity * 1000000000000000000)/1000000000000000000;
 
-      let amount = document.getElementById('bond-input-id').value;
-      amount = amount * 1000000000000000000;
+      switch(this.selectedMapOption) {
+        case 'Bond':
+          this.quantity = suppliedQuantity;
+          document.getElementById('bond-input-id').value = suppliedQuantity;
+          break;
+      }
+
+      const amount = suppliedQuantity * 1000000000000000000;
       await this.calcBondDetails( amount.toString() );
-        
     },
 
     async onInputChange() {
