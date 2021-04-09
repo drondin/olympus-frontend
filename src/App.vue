@@ -32,7 +32,7 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   computed: {
-    ...mapState(['settings'])
+    ...mapState(['settings', 'constants'])
   },
   methods: {
     ...mapActions(['init'])

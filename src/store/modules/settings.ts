@@ -10,6 +10,7 @@ import {
   revitalisePotion,
   withdrawPotion
 } from '@/helpers/utils';
+import { ETHER } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
@@ -66,6 +67,10 @@ const state = {
   amountSwap: 0,
 };
 
+// Defines convenience function set() that can be used to update key property
+// with payload property.
+// TODO: might be better to use mutation-types.js instead
+// https://vuex.vuejs.org/guide/mutations.html#using-constants-for-mutation-types
 const mutations = {
   set(_state, payload) {
     Object.keys(payload).forEach(key => {
@@ -332,14 +337,14 @@ const actions = {
 
     const reserves = await pairContract.getReserves();
 
-    const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? '1000000000000000000' : amount);
+    const bondValue = await bondingContract.calculateBondInterest(amount === '0' ? ETHER.toString() : amount);
 
     const marketPrice = reserves[1] / reserves[0];
-    
-    const bondPrice = (2 * reserves[1] * ((amount === '0' ? 1000000000000000000 : amount) / totalLP)) / bondValue;
+
+    const bondPrice = (2 * reserves[1] * ((amount === '0' ? ETHER : amount) / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
 
-    
+
    // const bondPrice = ( 2 * reserves[1] * ( amount / totalLP ) ) / bondValue;
    // const bondDiscount = 1 - bondPrice / marketPrice;
 

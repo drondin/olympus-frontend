@@ -174,7 +174,7 @@ import { ethers } from 'ethers';
 export default {
   async mounted() {
     let amount = document.getElementById('bond-input-id').value;
-    amount = amount * 1000000000000000000;
+    amount = amount * this.$store.state.constants.ETHER;
     await this.calcBondDetails( amount.toString() );
   },
 
@@ -280,17 +280,17 @@ export default {
             this.quantity = this.$store.state.settings.lpBalance * value / 100;
             document.getElementById('bond-input-id').value = this.quantity;
             break;
-        }      
+        }
 
       let amount = document.getElementById('bond-input-id').value;
-      amount = amount * 1000000000000000000;
+      amount = amount * this.$store.state.constants.ETHER;
       await this.calcBondDetails( amount.toString() );
-        
+
     },
 
     async onInputChange() {
       let amount = document.getElementById('bond-input-id').value;
-      amount = amount * 1000000000000000000;
+      amount = amount * this.$store.state.constants.ETHER;
       await this.calcBondDetails( amount.toString() );
     },
 

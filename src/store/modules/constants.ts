@@ -1,4 +1,4 @@
-import { ETHER } from '@/helpers/constants'
+import { ETHER } from '@/helpers/constants';
 
 const state = {
   ETHER: ETHER
