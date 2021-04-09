@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="dapp" class="dapp overflow-hidden">
-      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" /> 
+      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
       <div v-else>
       </div>-->
       <div class="dapp-sidebar">
@@ -45,20 +45,20 @@
           <div class="dapp-modal-wrapper">
 
             <div class="swap-input-column">
-              
+
               <div class="stake-toggle-row">
                 <toggle-switch
                   :options="myOptions"
                   v-model="selectedMapOption"
                   :value="selectedMapOption"
-                  /> 
+                  />
               </div>
 
               <div v-if="isRedeem==false" class="swap-input-row">
 
                 <div class="stake-input-container">
                   <input
-                    v-on:keydown="onInputChange"
+                    v-on:keyup="onInputChange"
                     v-on:change="onInputChange"
                     id="bond-input-id"
                     placeholder="Type an amount"
@@ -87,7 +87,7 @@
                 </div>
               </div>
 
-             
+
 
               <div v-if="isRedeem==false" class="stake-price-data-column">
                 <div class="stake-price-data-row">
@@ -101,7 +101,7 @@
                   <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
                 </div>
 
-                <div class="stake-price-data-row">
+                <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
                   <p class="price-label">You Will Get</p>
                   <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
                 </div>
@@ -134,12 +134,12 @@
                 <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
               </div>
 
-              <div v-else class="redeem-button-container" >              
+              <div v-else class="redeem-button-container" >
                 <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
               </div>
 
             </div>
-            
+
           </div>
 
           <div class="bond-data">
@@ -159,7 +159,7 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
 
@@ -174,7 +174,9 @@ import { ethers } from 'ethers';
 export default {
   async mounted() {
     let amount = document.getElementById('bond-input-id').value;
-    amount = amount * 1000000000000000000;
+    if (amount) {
+      amount = (amount * this.$store.state.constants.ETHER)
+    }
     await this.calcBondDetails( amount.toString() );
   },
 
@@ -206,37 +208,37 @@ export default {
           preSelected: 'unknown',
           disabled: false,
           labels: [
-            {name: 'Bond', color: 'black', backgroundColor: 'white'}, 
+            {name: 'Bond', color: 'black', backgroundColor: 'white'},
             {name: 'Redeem', color: 'black', backgroundColor: 'white'}
           ]
         }
       },
       selectedMapOption: 'Bond',
-      quantity: '',
       bondToggle: true,
       modalLoginOpen: false,
     };
-  }, 
+  },
   computed: {
     ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
-    },
 
     address() {
       if(this.$store.state.settings.address)
       return this.$store.state.settings.address
       return null
-    }, 
+    },
 
     maxStrike() {
       const exchangeRate = this.settings.exchangeRates[this.form.asset];
       return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
     },
 
+    hasEnteredAmount() {
+      return this.$store.state.settings.amount;
+    },
+
     isRedeem() {
       if(this.selectedMapOption) {
-        switch(this.selectedMapOption) {    
+        switch(this.selectedMapOption) {
             case 'Redeem':
               return true;
         }
@@ -247,30 +249,27 @@ export default {
 
     hasAllowance() {
       const approval = this.$store.state.settings.lpBondAllowance;
-  
+
       if(approval > 0 ) {
-       return true;        
+       return true;
       }
 
       return false;
-      
+
     }
 
   },
-  
+
 
   methods: {
-    
+
     ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    },
     disconnect() {
       if(this.$store.state.settings.address)
       return this.$store.state.address.initial
       return null
     },
-    shorten(addr) { 
+    shorten(addr) {
       return shorten(addr);
     },
 
@@ -286,34 +285,39 @@ export default {
           break;
       }
 
-      const amount = suppliedQuantity * 1000000000000000000;
+      let amount = document.getElementById('bond-input-id').value;
+      if (amount) {
+        amount = amount * this.$store.state.constants.ETHER;
+      }
       await this.calcBondDetails( amount.toString() );
     },
 
     async onInputChange() {
       let amount = document.getElementById('bond-input-id').value;
-      amount = amount * 1000000000000000000;
+
+      if (amount) {
+        amount = (amount * this.$store.state.constants.ETHER);
+      }
       await this.calcBondDetails( amount.toString() );
     },
 
     async seekApproval() {
-        switch(this.selectedMapOption) {
-          case 'Bond':
-
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
-            else {
-              await this.getLPBondApproval(document.getElementById('bond-input-id').value);
-            }
-
-            break;
+      switch(this.selectedMapOption) {
+        case 'Bond':
+        if( isNaN( this.$store.state.settings.amount ) ) {
+          alert("The value entered is not a number. Please try again!");
+          return;
+        } else {
+          await this.getLPBondApproval(this.$store.state.settings.amount);
         }
+
+        break;
+      }
 
     },
 
     async bond() {
-      const value = document.getElementById('bond-input-id').value;
+      const value = this.$store.state.settings.amount;
       const bondInterest  = this.$store.state.settings.interestDue;
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
@@ -333,7 +337,8 @@ export default {
           }
 
           break;
-        }
+
+      }
     },
 
     async redeem() {
