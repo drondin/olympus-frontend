@@ -173,11 +173,8 @@ import { ethers } from 'ethers';
 
 export default {
   async mounted() {
-    let amount = document.getElementById('bond-input-id').value;
-    if (amount) {
-      amount = (amount * this.$store.state.constants.ETHER)
-    }
-    await this.calcBondDetails( amount.toString() );
+    const amount = document.getElementById('bond-input-id').value;
+    await this.calcBondDetails( amount );
   },
 
   data() {
@@ -285,20 +282,13 @@ export default {
           break;
       }
 
-      let amount = document.getElementById('bond-input-id').value;
-      if (amount) {
-        amount = amount * this.$store.state.constants.ETHER;
-      }
-      await this.calcBondDetails( amount.toString() );
+      const amount = document.getElementById('bond-input-id').value;
+      await this.calcBondDetails( amount );
     },
 
     async onInputChange() {
-      let amount = document.getElementById('bond-input-id').value;
-
-      if (amount) {
-        amount = (amount * this.$store.state.constants.ETHER);
-      }
-      await this.calcBondDetails( amount.toString() );
+      const amount = document.getElementById('bond-input-id').value;
+      await this.calcBondDetails( amount );
     },
 
     async seekApproval() {
