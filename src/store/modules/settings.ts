@@ -33,12 +33,52 @@ const ethereum = window['ethereum'];
 if (ethereum) {
   ethereum.on('accountsChanged', () => store.dispatch('init'));
   ethereum.on('networkChanged', network => {
-    
-    store.dispatch('init')     
+    store.dispatch('init');
   });
 }
 
-const state = {  
+const EPOCH_INTERVAL = 2200;
+
+// NOTE could get this from an outside source since it changes slightly over time
+const BLOCK_RATE_SECONDS = 13.14;
+
+async function getNextEpoch(): Promise<[number, number, number]> {
+  const height = await provider.getBlockNumber();
+
+  if (height % EPOCH_INTERVAL === 0) {
+    return [0, 0, 0];
+  }
+
+  const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
+  const blocksAway = next - height;
+  const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
+
+  return [next, blocksAway, secondsAway];
+}
+
+const MARKET_API_URL =
+  'https://api.coingecko.com/api/v3/coins/olympus?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
+
+async function getSupplyAndMarketCap() {
+  try {
+    const result = await fetch(MARKET_API_URL);
+    const json = await result.json();
+
+    return {
+      circulatingSupply: json.market_data.circulating_supply,
+      marketCap: json.market_data.market_cap.usd,
+      currentPrice: json.market_data.current_price.usd
+    };
+  } catch (e) {
+    return {
+      circulatingSupply: 0,
+      marketCap: 0,
+      currentPrice: 0
+    };
+  }
+}
+
+const state = {
   approval: 0,
   loading: false,
   address: null,
@@ -51,7 +91,7 @@ const state = {
   providedEth: 0,
   amount: '',
   remainingEth: 0,
-  network: {chainId: 0},
+  network: { chainId: 0 },
   exchangeRates: {},
   allowance: 0,
   stakeAllowance: 0,
@@ -65,6 +105,9 @@ const state = {
   maxPurchase: 0,
   maxSwap: 0,
   amountSwap: 0,
+  epochBlock: null,
+  epochBlocksAway: null,
+  epochSecondsAway: null
 };
 
 // Defines convenience function set() that can be used to update key property
@@ -106,147 +149,161 @@ const actions = {
         provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const address = await signer.getAddress();
-        console.log('error address: '+address);
+        console.log('error address: ' + address);
         // const name = await provider.lookupAddress(address);
         // Throws errors with non ENS compatible testnets
         const network = await provider.getNetwork();
-        store.commit('set', { network: network}); 
-            
-        
-        const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
-        const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( address );
+        store.commit('set', { network: network });
+
+        const aOHMContract = await new ethers.Contract(
+          addresses[state.network.chainId].AOHM_ADDRESS,
+          ierc20Abi,
+          provider
+        );
+        const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf(address);
         const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
-        
-        let ohmContract, ohmBalance=0, allowance=0;
-        let sohmContract, sohmMainContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0, circSupply=0;
-        let stakingContract, profit=0;
-        let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
-        let lpContract, lpBalance=0, lpStakeAllowance;
-        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
-        let distributorContractSigner, currentIndex=0;
-        let bondingCalcContract, bondValue=0;
-        let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
-        let pairContract;
-        let migrateContract, aOHMAbleToClaim=0;
-        
-        if(whitelist.includes(address)) 
-          commit('set', {whitelisted: true})
-        
-        const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+
+        let ohmContract,
+          ohmBalance = ethers.constants.Zero,
+          allowance = 0;
+        let sohmContract,
+          sohmMainContract,
+          sohmBalance = ethers.constants.Zero,
+          stakeAllowance = 0,
+          unstakeAllowance = 0,
+          circSupply = 0;
+        let stakingContract,
+          profit = 0;
+        let lpStakingContract,
+          totalLPStaked = 0,
+          lpStaked = 0,
+          pendingRewards = 0,
+          lpStakingAPY;
+        let lpContract,
+          lpBalance = 0,
+          lpStakeAllowance;
+        let distributorContract,
+          stakingAPY = 0,
+          stakingRebase = 0,
+          stakingReward = 0;
+        let distributorContractSigner,
+          currentIndex = 0;
+
+        const ohmSupply = 0;
+        const ohmMarketCap = 0;
+
+        if (whitelist.includes(address)) commit('set', { whitelisted: true });
+
+        const daiContract = new ethers.Contract(
+          addresses[network.chainId].DAI_ADDRESS,
+          ierc20Abi,
+          provider
+        );
         const balance = await daiContract.balanceOf(address);
-        console.log(balance)
-        allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
+        allowance = await daiContract.allowance(
+          address,
+          addresses[network.chainId].PRESALE_ADDRESS
+        )!;
 
-        if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
-          bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-          
-        }  
-
-        
-        if(addresses[network.chainId].BOND_ADDRESS) {
-          bondingContract = new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, provider);
-          bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
-          pairContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, PairContract, provider);
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-          ohmContract = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-          
+        if (addresses[network.chainId].LP_ADDRESS) {
+          lpContract = new ethers.Contract(
+            addresses[network.chainId].LP_ADDRESS,
+            ierc20Abi,
+            provider
+          );
           lpBalance = await lpContract.balanceOf(address);
-
-          const totalLP = await lpContract.totalSupply();
-
-          const reserves = await pairContract.getReserves();
-
-          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );     
-          
-
-          marketPrice = reserves[1] / reserves[0];
-
-          if( lpBalance == 0 ) {
-            bondPrice = 0;
-            bondDiscount = 0;
-          } else {
-            bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
-            bondDiscount = 1 - bondPrice / marketPrice;
-          }
-
-          const totalDebtDo = await bondingContract.totalDebt();
-
-          const ohmTotalSupply = await ohmContract.totalSupply();
-
-        
-          debtRatio = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
-
-
-          lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
-
-
-          const bondDetails = await bondingContract.depositorInfo( address );          
-
-
-          vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
-
-          interestDue = bondDetails[1];
-          bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
-          pendingPayout = await bondingContract.calculatePendingPayout( address );
-        }
-        
-        if(addresses[network.chainId].MIGRATE_ADDRESS) {
-          migrateContract = new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, provider);
-
-          aOHMAbleToClaim = await migrateContract.senderInfo( address );
         }
 
-
-        if(addresses[network.chainId].LP_ADDRESS) {
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-          lpBalance = await lpContract.balanceOf(address);
-        }  
-        
-        if(addresses[network.chainId].LPSTAKING_ADDRESS) {
-          lpStakingContract = new ethers.Contract(addresses[network.chainId].LPSTAKING_ADDRESS, LPStaking, provider);
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-          ohmContract = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+        if (addresses[network.chainId].LPSTAKING_ADDRESS) {
+          lpStakingContract = new ethers.Contract(
+            addresses[network.chainId].LPSTAKING_ADDRESS,
+            LPStaking,
+            provider
+          );
+          lpContract = new ethers.Contract(
+            addresses[network.chainId].LP_ADDRESS,
+            ierc20Abi,
+            provider
+          );
+          ohmContract = new ethers.Contract(
+            addresses[network.chainId].OHM_ADDRESS,
+            ierc20Abi,
+            provider
+          );
 
           totalLPStaked = await lpStakingContract.totalStaked();
-          lpStaked = await lpStakingContract.getUserBalance( address );
-          pendingRewards = await lpStakingContract.pendingRewards( address );
-          lpStakeAllowance = await lpContract.allowance(address, addresses[state.network.chainId].LPSTAKING_ADDRESS);
+          lpStaked = await lpStakingContract.getUserBalance(address);
+          pendingRewards = await lpStakingContract.pendingRewards(address);
+          lpStakeAllowance = await lpContract.allowance(
+            address,
+            addresses[state.network.chainId].LPSTAKING_ADDRESS
+          );
 
           const totalLP = await lpContract.totalSupply();
-          const OHMInLP = await ohmContract.balanceOf( addresses[network.chainId].LP_ADDRESS );
+          const OHMInLP = await ohmContract.balanceOf(addresses[network.chainId].LP_ADDRESS);
 
-          const rewardPerBlock = await lpStakingContract.rewardPerBlock()
+          const rewardPerBlock = await lpStakingContract.rewardPerBlock();
 
           // alert(totalLPStaked);
           // alert(OHMInLP);
           // alert(totalLP);
 
-          lpStakingAPY = ( rewardPerBlock * 6650 * 366 * 100) / (totalLPStaked * OHMInLP / totalLP * 2 )
+          lpStakingAPY =
+            (rewardPerBlock * 6650 * 366 * 100) / (((totalLPStaked * OHMInLP) / totalLP) * 2);
           //alert( lpStakingAPY );
-        }    
+        }
 
-        if(addresses[network.chainId].OHM_ADDRESS) {
-          ohmContract = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+        if (addresses[network.chainId].OHM_ADDRESS) {
+          ohmContract = new ethers.Contract(
+            addresses[network.chainId].OHM_ADDRESS,
+            ierc20Abi,
+            provider
+          );
           ohmBalance = await ohmContract.balanceOf(address);
-          stakeAllowance = await ohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
-        }          
-        if(addresses[network.chainId].SOHM_ADDRESS) {        
-          sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-          sohmMainContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, sOHM, provider);
+          stakeAllowance = await ohmContract.allowance(
+            address,
+            addresses[network.chainId].STAKING_ADDRESS
+          )!;
+        }
+        if (addresses[network.chainId].SOHM_ADDRESS) {
+          sohmContract = new ethers.Contract(
+            addresses[network.chainId].SOHM_ADDRESS,
+            ierc20Abi,
+            provider
+          );
+          sohmMainContract = new ethers.Contract(
+            addresses[network.chainId].SOHM_ADDRESS,
+            sOHM,
+            provider
+          );
 
           sohmBalance = await sohmContract.balanceOf(address);
-          unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
+          unstakeAllowance = await sohmContract.allowance(
+            address,
+            addresses[network.chainId].STAKING_ADDRESS
+          )!;
           circSupply = await sohmMainContract.circulatingSupply();
         }
-        if(addresses[network.chainId].STAKING_ADDRESS) {        
-          stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
+        if (addresses[network.chainId].STAKING_ADDRESS) {
+          stakingContract = new ethers.Contract(
+            addresses[network.chainId].STAKING_ADDRESS,
+            OlympusStaking,
+            provider
+          );
           profit = await stakingContract.ohmToDistributeNextEpoch();
         }
 
-        if(addresses[network.chainId].DISTRIBUTOR_ADDRESS) {        
-          distributorContract = new ethers.Contract(addresses[network.chainId].DISTRIBUTOR_ADDRESS, DistributorContract, provider);
-          sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+        if (addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
+          distributorContract = new ethers.Contract(
+            addresses[network.chainId].DISTRIBUTOR_ADDRESS,
+            DistributorContract,
+            provider
+          );
+          sohmContract = new ethers.Contract(
+            addresses[network.chainId].SOHM_ADDRESS,
+            ierc20Abi,
+            provider
+          );
 
           circSupply = await sohmMainContract.circulatingSupply();
 
@@ -254,24 +311,29 @@ const actions = {
 
           stakingRebase = stakingReward / circSupply;
 
-
-          stakingAPY = Math.pow( ( 1 + stakingRebase ), 1095);
-    
-          console.log(stakingAPY)
+          stakingAPY = Math.pow(1 + stakingRebase, 1095);
 
           stakingAPY = stakingAPY * 100;
 
           stakingRebase = stakingRebase * 100;
 
-          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2'); 
-          
-          nextEpochBlock = await distributorContract.nextEpochBlock();
-
-          currentBlock = await provider.getBlockNumber();
+          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
         }
-        //const balance = balanceBefore.toFixed(2);        
-        console.log("Allowance", allowance);
-        console.log("stakeAllowance", stakeAllowance);
+
+        const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
+        const { circulatingSupply, marketCap, currentPrice } = await getSupplyAndMarketCap();
+
+        const supplyInGwei = ethers.utils.parseUnits(circulatingSupply.toFixed(5), 'gwei');
+
+        console.log({ supplyInGwei: supplyInGwei.toString() });
+
+        const percentOfCirculatingOhmSupply = ohmBalance.gt(ethers.constants.Zero)
+          ? (ohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+          : 0;
+
+        const percentOfCirculatingSOhmSupply = sohmBalance.gt(ethers.constants.Zero)
+          ? (sohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+          : 0;
 
         commit('set', { address });
         commit('set', {
@@ -291,21 +353,13 @@ const actions = {
           stakingAPY: stakingAPY,
           stakingRebase: stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
-          nextEpochBlock: nextEpochBlock,
-          currentBlock: currentBlock,
-          bondValue: bondValue,
-          bondPrice: bondPrice,
-          marketPrice: marketPrice / 1000000000,
-          debtRatio: debtRatio,
-          interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
-          bondMaturationBlock: bondMaturationBlock,
-          bondDiscount: bondDiscount,
-          pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
-          vestingPeriodInBlocks: vestingPeriodInBlocks,
-          aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei')
-          
-        });        
-        commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
+          epochBlock,
+          epochBlocksAway,
+          epochSecondsAway,
+          percentOfCirculatingOhmSupply,
+          percentOfCirculatingSOhmSupply
+        });
+        commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance });
         dispatch('getAllotmentPerBuyer');
       } catch (error) {
         console.error(error);
@@ -322,313 +376,355 @@ const actions = {
     commit('set', { exchangeRates });
   },
 
-  async calcBondDetails({ commit }, amount ) {
-    let amountInWei;
-    if (amount === '') {
-      amountInWei = ETHER / 1000000;
-    } else {
-      amountInWei = amount * ETHER
-    }
-
-    // If the user hasn't entered anything, let's calculate a fraction of SLP
-    const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
-    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
-    const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
-    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-
-    const lpBalance = await lpContract.balanceOf(state.address);
-    const totalLP   = await lpContract.totalSupply();
-    const reserves  = await pairContract.getReserves();
-
-    const bondValue    = await bondingContract.calculateBondInterest(amountInWei.toString());
-    const marketPrice  = reserves[1] / reserves[0];
-    const bondPrice    = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
-    const bondDiscount = 1 - bondPrice / marketPrice;
-
-    commit('set', {
-      amount: amount,
-      bondValue: bondValue,
-      bondPrice: bondPrice,
-      marketPrice: marketPrice / 1000000000,
-      bondDiscount: bondDiscount
-    });
-
-  },
-
-  async getOHM({commit}, value) {
-    const signer = provider.getSigner();  
-    const presale = await new ethers.Contract(addresses[state.network.chainId].PRESALE_ADDRESS, OHMPreSale, signer);
-    const daiContract = new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, signer);
+  async getOHM({ commit }, value) {
+    const signer = provider.getSigner();
+    const presale = await new ethers.Contract(
+      addresses[state.network.chainId].PRESALE_ADDRESS,
+      OHMPreSale,
+      signer
+    );
+    const daiContract = new ethers.Contract(
+      addresses[state.network.chainId].DAI_ADDRESS,
+      ierc20Abi,
+      signer
+    );
 
     const presaleTX = await presale.purchaseaOHM(ethers.utils.parseEther(value).toString());
-    await presaleTX.wait(console.log("Success"));
+    await presaleTX.wait(console.log('Success'));
     const balance = await daiContract.balanceOf(state.address);
     commit('set', {
       // name,
-      balance: ethers.utils.formatEther(balance)})    
-  },
-
-  async getApproval({commit, dispatch}, value) {
-    const signer = provider.getSigner();  
-    const daiContract = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, signer);
-    
-    if(value <= 0) return;
-
-    const approveTx = await daiContract.approve(addresses[state.network.chainId].PRESALE_ADDRESS, ethers.utils.parseEther(value).toString());
-    commit('set',{allowanceTx:1})
-    await approveTx.wait();
-    await dispatch('getAllowances')
-
-  },
-
-  async getAllowances({commit}) {
-    if(state.address) {
-    const diaContract = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
-    const allowance = await diaContract.allowance(state.address, addresses[state.network.chainId].PRESALE_ADDRESS);
-    commit('set', {allowance});
-    }
-  },
-
-  async getStakeApproval({commit, dispatch}, value) {
-    const signer = provider.getSigner();  
-    const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
-
-    const approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
-    await approveTx.wait();
-    await dispatch('getStakeAllowances')
-  },
-
-  async getLPStakeApproval({ commit, dispatch}, value) {
-    const signer = provider.getSigner();  
-    const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
-
-    const approveTx = await lpContract.approve(addresses[state.network.chainId].LPSTAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
-    await approveTx.wait();
-    await dispatch('getLPStakeAllowance')
-  },
-
-  async getLPBondApproval({ commit, dispatch }, value ) {
-    const signer = provider.getSigner();  
-    const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
-
-    const approveTx = await lpContract.approve(addresses[state.network.chainId].BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
-    await approveTx.wait();
-    await dispatch('getLPBondAllowance')
-
-  },
-
-  async getStakeAllowances({commit}) {
-    if(state.address) {
-    const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    const stakeAllowance = await ohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
-    commit('set', {stakeAllowance});
-    }
-  },
-
-  async getLPStakeAllowance({commit}) {
-    if(state.address) {
-      const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-      const lpStakeAllowance = await lpContract.allowance(state.address, addresses[state.network.chainId].LPSTAKING_ADDRESS);
-      commit('set', {lpStakeAllowance});
-    }
-  },
-
-  async getLPBondAllowance({commit}) {
-    if(state.address) {
-      const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-      const lpBondAllowance = await lpContract.allowance(state.address, addresses[state.network.chainId].BOND_ADDRESS);
-      commit('set', {lpBondAllowance});
-    }
-  },
-
-  async getunStakeApproval({commit, dispatch}, value) {
-    const signer = provider.getSigner();  
-    const sohmContract = await new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
-
-    const approveTx = await sohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
-    await approveTx.wait();
-    await dispatch('getunStakeAllowances')
-  },
-
-  async getunStakeAllowances({commit}) {
-    if(state.address) {
-    const sohmContract = await new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-    const unstakeAllowance = await sohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
-    commit('set', {unstakeAllowance});
-    }
-  },  
-  async calculateSaleQuote({commit}, value) {
-      const presale = await new ethers.Contract(addresses[state.network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
-      const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'ether'));
-      commit('set', {amount:ethers.utils.formatUnits(amount.toString(), 'gwei').toString()});  
-  },
-
-  async getAllotmentPerBuyer({commit}) {
-    const presale = await new ethers.Contract(addresses[state.network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
-    const allotment = await presale.getAllotmentPerBuyer()
-    commit('set', {allotment:ethers.utils.formatUnits(allotment, 'gwei')});
-  },
-
-  async getMaxPurchase({commit, dispatch}) {
-      const presale = await new ethers.Contract(addresses[state.network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
-      const salePrice = await presale.salePrice();
-      const total = state.allotment * salePrice;    
-
-      commit('set', {maxPurchase:ethers.utils.formatUnits(total.toString(), 'ether')})
-  },
-
-  async stakeOHM({commit}, value) {
-    const signer = provider.getSigner();      
-    const staking = await new ethers.Contract(addresses[state.network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
-
-    const stakeTx = await staking.stakeOHM(ethers.utils.parseUnits(value, 'gwei'));
-    await stakeTx.wait();
-    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    const ohmBalance = await ohmContract.balanceOf(state.address);
-    const sohmContract = new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-    const sohmBalance = await sohmContract.balanceOf(state.address);   
-    commit('set', {
-      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
-      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
-    });          
-  },
-  async unstakeOHM({commit}, value) {
-    const signer = provider.getSigner();      
-    const staking = await new ethers.Contract(addresses[state.network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
-    console.log(ethers.utils.parseUnits(value, 'gwei').toString())
-    const stakeTx = await staking.unstakeOHM(ethers.utils.parseUnits(value, 'gwei'));
-    await stakeTx.wait();
-    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    const ohmBalance = await ohmContract.balanceOf(state.address);
-    const sohmContract = new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-    const sohmBalance = await sohmContract.balanceOf(state.address);   
-    commit('set', {
-      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
-      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
-    });          
-  },
-
-  async stakeLP({commit}, value) {
-    const signer = provider.getSigner();      
-    const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const stakeTx = await staking.stakeLP(ethers.utils.parseUnits(value, 'ether'));
-    await stakeTx.wait();
-
-    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    const lpBalance = await lpContract.balanceOf(state.address);
-    const lpStakingContract = new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, provider);
-    const lpStaked = await lpStakingContract.getUserBalance(state.address);   
-    commit('set', {
-      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
-      lpStaked: ethers.utils.formatUnits(lpStaked, 'ether')
-    });  
-  },
-
-  async unstakeLP({commit}, value) {
-    const signer = provider.getSigner();      
-    const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const unstakeTx = await staking.unstakeLP();
-    await unstakeTx.wait();
-
-    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    const lpBalance = await lpContract.balanceOf(state.address);
-    const lpStakingContract = new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, provider);
-    const lpStaked = await lpStakingContract.getUserBalance(state.address);   
-    commit('set', {
-      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
-      lpStaked: ethers.utils.formatUnits(lpStaked, 'ether')
-    });  
-  },
-
-  async claimRewards() {
-    const signer = provider.getSigner();      
-    const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const claimTx = await staking.claimRewards();
-    await claimTx.wait();
-
-  },
-
-  async bondLP({commit}, value) {
-    const signer = provider.getSigner();
-    const  bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-
-    // Deposit the bond
-    let bondTx;
-    try {
-      bondTx = await bonding.depositBondPrinciple( ethers.utils.parseUnits( value, 'ether' ) );
-    } catch (error) {
-      if (error.code === -32603) {
-        alert("You may be trying to bond more than your balance! Error code: 32603. Message: ds-math-sub-underflow");
-      } else {
-        alert(error.message);
-      }
-    }
-
-    // Wait for tx to be minted
-    await bondTx.wait();
-    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
-    const lpBalance = await lpContract.balanceOf(state.address);
-    commit('set', {
-      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether')
+      balance: ethers.utils.formatEther(balance)
     });
   },
 
-  async redeemBond() {
+  async getApproval({ commit, dispatch }, value) {
     const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const redeemTx = await bonding.redeemBond( );
-    await redeemTx.wait();
+    const daiContract = await new ethers.Contract(
+      addresses[state.network.chainId].DAI_ADDRESS,
+      ierc20Abi,
+      signer
+    );
 
+    if (value <= 0) return;
+
+    const approveTx = await daiContract.approve(
+      addresses[state.network.chainId].PRESALE_ADDRESS,
+      ethers.utils.parseEther(value).toString()
+    );
+    commit('set', { allowanceTx: 1 });
+    await approveTx.wait();
+    await dispatch('getAllowances');
   },
 
-  async forfeitBond() {
-    const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const forfeitTx = await bonding.withdrawPrincipleAndForfeitInterest( );
-    await forfeitTx.wait();
+  async getAllowances({ commit }) {
+    if (state.address) {
+      const diaContract = await new ethers.Contract(
+        addresses[state.network.chainId].DAI_ADDRESS,
+        ierc20Abi,
+        provider
+      );
+      const allowance = await diaContract.allowance(
+        state.address,
+        addresses[state.network.chainId].PRESALE_ADDRESS
+      );
+      commit('set', { allowance });
+    }
   },
 
-  async getMaxSwap({commit, dispatch}) {
-    const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
-    const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( state.address );
+  async getStakeApproval({ commit, dispatch }, value) {
+    const signer = provider.getSigner();
+    const ohmContract = await new ethers.Contract(
+      addresses[state.network.chainId].OHM_ADDRESS,
+      ierc20Abi,
+      signer
+    );
+    if (value <= 0) return;
+
+    const approveTx = await ohmContract.approve(
+      addresses[state.network.chainId].STAKING_ADDRESS,
+      ethers.utils.parseUnits('1000000000', 'gwei').toString()
+    );
+    await approveTx.wait();
+    await dispatch('getStakeAllowances');
+  },
+
+  async getLPStakeApproval({ commit, dispatch }, value) {
+    const signer = provider.getSigner();
+    const lpContract = await new ethers.Contract(
+      addresses[state.network.chainId].LP_ADDRESS,
+      ierc20Abi,
+      signer
+    );
+    if (value <= 0) return;
+
+    const approveTx = await lpContract.approve(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      ethers.utils.parseUnits('1000000000', 'ether').toString()
+    );
+    await approveTx.wait();
+    await dispatch('getLPStakeAllowance');
+  },
+
+  async getStakeAllowances({ commit }) {
+    if (state.address) {
+      const ohmContract = await new ethers.Contract(
+        addresses[state.network.chainId].OHM_ADDRESS,
+        ierc20Abi,
+        provider
+      );
+      const stakeAllowance = await ohmContract.allowance(
+        state.address,
+        addresses[state.network.chainId].STAKING_ADDRESS
+      );
+      commit('set', { stakeAllowance });
+    }
+  },
+
+  async getLPStakeAllowance({ commit }) {
+    if (state.address) {
+      const lpContract = await new ethers.Contract(
+        addresses[state.network.chainId].LP_ADDRESS,
+        ierc20Abi,
+        provider
+      );
+      const lpStakeAllowance = await lpContract.allowance(
+        state.address,
+        addresses[state.network.chainId].LPSTAKING_ADDRESS
+      );
+      commit('set', { lpStakeAllowance });
+    }
+  },
+
+  async getunStakeApproval({ commit, dispatch }, value) {
+    const signer = provider.getSigner();
+    const sohmContract = await new ethers.Contract(
+      addresses[state.network.chainId].SOHM_ADDRESS,
+      ierc20Abi,
+      signer
+    );
+    if (value <= 0) return;
+
+    const approveTx = await sohmContract.approve(
+      addresses[state.network.chainId].STAKING_ADDRESS,
+      ethers.utils.parseUnits('1000000000', 'gwei').toString()
+    );
+    await approveTx.wait();
+    await dispatch('getunStakeAllowances');
+  },
+
+  async getunStakeAllowances({ commit }) {
+    if (state.address) {
+      const sohmContract = await new ethers.Contract(
+        addresses[state.network.chainId].SOHM_ADDRESS,
+        ierc20Abi,
+        provider
+      );
+      const unstakeAllowance = await sohmContract.allowance(
+        state.address,
+        addresses[state.network.chainId].STAKING_ADDRESS
+      );
+      commit('set', { unstakeAllowance });
+    }
+  },
+  async calculateSaleQuote({ commit }, value) {
+    const presale = await new ethers.Contract(
+      addresses[state.network.chainId].PRESALE_ADDRESS,
+      OHMPreSale,
+      provider
+    );
+    const amount = await presale.calculateSaleQuote(ethers.utils.parseUnits(value, 'ether'));
+    commit('set', { amount: ethers.utils.formatUnits(amount.toString(), 'gwei').toString() });
+  },
+
+  async getAllotmentPerBuyer({ commit }) {
+    const presale = await new ethers.Contract(
+      addresses[state.network.chainId].PRESALE_ADDRESS,
+      OHMPreSale,
+      provider
+    );
+    const allotment = await presale.getAllotmentPerBuyer();
+    commit('set', { allotment: ethers.utils.formatUnits(allotment, 'gwei') });
+  },
+
+  async getMaxPurchase({ commit, dispatch }) {
+    const presale = await new ethers.Contract(
+      addresses[state.network.chainId].PRESALE_ADDRESS,
+      OHMPreSale,
+      provider
+    );
+    const salePrice = await presale.salePrice();
+    const total = state.allotment * salePrice;
+
+    commit('set', { maxPurchase: ethers.utils.formatUnits(total.toString(), 'ether') });
+  },
+
+  async stakeOHM({ commit }, value) {
+    const signer = provider.getSigner();
+    const staking = await new ethers.Contract(
+      addresses[state.network.chainId].STAKING_ADDRESS,
+      OlympusStaking,
+      signer
+    );
+
+    const stakeTx = await staking.stakeOHM(ethers.utils.parseUnits(value, 'gwei'));
+    await stakeTx.wait();
+    const ohmContract = new ethers.Contract(
+      addresses[state.network.chainId].OHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const ohmBalance = await ohmContract.balanceOf(state.address);
+    const sohmContract = new ethers.Contract(
+      addresses[state.network.chainId].SOHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const sohmBalance = await sohmContract.balanceOf(state.address);
+    commit('set', {
+      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
+      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei')
+    });
+  },
+  async unstakeOHM({ commit }, value) {
+    const signer = provider.getSigner();
+    const staking = await new ethers.Contract(
+      addresses[state.network.chainId].STAKING_ADDRESS,
+      OlympusStaking,
+      signer
+    );
+    console.log(ethers.utils.parseUnits(value, 'gwei').toString());
+    const stakeTx = await staking.unstakeOHM(ethers.utils.parseUnits(value, 'gwei'));
+    await stakeTx.wait();
+    const ohmContract = new ethers.Contract(
+      addresses[state.network.chainId].OHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const ohmBalance = await ohmContract.balanceOf(state.address);
+    const sohmContract = new ethers.Contract(
+      addresses[state.network.chainId].SOHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const sohmBalance = await sohmContract.balanceOf(state.address);
+    commit('set', {
+      ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
+      sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei')
+    });
+  },
+
+  async stakeLP({ commit }, value) {
+    const signer = provider.getSigner();
+    const staking = await new ethers.Contract(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      LPStaking,
+      signer
+    );
+    const stakeTx = await staking.stakeLP(ethers.utils.parseUnits(value, 'ether'));
+    await stakeTx.wait();
+
+    const lpContract = new ethers.Contract(
+      addresses[state.network.chainId].LP_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const lpBalance = await lpContract.balanceOf(state.address);
+    const lpStakingContract = new ethers.Contract(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      LPStaking,
+      provider
+    );
+    const lpStaked = await lpStakingContract.getUserBalance(state.address);
+    commit('set', {
+      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
+      lpStaked: ethers.utils.formatUnits(lpStaked, 'ether')
+    });
+  },
+
+  async unstakeLP({ commit }, value) {
+    const signer = provider.getSigner();
+    const staking = await new ethers.Contract(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      LPStaking,
+      signer
+    );
+    const unstakeTx = await staking.unstakeLP();
+    await unstakeTx.wait();
+
+    const lpContract = new ethers.Contract(
+      addresses[state.network.chainId].LP_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const lpBalance = await lpContract.balanceOf(state.address);
+    const lpStakingContract = new ethers.Contract(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      LPStaking,
+      provider
+    );
+    const lpStaked = await lpStakingContract.getUserBalance(state.address);
+    commit('set', {
+      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
+      lpStaked: ethers.utils.formatUnits(lpStaked, 'ether')
+    });
+  },
+
+  async claimRewards() {
+    const signer = provider.getSigner();
+    const staking = await new ethers.Contract(
+      addresses[state.network.chainId].LPSTAKING_ADDRESS,
+      LPStaking,
+      signer
+    );
+    const claimTx = await staking.claimRewards();
+    await claimTx.wait();
+  },
+
+  async getMaxSwap({ commit, dispatch }) {
+    const aOHMContract = await new ethers.Contract(
+      addresses[state.network.chainId].AOHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf(state.address);
     const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
 
     commit('set', { maxSwap: aOHMBalance });
-},
-
-
-  async migrateToOHM ({ commit }, value) {
-    const signer = provider.getSigner();
-    const migrateContact = await new ethers.Contract(addresses[state.network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
-
-    const aOHMContract = await new ethers.Contract(addresses[state.network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
-    const aOHMContractWithSigner = aOHMContract.connect(signer);
-    
-    const allowance = await aOHMContract.allowance( state.address, addresses[state.network.chainId].MIGRATE_ADDRESS)
-
-    if( allowance < value *  1000000000 ) {     
-      const approveTx = await aOHMContractWithSigner.approve(addresses[state.network.chainId].MIGRATE_ADDRESS, parseEther((1e9).toString()));
-      commit('set',{allowanceTx:1})
-      await approveTx.wait(state.confirmations);       
-    }
-
-    const migrateTx = await migrateContact.migrate( value * 1000000000 );
-    await migrateTx.wait();
   },
 
-  async reclaimAOHM() {
+  async migrateToOHM({ commit }, value) {
     const signer = provider.getSigner();
-    const migrateContact = await new ethers.Contract(addresses[state.network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
+    const migrateContact = await new ethers.Contract(
+      addresses[state.network.chainId].MIGRATE_ADDRESS,
+      MigrateToOHM,
+      signer
+    );
 
-    const reclaimTx = await migrateContact.reclaim( );
-    await reclaimTx.wait();
+    const aOHMContract = await new ethers.Contract(
+      addresses[state.network.chainId].AOHM_ADDRESS,
+      ierc20Abi,
+      provider
+    );
+    const aOHMContractWithSigner = aOHMContract.connect(signer);
+
+    const allowance = await aOHMContract.allowance(
+      state.address,
+      addresses[state.network.chainId].MIGRATE_ADDRESS
+    );
+
+    if (allowance < value * 1000000000) {
+      const approveTx = await aOHMContractWithSigner.approve(
+        addresses[state.network.chainId].MIGRATE_ADDRESS,
+        parseEther((1e9).toString())
+      );
+      commit('set', { allowanceTx: 1 });
+      await approveTx.wait(state.confirmations);
+    }
+
+    const migrateTx = await migrateContact.migrate(value * 1000000000);
+    await migrateTx.wait();
   }
-
 };
 
 export default {
@@ -636,5 +732,3 @@ export default {
   mutations,
   actions
 };
-
-
