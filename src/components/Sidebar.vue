@@ -1,6 +1,6 @@
 <template>
-  <div class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-    <div class="dapp-sidebar">
+  <div v-bind:class="['col-md-3','col-lg-2', 'd-md-block', 'sidebar', 'collapse', {'show': isExpanded}]" id="sidebarContent">
+    <div class="dapp-sidebar d-flex flex-column">
       <div class="dapp-menu-top">
         <div class="branding-header">
         <router-link :to="{ name: 'home' }" class="">
@@ -18,6 +18,7 @@
         </a>
         </div>
       </div>
+
 
       <div class="dapp-menu-links">
         <Dav />
@@ -44,6 +45,7 @@
         modalLoginOpen: false,
       };
     },
+    props: ['isExpanded'],
     computed: {
       address() {
         if (this.$store.state.settings.address)

@@ -32,32 +32,38 @@
   </div>
 </template>
 <style scoped>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition-duration: 100ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+  }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition-duration: 100ms;
-  transition-property: opacity;
-  transition-timing-function: ease;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0
-}
-
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0
+  }
 </style>
 <script>
-import { mapState, mapActions } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
 
-export default {
-  computed: {
-    ...mapState(['settings', 'constants'])
-  },
-  methods: {
-    ...mapActions(['init'])
-  },
-  async created() {
-    this.init();
-  }
-};
+  export default {
+    data() {
+      return {
+        isSidebarExpanded: false,
+      }
+    },
+    computed: {
+      ...mapState(['settings', 'constants'])
+    },
+    methods: {
+      ...mapActions(['init']),
+      toggleNavbar () {
+        this.isSidebarExpanded = !this.isSidebarExpanded;
+      }
+    },
+    async created() {
+      this.init();
+    }
+  };
 </script>
