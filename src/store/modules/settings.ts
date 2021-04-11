@@ -376,6 +376,40 @@ const actions = {
     commit('set', { exchangeRates });
   },
 
+  async calcBondDetails({ commit }, amount ) {
+    let amountInWei;
+    if (amount === '') {
+      amountInWei = ETHER / 1000000;
+    } else {
+      amountInWei = amount * ETHER
+    }
+
+    // If the user hasn't entered anything, let's calculate a fraction of SLP
+    const bondingContract = new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, provider);
+    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+    const pairContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
+    const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
+    const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+
+    const lpBalance = await lpContract.balanceOf(state.address);
+    const totalLP   = await lpContract.totalSupply();
+    const reserves  = await pairContract.getReserves();
+
+    const bondValue    = await bondingContract.calculateBondInterest(amountInWei.toString());
+    const marketPrice  = reserves[1] / reserves[0];
+    const bondPrice    = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
+    const bondDiscount = 1 - bondPrice / marketPrice;
+
+    commit('set', {
+      amount: amount,
+      bondValue: bondValue,
+      bondPrice: bondPrice,
+      marketPrice: marketPrice / 1000000000,
+      bondDiscount: bondDiscount
+    });
+
+  },
+
   async getOHM({ commit }, value) {
     const signer = provider.getSigner();
     const presale = await new ethers.Contract(
