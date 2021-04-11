@@ -168,7 +168,7 @@ const actions = {
         let stakingContract, profit=0;
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
-        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
+        let distributorContract, fiveDayRate = 0, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         let bondingCalcContract, bondValue=0;
         let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
@@ -298,18 +298,11 @@ const actions = {
           stakingReward = await distributorContract.getCurrentRewardForNextEpoch();
 
           stakingRebase = stakingReward / circSupply;
+          fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3)
+          stakingAPY    = Math.pow(1 + stakingRebase, 365 * 3);
 
+          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
 
-          stakingAPY = Math.pow( ( 1 + stakingRebase ), 1095);
-    
-          console.log(stakingAPY)
-
-          stakingAPY = stakingAPY * 100;
-
-          stakingRebase = stakingRebase * 100;
-
-          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2'); 
-          
           nextEpochBlock = await distributorContract.nextEpochBlock();
 
           currentBlock = await provider.getBlockNumber();
@@ -349,8 +342,9 @@ const actions = {
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
           lpStakingAPY: lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
-          stakingAPY: stakingAPY,
-          stakingRebase: stakingRebase,
+          fiveDayRate,
+          stakingAPY,
+          stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           nextEpochBlock: nextEpochBlock,
           currentBlock: currentBlock,
