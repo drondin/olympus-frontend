@@ -307,24 +307,21 @@ const actions = {
 
           currentBlock = await provider.getBlockNumber();
         }
-        //const balance = balanceBefore.toFixed(2);        
+        //const balance = balanceBefore.toFixed(2);
         console.log("Allowance", allowance);
         console.log("stakeAllowance", stakeAllowance);
 
         const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
-        const { circulatingSupply, marketCap, currentPrice } = await getSupplyAndMarketCap();
 
-        const supplyInGwei = ethers.utils.parseUnits(circulatingSupply.toFixed(5), 'gwei');
-
-        console.log({ supplyInGwei: supplyInGwei.toString() });
-
-        const percentOfCirculatingOhmSupply = ohmBalance.gt(ethers.constants.Zero)
-          ? (ohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
-          : 0;
-
-        const percentOfCirculatingSOhmSupply = sohmBalance.gt(ethers.constants.Zero)
-          ? (sohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
-          : 0;
+        // TODO: Add this back in when we fetch data for dashboard.
+        // const { circulatingSupply, marketCap, currentPrice } = await getSupplyAndMarketCap();
+        // const supplyInGwei = ethers.utils.parseUnits(circulatingSupply.toFixed(5), 'gwei');
+        // const percentOfCirculatingOhmSupply = ohmBalance.gt(ethers.constants.Zero)
+        //   ? (ohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+        //   : 0;
+        // const percentOfCirculatingSOhmSupply = sohmBalance.gt(ethers.constants.Zero)
+        //   ? (sohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+        //   : 0;
 
 
         commit('set', { address });
@@ -361,8 +358,8 @@ const actions = {
           epochBlock,
           epochBlocksAway,
           epochSecondsAway,
-          percentOfCirculatingOhmSupply,
-          percentOfCirculatingSOhmSupply
+          // percentOfCirculatingOhmSupply,
+          // percentOfCirculatingSOhmSupply
 
         });
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
