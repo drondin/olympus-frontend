@@ -429,8 +429,11 @@ const actions = {
   async getApproval({commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const daiContract = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, signer);
-    
-    if(value <= 0) return;
+
+    if(value <= 0) {
+      alert("Please enter a value greater than 0");
+      return;
+    }
 
     const approveTx = await daiContract.approve(addresses[state.network.chainId].PRESALE_ADDRESS, ethers.utils.parseEther(value).toString());
     commit('set',{allowanceTx:1})
@@ -450,7 +453,10 @@ const actions = {
   async getStakeApproval({commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
+    if (value <= 0) {
+      alert("Please enter a value greater than 0");
+      return;
+    }
 
     const approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
     await approveTx.wait();
@@ -460,7 +466,10 @@ const actions = {
   async getLPStakeApproval({ commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
+    if(value <= 0) {
+      alert("Please enter a value greater than 0");
+      return;
+    }
 
     const approveTx = await lpContract.approve(addresses[state.network.chainId].LPSTAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
     await approveTx.wait();
@@ -470,7 +479,10 @@ const actions = {
   async getLPBondApproval({ commit, dispatch }, value ) {
     const signer = provider.getSigner();  
     const lpContract = await new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
+    if(value <= 0) {
+      alert("Please enter a value greater than 0");
+      return;
+    }
 
     const approveTx = await lpContract.approve(addresses[state.network.chainId].BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
     await approveTx.wait();
@@ -505,7 +517,10 @@ const actions = {
   async getunStakeApproval({commit, dispatch}, value) {
     const signer = provider.getSigner();  
     const sohmContract = await new ethers.Contract(addresses[state.network.chainId].SOHM_ADDRESS, ierc20Abi, signer);
-    if(value <= 0) return;
+    if(value <= 0) {
+      alert("Please enter a value greater than 0");
+      return;
+    }
 
     const approveTx = await sohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
     await approveTx.wait();
