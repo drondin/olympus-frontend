@@ -298,7 +298,7 @@ const actions = {
           stakingReward = await distributorContract.getCurrentRewardForNextEpoch();
 
           stakingRebase = stakingReward / circSupply;
-          fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3)
+          fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3) - 1;
           stakingAPY    = Math.pow(1 + stakingRebase, 365 * 3);
 
           currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
