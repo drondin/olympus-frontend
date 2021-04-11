@@ -185,7 +185,7 @@ export default {
     },
 
     hasAllowance() {
-      if ( this.quantity === '' && !isNaN(parseInt(this.$store.state.settings.stakeAllowance)) ) {
+      if (this.quantity === '' && parseInt(this.$store.state.settings.stakeAllowance) > 0 ) {
         return true;
       } else if (parseFloat(this.quantity)) {
         switch(this.selectedMapOption) {
