@@ -1,14 +1,33 @@
 <template>
-  <div>
-    <div id="app" class="overflow-hidden">
-      <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
-      <div v-else>
-                    <transition
-              name="fade"
-              mode="out-in">
-<router-view :key="$route.path" />
-            </transition>
-      </div>
+  <div id="app" class="overflow-hidden">
+    <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
+    <div v-else-if="$route.path == '/'">
+      <transition name="fade" mode="out-in">
+        <router-view :key="$route.path" />
+      </transition>
+    </div>
+    <div v-else>
+      <transition name="fade" mode="out-in">
+        <div id="dapp" class="dapp overflow-hidden">
+          <div class="container-fluid">
+            <div class="row">
+              <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
+                <button class="navbar-toggler" type="button" @click='toggleNavbar' aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+              </nav>
+
+              <Sidebar v-bind:isExpanded=isSidebarExpanded />
+
+              <div v-bind:class="[isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
+
+              <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <router-view :key="$route.path" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>

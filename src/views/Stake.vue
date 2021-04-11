@@ -1,91 +1,77 @@
 <template>
-  <div>
-    <div id="dapp" class="dapp overflow-hidden">
-      <div class="container-fluid">
-        <div class="row">
-          <Sidebar />
+  <div class="wrapper">
+    <div class="dapp-center-modal">
+      <div class="dapp-modal-wrapper">
 
-          <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="wrapper">
-              <div class="dapp-center-modal">
-                <div class="dapp-modal-wrapper">
+        <div class="swap-input-column">
 
-                  <div class="swap-input-column">
-
-                    <div class="stake-toggle-row">
-                      <toggle-switch
-                        :options="myOptions"
-                        v-model="selectedMapOption"
-                        :value="selectedMapOption"
-                        />
-                    </div>
-
-                    <div class="swap-input-row">
-                      <div class="stake-input-container">
-                        <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
-
-                        </div>
-                    </div>
-                    <div class="stake-amount-preset-row">
-                      <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-                        25%
-                      </div>
-                      <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-                        50%
-                      </div>
-                      <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-                        75%
-                      </div>
-                      <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-                        100%
-                      </div>
-                    </div>
-
-
-
-                    <div class="stake-price-data-column">
-                      <div class="stake-price-data-row">
-                        <p class="price-label">Blocks To Next Epoch</p>
-                        <p class="price-data">{{ $store.state.settings.nextEpochBlock - $store.state.settings.currentBlock }} Blocks</p>
-                        </div><div class="stake-price-data-row">
-                        <p class="price-label">Balance</p>
-                        <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
-                      </div><div class="stake-price-data-row">
-                        <p class="price-label">Staked</p>
-                        <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
-                      </div><div class="stake-price-data-row">
-                        <p class="price-label">Upcoming rebase</p>
-                        <p class="price-data">{{ trim( $store.state.settings.stakingRebase, 4 ) }}% </p><!-- profit / staked supply -->
-                      </div><div class="stake-price-data-row">
-                        <p class="price-label">Current APY</p>
-                        <p class="price-data">{{ trim( $store.state.settings.stakingAPY, 2 )}}%</p> <!-- 1+rebase^1095-1 -->
-                      </div><div class="stake-price-data-row">
-                        <p class="price-label">Current index</p>
-                        <p class="price-data">{{ trim( $store.state.settings.currentIndex, 4)}} OHM</p>
-                      </div>
-                    </div>
-
-                    <div  v-if='hasAllowance'  class="stake-button-container">
-                      <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
-                    </div>
-                    <div v-else class="stake-button-container">
-                      <div class="stake-button" @click='seekApproval'>Approve</div>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
+          <div class="stake-toggle-row">
+            <toggle-switch
+              :options="myOptions"
+              v-model="selectedMapOption"
+              :value="selectedMapOption"
+              />
           </div>
+
+          <div class="swap-input-row">
+            <div class="stake-input-container">
+              <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
+
+              </div>
+          </div>
+          <div class="stake-amount-preset-row">
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
+              25%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
+              50%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
+              75%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
+              100%
+            </div>
+          </div>
+
+
+
+          <div class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Blocks To Next Epoch</p>
+              <p class="price-data">{{ $store.state.settings.nextEpochBlock - $store.state.settings.currentBlock }} Blocks</p>
+              </div><div class="stake-price-data-row">
+              <p class="price-label">Balance</p>
+              <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Staked</p>
+              <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Upcoming rebase</p>
+              <p class="price-data">{{ trim( $store.state.settings.stakingRebase, 4 ) }}% </p><!-- profit / staked supply -->
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Current APY</p>
+              <p class="price-data">{{ trim( $store.state.settings.stakingAPY, 2 )}}%</p> <!-- 1+rebase^1095-1 -->
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Current index</p>
+              <p class="price-data">{{ trim( $store.state.settings.currentIndex, 4)}} OHM</p>
+            </div>
+          </div>
+
+          <div  v-if='hasAllowance'  class="stake-button-container">
+            <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+          </div>
+          <div v-else class="stake-button-container">
+            <div class="stake-button" @click='seekApproval'>Approve</div>
+          </div>
+
         </div>
+
       </div>
-
-
-
     </div>
   </div>
+
+
 </template>
 
 <script>
