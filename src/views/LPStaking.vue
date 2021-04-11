@@ -1,86 +1,95 @@
 <template>
   <div>
     <div id="dapp" class="dapp overflow-hidden">
-      <Sidebar />
+      <div class="container-fluid">
+        <div class="row">
+          <Sidebar />
 
-      <div class="wrapper">
-        <div class="dapp-center-modal">
-          <div class="dapp-modal-wrapper">
+          <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="wrapper">
+              <div class="dapp-center-modal">
+                <div class="dapp-modal-wrapper">
 
-            <div class="swap-input-column">
+                  <div class="swap-input-column">
 
-              <div class="stake-toggle-row">
-                <toggle-switch
-                  :options="myOptions"
-                  v-model="selectedMapOption"
-                  :value="selectedMapOption"
-                  />
-              </div>
+                    <div class="stake-toggle-row">
+                      <toggle-switch
+                        :options="myOptions"
+                        v-model="selectedMapOption"
+                        :value="selectedMapOption"
+                        />
+                    </div>
 
-              <div v-if="isUnstake==false" class="swap-input-row">
-                <div class="stake-input-container">
-                  <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
+                    <div v-if="isUnstake==false" class="swap-input-row">
+                      <div class="stake-input-container">
+                        <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
+                      </div>
+
+                      <div v-if="isUnstake==true">
+                      </div>
+
+                    </div>
+
+
+                    <div v-if="isUnstake==false" class="stake-amount-preset-row">
+                      <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
+                        25%
+                      </div>
+                      <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
+                        50%
+                      </div>
+                      <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
+                        75%
+                      </div>
+                      <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
+                        100%
+                      </div>
+                    </div>
+
+
+
+                    <div class="stake-price-data-column">
+                      <div class="stake-price-data-row">
+                        <p class="price-label">Balance</p>
+                        <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
+                      </div><div class="stake-price-data-row">
+                        <p class="price-label">Staked</p>
+                        <p class="price-data">{{ trim( $store.state.settings.lpStaked, 4 ) }} OHM / DAI SLP</p>
+                      </div><div class="stake-price-data-row">
+                        <p class="price-label">Pending Rewards</p>
+                        <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
+                      </div><div class="stake-price-data-row">
+                        <p class="price-label">APY</p>
+                        <p class="price-data">{{trim( $store.state.settings.lpStakingAPY, 4 ) }}%</p> <!-- 1+rebase^1095-1 -->
+                      </div><div class="stake-price-data-row">
+                        <p class="price-label">Total Staked</p>
+                        <p class="price-data">{{ trim( $store.state.settings.totalLPStaked, 4 ) }} OHM / DAI SLP</p>
+                      </div>
+                    </div>
+
+                    <div  v-if='hasAllowance'  class="stake-button-container">
+                      <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+                    </div>
+                    <div  v-else-if='isUnstake==true'  class="stake-button-container">
+                      <div class="stake-button" @click='executeStake'>{{selectedMapOption}} / Claim</div>
+
+                      <div class="stake-button" @click='claimLPRewards'>Claim Rewards</div>
+                    </div>
+                    <div v-else class="stake-button-container">
+                      <div class="stake-button" @click='seekApproval'>Approve</div>
+                    </div>
+
+                  </div>
+
                 </div>
-
-                <div v-if="isUnstake==true">
-                </div>
-
               </div>
-
-
-              <div v-if="isUnstake==false" class="stake-amount-preset-row">
-                <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-                  25%
-                </div>
-                <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-                  50%
-                </div>
-                <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-                  75%
-                </div>
-                <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-                  100%
-                </div>
-              </div>
-
-
-
-              <div class="stake-price-data-column">
-                <div class="stake-price-data-row">
-                  <p class="price-label">Balance</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} OHM / DAI SLP</p>
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">Staked</p>
-                  <p class="price-data">{{ trim( $store.state.settings.lpStaked, 4 ) }} OHM / DAI SLP</p>
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">Pending Rewards</p>
-                  <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">APY</p>
-                  <p class="price-data">{{trim( $store.state.settings.lpStakingAPY, 4 ) }}%</p> <!-- 1+rebase^1095-1 -->
-                </div><div class="stake-price-data-row">
-                  <p class="price-label">Total Staked</p>
-                  <p class="price-data">{{ trim( $store.state.settings.totalLPStaked, 4 ) }} OHM / DAI SLP</p>
-                </div>
-              </div>
-
-              <div  v-if='hasAllowance'  class="stake-button-container">
-                <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
-              </div>
-              <div  v-else-if='isUnstake==true'  class="stake-button-container">
-                <div class="stake-button" @click='executeStake'>{{selectedMapOption}} / Claim</div>
-
-                <div class="stake-button" @click='claimLPRewards'>Claim Rewards</div>
-              </div>
-              <div v-else class="stake-button-container">
-                <div class="stake-button" @click='seekApproval'>Approve</div>
-              </div>
-
             </div>
 
           </div>
         </div>
       </div>
+
+
     </div>
 
   </div>
