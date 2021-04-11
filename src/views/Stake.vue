@@ -68,13 +68,14 @@
                 </div>
               </div>
 
-             
+
 
               <div class="stake-price-data-column">
                 <div class="stake-price-data-row">
                   <p class="price-label">Balance</p>
                   <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
-                </div><div class="stake-price-data-row">
+                </div>
+                <div class="stake-price-data-row">
                   <p class="price-label">Staked</p>
                   <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
                 </div>
@@ -113,10 +114,10 @@
               </div>
               <div v-else class="stake-button-container">
                 <div class="stake-button" @click='seekApproval'>Approve</div>
-              </div>              
+              </div>
 
             </div>
-            
+
           </div>
         </div>
       </div>
