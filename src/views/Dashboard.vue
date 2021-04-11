@@ -1,10 +1,6 @@
 <template>
   <div>
     <div id="dapp" class="dapp overflow-hidden" style="height:100% !important;">
-      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
-      <div v-else>
-      </div>-->
-
       <div class="container-fluid">
         <div class="row">
           <div class="dapp-sidebar col-md-3 col-lg-2 d-md-block sidebar collapse">
