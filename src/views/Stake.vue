@@ -182,58 +182,63 @@ export default {
       if(this.$store.state.settings.address)
       return this.$store.state.settings.address
       return null
-    },  
-    hasAllowance() {
+    },
 
-      if(parseFloat(this.quantity)) {
+    hasAllowance() {
+      if ( this.quantity === '' && !isNaN(parseInt(this.$store.state.settings.stakeAllowance)) ) {
+        return true;
+      } else if (parseFloat(this.quantity)) {
         switch(this.selectedMapOption) {
           case 'Stake':
-              return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+            return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
           case 'Unstake':
-              return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));            
+            return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
         }
       }
       return false;
-    },    
+    },
   },
 
   methods: {
-    
-    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
-    async executeStake() {console.log(this.selectedMapOption)
+
+    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY']),
+    async executeStake() {
+      console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
-            if( isNaN( this.quantity ) ) {
+            if ( this.quantity === '') {
+              alert("Please enter a value!");
               return;
-            }
-
-            else {
-              await this.getCurrentBlockNumber();
+            } else if( isNaN( this.quantity ) ) {
+              alert("Please enter a valid value!");
+              return;
+            } else {
               await this.stakeOHM(this.quantity.toString());
             }
-      
+
             break;
           case 'Unstake':
-            if( isNaN( this.quantity ) ) {
+            if ( this.quantity === '') {
+              alert("Please enter a value!");
               return;
-            }
-
-            else {
+            } else if ( isNaN(this.quantity) ) {
+              alert("Please enter a valid value!");
+              return;
+            } else {
               await this.unstakeOHM(this.quantity.toString());
             }
-        
+
         }
         //updatestats        
     },
     setStake(value) {
-        switch(this.selectedMapOption) {
-          case 'Stake':
-            this.quantity = this.$store.state.settings.ohmBalance * value / 100;
-            break;
-          case 'Unstake':
-            this.quantity = this.$store.state.settings.sohmBalance * value / 100;
-        }      
-        
+      switch(this.selectedMapOption) {
+        case 'Stake':
+          this.quantity = this.$store.state.settings.ohmBalance * value / 100;
+          break;
+        case 'Unstake':
+          this.quantity = this.$store.state.settings.sohmBalance * value / 100;
+      }
     },
 
     trim(number, precision){
