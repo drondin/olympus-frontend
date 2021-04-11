@@ -98,13 +98,15 @@ background-attachment: fixed;}
 .bg-topnav {
   background-color: transparent;
 }
+
+
 .no-marg-l{margin-left:unset!important;}
 
 .no-marg-r{margin-right:unset!important;}
 
 nav{
   z-index:1;
-  position: absolute;
+  position: absolute !important;
   width: 100vw;}
 
 .row{
@@ -329,8 +331,7 @@ nav{
   img{border-radius:unset;}
   &:hover{filter:invert(1)}
 }
-.ticker-name{margin-top: 2.2em;
-}
+
 .hero-icon{width: 100%;
   display: flex;
 img{max-width:200px;margin:auto;filter:invert(1);}}
@@ -732,37 +733,43 @@ padding:0rem 1rem;
   width:auto;
   background-color:unset;
   padding: 0rem 1rem;
-  h4{position:relative;
-    height:2rem;
-    line-height:2rem;}
 
-  .drop-menu-hidden{
+  h4 {
+    position:relative;
+    height:2rem;
+    line-height:2rem;
+  }
+
+  .drop-menu-hidden {
     overflow:hidden;
     height:0px;
     opacity:0;
     position: absolute;
     transition:opacity 0.5s, height 0.5s ease;
     transition-delay:1s;
-
   }
-  &:hover{
-    .drop-menu-hidden{
+
+  &:hover .drop-menu-hidden {
     padding:0.5rem 1rem;
     border-radius:0.5rem;
-    margin-top:0.5rem;
+    // margin-top:0.5rem;
     display:flex;
     height:auto;
     flex-flow:column;
     justify-content:center;
     background:black;
     position:absolute;
-    top:3.5rem;text-align:left;
+    // top: 3.5rem;
+    text-align:left;
     opacity:1;
     transition:opacity 0.5s, height 0.5s ease;
     transition-delay:0s;
     z-index:5;
 
-  a{margin:1rem 0rem;}}}
+    a {
+      margin:1rem 0rem;
+    }
+  }
 }
 
 
@@ -1029,15 +1036,32 @@ input.input:read-only {
       line-height:2rem;
     }
 
-    .drop-menu-hidden{
-      overflow:hidden;
-      height:0px;
-      opacity:0;
-      position: absolute;
-      transition:opacity 0.5s, height 0.5s ease;
-      transition-delay:1s;
+  }
 
+  &:hover .drop-menu-hidden {
+
+    padding:0.5rem 1rem;
+    border-radius:0.5rem;
+    // margin-top:0.5rem;
+    display:flex;
+    height:auto;
+    flex-flow:column;
+    justify-content:center;
+    background:black;
+    position:absolute;
+    // top:2rem;
+    text-align:left;
+    opacity:1;
+    transition:opacity 0.5s, height 0.5s ease;
+    transition-delay:0s;
+    z-index:5;
+
+    a{
+      margin:1rem 0rem;
     }
+
+  }
+
 
     &:hover{
       .drop-menu-hidden{
@@ -1061,7 +1085,7 @@ input.input:read-only {
         }
       }
     }
-  }
+
 
   .dapp-menu-top{width:250px;}
   .dapp-menu-social {

@@ -38,21 +38,38 @@
 
           <div class="stake-price-data-column">
             <div class="stake-price-data-row">
-              <p class="price-label">Blocks To Next Epoch</p>
-              <p class="price-data">{{ $store.state.settings.nextEpochBlock - $store.state.settings.currentBlock }} Blocks</p>
-              </div><div class="stake-price-data-row">
               <p class="price-label">Balance</p>
               <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
-            </div><div class="stake-price-data-row">
+            </div>
+            <div class="stake-price-data-row">
               <p class="price-label">Staked</p>
               <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
-            </div><div class="stake-price-data-row">
+            </div>
+
+
+            <div class="stake-price-data-row">
+              <p class="price-label">Time until rebase</p>
+              <p class="price-data">
+                {{
+                  $store.state.settings.epochBlock ? `${($store.state.settings.epochSecondsAway / 60 / 60).toFixed(1)} hours` : ''
+                }}
+              </p>
+            </div>
+
+
+            <div class="stake-price-data-row">
               <p class="price-label">Upcoming rebase</p>
-              <p class="price-data">{{ trim( $store.state.settings.stakingRebase, 4 ) }}% </p><!-- profit / staked supply -->
-            </div><div class="stake-price-data-row">
+              <p class="price-data">{{ trim( $store.state.settings.stakingRebase * 100, 4 ) }}% </p>
+            </div>
+            <div class="stake-price-data-row">
+              <p class="price-label">5-day rate</p>
+              <p class="price-data">{{ trim( $store.state.settings.fiveDayRate * 100, 4 ) }}% </p>
+            </div>
+            <div class="stake-price-data-row">
               <p class="price-label">Current APY</p>
-              <p class="price-data">{{ trim( $store.state.settings.stakingAPY, 2 )}}%</p> <!-- 1+rebase^1095-1 -->
-            </div><div class="stake-price-data-row">
+              <p class="price-data">{{ trim( $store.state.settings.stakingAPY * 100, 2 )}}%</p>
+            </div>
+            <div class="stake-price-data-row">
               <p class="price-label">Current index</p>
               <p class="price-data">{{ trim( $store.state.settings.currentIndex, 4)}} OHM</p>
             </div>
@@ -70,6 +87,7 @@
       </div>
     </div>
   </div>
+
 
 
 </template>
