@@ -317,7 +317,7 @@ export default {
             alert("Please enter a value!");
           } else if( isNaN(value) ) {
             alert("Please enter a valid value!");
-          } else if ( bondInterest || bondRewardDue ) {
+          } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
             const shouldProceed = confirm('You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
             if (shouldProceed) {
               await this.bondLP(value);

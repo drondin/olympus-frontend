@@ -33,12 +33,55 @@ const ethereum = window['ethereum'];
 if (ethereum) {
   ethereum.on('accountsChanged', () => store.dispatch('init'));
   ethereum.on('networkChanged', network => {
-    
-    store.dispatch('init')     
+
+    store.dispatch('init')
   });
 }
 
-const state = {  
+const EPOCH_INTERVAL = 2200;
+
+// NOTE could get this from an outside source since it changes slightly over time
+const BLOCK_RATE_SECONDS = 13.14;
+
+async function getNextEpoch(): Promise<[number, number, number]> {
+  const height = await provider.getBlockNumber();
+
+  if (height % EPOCH_INTERVAL === 0) {
+    return [0, 0, 0];
+  }
+
+  const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
+  const blocksAway = next - height;
+  const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
+
+  return [next, blocksAway, secondsAway];
+}
+
+const MARKET_API_URL =
+  'https://api.coingecko.com/api/v3/coins/olympus?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
+
+async function getSupplyAndMarketCap() {
+  try {
+    const result = await fetch(MARKET_API_URL);
+    const json = await result.json();
+
+    return {
+      circulatingSupply: json.market_data.circulating_supply,
+      marketCap: json.market_data.market_cap.usd,
+      currentPrice: json.market_data.current_price.usd
+    };
+  } catch (e) {
+    return {
+      circulatingSupply: 0,
+      marketCap: 0,
+      currentPrice: 0
+    };
+  }
+}
+
+
+
+const state = {
   approval: 0,
   loading: false,
   address: null,
@@ -65,6 +108,9 @@ const state = {
   maxPurchase: 0,
   maxSwap: 0,
   amountSwap: 0,
+  epochBlock: null,
+  epochBlocksAway: null,
+  epochSecondsAway: null
 };
 
 // Defines convenience function set() that can be used to update key property
@@ -122,7 +168,7 @@ const actions = {
         let stakingContract, profit=0;
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
-        let distributorContract, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
+        let distributorContract, fiveDayRate = 0, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         let bondingCalcContract, bondValue=0;
         let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
@@ -134,7 +180,6 @@ const actions = {
         
         const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
         const balance = await daiContract.balanceOf(address);
-        console.log(balance)
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
 
         if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
@@ -253,25 +298,31 @@ const actions = {
           stakingReward = await distributorContract.getCurrentRewardForNextEpoch();
 
           stakingRebase = stakingReward / circSupply;
+          fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3) - 1;
+          stakingAPY    = Math.pow(1 + stakingRebase, 365 * 3);
 
+          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
 
-          stakingAPY = Math.pow( ( 1 + stakingRebase ), 1095);
-    
-          console.log(stakingAPY)
-
-          stakingAPY = stakingAPY * 100;
-
-          stakingRebase = stakingRebase * 100;
-
-          currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2'); 
-          
           nextEpochBlock = await distributorContract.nextEpochBlock();
 
           currentBlock = await provider.getBlockNumber();
         }
-        //const balance = balanceBefore.toFixed(2);        
+        //const balance = balanceBefore.toFixed(2);
         console.log("Allowance", allowance);
         console.log("stakeAllowance", stakeAllowance);
+
+        const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
+
+        // TODO: Add this back in when we fetch data for dashboard.
+        // const { circulatingSupply, marketCap, currentPrice } = await getSupplyAndMarketCap();
+        // const supplyInGwei = ethers.utils.parseUnits(circulatingSupply.toFixed(5), 'gwei');
+        // const percentOfCirculatingOhmSupply = ohmBalance.gt(ethers.constants.Zero)
+        //   ? (ohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+        //   : 0;
+        // const percentOfCirculatingSOhmSupply = sohmBalance.gt(ethers.constants.Zero)
+        //   ? (sohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
+        //   : 0;
+
 
         commit('set', { address });
         commit('set', {
@@ -288,8 +339,9 @@ const actions = {
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
           lpStakingAPY: lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
-          stakingAPY: stakingAPY,
-          stakingRebase: stakingRebase,
+          fiveDayRate,
+          stakingAPY,
+          stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           nextEpochBlock: nextEpochBlock,
           currentBlock: currentBlock,
@@ -302,9 +354,14 @@ const actions = {
           bondDiscount: bondDiscount,
           pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
           vestingPeriodInBlocks: vestingPeriodInBlocks,
-          aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei')
-          
-        });        
+          aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei'),
+          epochBlock,
+          epochBlocksAway,
+          epochSecondsAway,
+          // percentOfCirculatingOhmSupply,
+          // percentOfCirculatingSOhmSupply
+
+        });
         commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
         dispatch('getAllotmentPerBuyer');
       } catch (error) {
