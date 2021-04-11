@@ -1,7 +1,5 @@
 <template>
-
-  <div class="wrapper">
-    <div class="dapp-center-modal">
+  <div class="dapp-center-modal py-2">
     <div class="dapp-modal-wrapper">
 
       <div class="swap-input-column">
@@ -103,22 +101,21 @@
     </div>
 
     <div class="bond-data">
-      <div class="bond-data-row">
-        <div class="bond-data-column">
+      <div class="row bond-data-row p-4">
+        <div class="col-4 text-center">
           <p>Debt Ratio</p>
           <p>{{ trim( $store.state.settings.debtRatio / 10000000, 2 ) }}%</p>
         </div>
-        <div class="bond-data-column">
+        <div class="col-4 text-center">
           <p>Vesting Term</p>
           <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
         </div>
-        <div class="bond-data-column">
+        <div class="col-4 text-center">
           <p>Discount</p>
           <p>{{ trim( $store.state.settings.bondDiscount * 100, 2 ) }}%</p>
         </div>
       </div>
     </div>
-  </div>
   </div>
 
 </template>

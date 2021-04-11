@@ -9,8 +9,8 @@
     <div v-else>
       <transition name="fade" mode="out-in">
         <div id="dapp" class="dapp overflow-hidden">
-          <div class="container-fluid">
-            <div class="row">
+          <div class="container-fluid h-100">
+            <div class="row h-100">
               <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
                 <button class="navbar-toggler" type="button" @click='toggleNavbar' aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
@@ -21,7 +21,7 @@
 
               <div v-bind:class="[isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
 
-              <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+              <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex align-items-center justify-content-center h-100">
                 <router-view :key="$route.path" />
               </div>
             </div>

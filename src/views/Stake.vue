@@ -1,93 +1,91 @@
 <template>
-  <div class="wrapper">
-    <div class="dapp-center-modal">
-      <div class="dapp-modal-wrapper">
 
-        <div class="swap-input-column">
+  <div class="dapp-center-modal py-2">
+    <div class="dapp-modal-wrapper">
 
-          <div class="stake-toggle-row">
-            <toggle-switch
-              :options="myOptions"
-              v-model="selectedMapOption"
-              :value="selectedMapOption"
-              />
+      <div class="swap-input-column">
+
+        <div class="stake-toggle-row">
+          <toggle-switch
+            :options="myOptions"
+            v-model="selectedMapOption"
+            :value="selectedMapOption"
+            />
+        </div>
+
+        <div class="swap-input-row">
+          <div class="stake-input-container">
+            <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
+
+            </div>
+        </div>
+        <div class="stake-amount-preset-row">
+          <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
+            25%
+          </div>
+          <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
+            50%
+          </div>
+          <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
+            75%
+          </div>
+          <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
+            100%
+          </div>
+        </div>
+
+
+
+        <div class="stake-price-data-column">
+          <div class="stake-price-data-row">
+            <p class="price-label">Balance</p>
+            <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
+          </div>
+          <div class="stake-price-data-row">
+            <p class="price-label">Staked</p>
+            <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
           </div>
 
-          <div class="swap-input-row">
-            <div class="stake-input-container">
-              <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
 
-              </div>
-          </div>
-          <div class="stake-amount-preset-row">
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-              25%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-              50%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-              75%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-              100%
-            </div>
+          <div class="stake-price-data-row">
+            <p class="price-label">Time until rebase</p>
+            <p class="price-data">
+              {{
+                $store.state.settings.epochBlock ? `${($store.state.settings.epochSecondsAway / 60 / 60).toFixed(1)} hours` : ''
+              }}
+            </p>
           </div>
 
 
-
-          <div class="stake-price-data-column">
-            <div class="stake-price-data-row">
-              <p class="price-label">Balance</p>
-              <p class="price-data">{{ trim( $store.state.settings.ohmBalance, 4 ) }} OHM</p>
-            </div>
-            <div class="stake-price-data-row">
-              <p class="price-label">Staked</p>
-              <p class="price-data">{{ trim( $store.state.settings.sohmBalance, 4 ) }} OHM</p>
-            </div>
-
-
-            <div class="stake-price-data-row">
-              <p class="price-label">Time until rebase</p>
-              <p class="price-data">
-                {{
-                  $store.state.settings.epochBlock ? `${($store.state.settings.epochSecondsAway / 60 / 60).toFixed(1)} hours` : ''
-                }}
-              </p>
-            </div>
-
-
-            <div class="stake-price-data-row">
-              <p class="price-label">Upcoming rebase</p>
-              <p class="price-data">{{ trim( $store.state.settings.stakingRebase * 100, 4 ) }}% </p>
-            </div>
-            <div class="stake-price-data-row">
-              <p class="price-label">5-day rate</p>
-              <p class="price-data">{{ trim( $store.state.settings.fiveDayRate * 100, 4 ) }}% </p>
-            </div>
-            <div class="stake-price-data-row">
-              <p class="price-label">Current APY</p>
-              <p class="price-data">{{ trim( $store.state.settings.stakingAPY * 100, 2 )}}%</p>
-            </div>
-            <div class="stake-price-data-row">
-              <p class="price-label">Current index</p>
-              <p class="price-data">{{ trim( $store.state.settings.currentIndex, 4)}} OHM</p>
-            </div>
+          <div class="stake-price-data-row">
+            <p class="price-label">Upcoming rebase</p>
+            <p class="price-data">{{ trim( $store.state.settings.stakingRebase * 100, 4 ) }}% </p>
           </div>
-
-          <div  v-if='hasAllowance'  class="stake-button-container">
-            <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+          <div class="stake-price-data-row">
+            <p class="price-label">5-day rate</p>
+            <p class="price-data">{{ trim( $store.state.settings.fiveDayRate * 100, 4 ) }}% </p>
           </div>
-          <div v-else class="stake-button-container">
-            <div class="stake-button" @click='seekApproval'>Approve</div>
+          <div class="stake-price-data-row">
+            <p class="price-label">Current APY</p>
+            <p class="price-data">{{ trim( $store.state.settings.stakingAPY * 100, 2 )}}%</p>
           </div>
+          <div class="stake-price-data-row">
+            <p class="price-label">Current index</p>
+            <p class="price-data">{{ trim( $store.state.settings.currentIndex, 4)}} OHM</p>
+          </div>
+        </div>
 
+        <div  v-if='hasAllowance'  class="stake-button-container">
+          <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
+        </div>
+        <div v-else class="stake-button-container">
+          <div class="stake-button" @click='seekApproval'>Approve</div>
         </div>
 
       </div>
+
     </div>
   </div>
-
 
 
 </template>
