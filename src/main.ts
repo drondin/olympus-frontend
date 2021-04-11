@@ -9,6 +9,7 @@ import { formatTs } from '@/helpers/utils';
 import messages from '@/helpers/messages.json';
 import numberFormats from '@/helpers/number.json';
 import VueParticles from 'vue-particles';
+import 'bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import '@/style.scss';
 import ToggleSwitch from 'vuejs-toggle-switch'

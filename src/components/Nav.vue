@@ -2,15 +2,10 @@
   <nav>
     <div class="bg-topnav">
       <div class="container-lg p-responsive d-flex">
-        <div class="">
-          <router-link :to="{ name: 'home' }">
-            <div class="row">
-              <img src="~/@/assets/logo.svg" class="logo mt-4" /><h4 class="ticker-name">Olympus</h4>
-              <h1 class="py-4">
-              </h1>
-            </div>
-          </router-link>
-        </div>
+        <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
+          <img src="~/@/assets/logo.svg" class="logo" /><h4 class="ticker-name">Olympus</h4>
+          <h1 class="py-4"></h1>
+        </router-link>
 
         <div class="mainnav">
           <div class="drop-menu-item">
