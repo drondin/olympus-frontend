@@ -185,9 +185,7 @@ export default {
     },
 
     hasAllowance() {
-      if (this.quantity === '' && parseInt(this.$store.state.settings.stakeAllowance) > 0 ) {
-        return true;
-      } else if (parseFloat(this.quantity)) {
+      if (parseFloat(this.quantity)) {
         switch(this.selectedMapOption) {
           case 'Stake':
             return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
@@ -203,7 +201,6 @@ export default {
 
     ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY']),
     async executeStake() {
-      console.log(this.selectedMapOption)
         switch(this.selectedMapOption) {
           case 'Stake':
             if ( this.quantity === '') {

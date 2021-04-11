@@ -561,7 +561,14 @@ const actions = {
     const signer = provider.getSigner();      
     const staking = await new ethers.Contract(addresses[state.network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
 
-    const stakeTx = await staking.stakeOHM(ethers.utils.parseUnits(value, 'gwei'));
+    let stakeTx;
+    try {
+      stakeTx = await staking.stakeOHM(ethers.utils.parseUnits(value, 'gwei'));
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
     await stakeTx.wait();
     const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
     const ohmBalance = await ohmContract.balanceOf(state.address);
