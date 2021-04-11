@@ -1,42 +1,11 @@
 <template>
   <div>
     <div id="dapp" class="dapp overflow-hidden">
-      <!-- <VueLoadingIndicator v-if="settings.loading" class="overlay big" /> 
-      <div v-else>
-      </div>-->
-      <div class="dapp-sidebar">
+      <Sidebar />
 
-        <div class="dapp-menu-top">
-          <div class="branding-header">
-            <router-link :to="{ name: 'home' }" class="">
-            <img class="branding-header-icon" src="~/@/assets/logo.svg" alt="">
-          </router-link>
-          </div>
-          <div class="wallet-menu">
-            <a v-if="address" class="disconnect-button button-primary button" @click="$store.state.settings.address = ''">Disconnect</a>
-          <a v-if="address" class="dapp-sidebar-button-connected button button-info">
-            <span class="login-bullet mr-2 ml-n2" />
-            {{ shorten(address) }}
-          </a>
-          <a v-else class="dapp-sidebar-button-connect button button-primary" @click="modalLoginOpen = true">
-            Connect wallet
-          </a>
-          </div>
-        </div>
-
-        <div class="dapp-menu-links">
-          <Dav />
-
-        </div>
-
-        <div class="dapp-menu-social">
-         <Social />
-        </div>
-      </div>
       <div class="wrapper">
         <div class="dapp-center-modal">
           <div class="dapp-modal-wrapper">
-
             <div class="swap-input-column">
 
               <!-- <div class="balance-row"><p>Balance</p><p class="balance-data">{{ $store.state.settings.aOHMBalance }}</p><p>AlphaOHM</p> </div> -->
@@ -45,7 +14,7 @@
               <!-- <div class="swap-input-row">
                 <div class="swap-input-container">
                   <input v-on:change='updateValuesOnInChange' placeholder="0.0" id="swap-input-id" class="swap-input" type="number">
-                  
+
                   </div>
 
                   <div class="cur-max-box">
@@ -81,122 +50,101 @@
               </div>
 
             </div>
-            
+
           </div>
         </div>
       </div>
     </div>
-    <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
-
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import { shorten } from '@/helpers/utils.ts';
+  import { mapState, mapActions } from 'vuex';
 
-export default {
-  data() {
-    return {
-      form: {
-        quantity: ''
+  export default {
+    data() {
+      return {
+        form: {
+          quantity: ''
+        },
+        modalMakepotionOpen: false
+      };
+    },
+
+    computed: {
+      ...mapState(['settings']),
+      isValid() {
+        return parseFloat(this.form.quantity);
       },
-      modalLoginOpen: false,
-      modalMakepotionOpen: false
-    };
-  },
-  computed: {
-    ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
+
+      maxStrike() {
+        const exchangeRate = this.settings.exchangeRates[this.form.asset];
+        return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
+      }
     },
 
-    address() {
-      if(this.$store.state.settings.address)
-      return this.$store.state.settings.address
-      return null
-    }, 
+    methods: {
+      ...mapActions(['migrateToOHM', 'getMaxSwap', 'reclaimAOHM']),
 
-    maxStrike() {
-      const exchangeRate = this.settings.exchangeRates[this.form.asset];
-      return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
-    }
-  },
-  
-  methods: {
-    
-    ...mapActions(['migrateToOHM', 'getMaxSwap', 'reclaimAOHM']),
-    handleSubmit() {
-      this.migrateToOHM({
-        value: this.form.quantity
-      });
-    },
+      handleSubmit() {
+        this.migrateToOHM({
+          value: this.form.quantity
+        });
+      },
 
-  async migrate() {
-    const ohmToMigrate = document.getElementById('swap-input-id').value;
+      async migrate() {
+        const ohmToMigrate = document.getElementById('swap-input-id').value;
 
-    if( isNaN( ohmToMigrate ) ) {
-      return;
-    }
+        if( isNaN( ohmToMigrate ) ) {
+          return;
+        }
 
-    else {
-      await this.migrateToOHM( ohmToMigrate );
-    }
-    
-  },
+        else {
+          await this.migrateToOHM( ohmToMigrate );
+        }
 
-  async redeemAlphaOHM() {
-    await this.reclaimAOHM();
-  },
+      },
 
-    async maxSwap() {
-      await this.getMaxSwap();
-      this.value = this.$store.state.settings.maxSwap;
-      document.getElementById('swap-input-id').value = this.value;
-      document.getElementById('swap-output-id').value = this.value;
-      document.getElementById('output-ohm-id').innerHTML = this.value + " OHM";
+      async redeemAlphaOHM() {
+        await this.reclaimAOHM();
+      },
 
-    },
+      async maxSwap() {
+        await this.getMaxSwap();
+        this.value = this.$store.state.settings.maxSwap;
+        document.getElementById('swap-input-id').value = this.value;
+        document.getElementById('swap-output-id').value = this.value;
+        document.getElementById('output-ohm-id').innerHTML = this.value + " OHM";
 
-    disconnect() {
-      if(this.$store.state.settings.address)
-      return this.$store.state.address.initial
-      return null
-    },
+      },
 
-    updateValuesOnInChange() {
-      document.getElementById('swap-output-id').value = document.getElementById('swap-input-id').value;
-      document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-input-id').value + " OHM";
-    },
+      updateValuesOnInChange() {
+        document.getElementById('swap-output-id').value = document.getElementById('swap-input-id').value;
+        document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-input-id').value + " OHM";
+      },
 
-    shorten(addr) { 
-      return shorten(addr);
-    },    
+      updateValuesOnOutChange() {
+        document.getElementById('swap-input-id').value = document.getElementById('swap-output-id').value;
+        document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-output-id').value + " OHM";
+      },
 
-    updateValuesOnOutChange() {
-      document.getElementById('swap-input-id').value = document.getElementById('swap-output-id').value;
-      document.getElementById('output-ohm-id').innerHTML = document.getElementById('swap-output-id').value + " OHM";
-    },
-
-    trim(number, precision){
-        if( number == undefined ) {
+      trim(number, precision){
+        if ( number == undefined ) {
           number = 0
         }
         const array = number.toString().split(".");
         array.push(array.pop().substring(0, precision));
         const trimmedNumber =  array.join(".");
         return(trimmedNumber);
-    }
-  },
-
-
-
-};
+      }
+    },
+  };
 </script>
+
 <style scoped>
-.hasEffect {
-  cursor: pointer;
-}
+  .hasEffect {
+    cursor: pointer;
+  }
 </style>
 
 <!--
@@ -207,14 +155,14 @@ export default {
 <template>
   <div class="block">
     <h1 class="mb-4 main-title">OLYMPUS</h1>
-    <p class="mb-4"><b class="warn">This is a private presale.</b>  If you have not been invited, your transaction will fail and waste your transaction fee!</p>    
+    <p class="mb-4"><b class="warn">This is a private presale.</b>  If you have not been invited, your transaction will fail and waste your transaction fee!</p>
     <p class="mb-2">
       Dai Balance: <span class="hasEffect" @click="maxStake">{{ Math.floor($store.state.settings.balance * 100) / 100 }}</span>
     </p>
 
     <form @submit.prevent="handleSubmit" class="form">
       <div class="mb-0">
-    
+
         <input
           v-if = "settings.authorized && settings.address && settings.allowanceTx<1"
           type="number"
