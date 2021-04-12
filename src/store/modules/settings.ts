@@ -382,7 +382,7 @@ const actions = {
   async calcBondDetails({ commit }, amount ) {
     let amountInWei;
     if (amount === '') {
-      amountInWei = ETHER / 1000000;
+      amountInWei = ETHER;
     } else {
       amountInWei = amount * ETHER
     }
