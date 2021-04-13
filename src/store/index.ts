@@ -12,8 +12,13 @@ const store = new Vuex.Store({
     isSidebarExpanded: false
   },
   mutations: {
-    toggleSidebar(state) {
-      state.isSidebarExpanded = !state.isSidebarExpanded
+    toggleSidebar(state, value) {
+      if (value) {
+        state.isSidebarExpanded = value;
+      }
+      else {
+        state.isSidebarExpanded = !state.isSidebarExpanded;
+      }
     }
   }
 });

@@ -9,6 +9,7 @@ import Migrate from './views/Swap.vue';
 import LPStaking from './views/LPStaking.vue';
 //import Presale from './views/Presale.vue';
 //import Presale3 from './views/Presale3.vue';
+import store from './store/index'
 
 Vue.use(VueRouter);
 
@@ -27,5 +28,9 @@ const routes: Array<RouteConfig> = [
 const router = new VueRouter({
   routes
 });
+
+router.afterEach((to, from) => {
+  store.commit("toggleSidebar", false)
+})
 
 export default router;
