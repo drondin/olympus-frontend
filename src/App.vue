@@ -17,9 +17,9 @@
                 </button>
               </nav>
 
-              <Sidebar v-bind:isExpanded=isSidebarExpanded />
+              <Sidebar v-bind:isExpanded=$store.state.isSidebarExpanded />
 
-              <div v-bind:class="[isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
+              <div v-bind:class="[$store.state.isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
 
               <div class="col-md-9 col-lg-10 mt-4 mt-md-0 overflow-auto">
                 <router-view :key="$route.path" />
@@ -49,9 +49,7 @@
 
   export default {
     data() {
-      return {
-        isSidebarExpanded: false,
-      }
+      return {}
     },
     computed: {
       ...mapState(['settings', 'constants'])
@@ -59,9 +57,10 @@
     methods: {
       ...mapActions(['init']),
       toggleNavbar () {
-        this.isSidebarExpanded = !this.isSidebarExpanded;
+        this.$store.commit('toggleSidebar')
       }
     },
+
     async created() {
       this.init();
     }

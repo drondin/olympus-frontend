@@ -4,9 +4,18 @@ import modules from './modules';
 
 Vue.use(Vuex);
 
+// store: {state: {}, constants: {}, settings: {}}
 const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   modules,
-  strict: process.env.NODE_ENV !== 'production'
+  state: {
+    isSidebarExpanded: false
+  },
+  mutations: {
+    toggleSidebar(state) {
+      state.isSidebarExpanded = !state.isSidebarExpanded
+    }
+  }
 });
 
 export default store;
