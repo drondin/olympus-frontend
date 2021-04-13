@@ -866,7 +866,10 @@ input.input:read-only {
   max-width: 500px;
 }
 .iconclose{
-  &:before{color:#e8e8e8;}
+  &:before{
+    color: #212121; //#e8e8e8;
+  }
+
 }
 .modal {
   .backdrop {
@@ -876,7 +879,7 @@ input.input:read-only {
   .shell {
     background-color:#f5f5f5;
     @extend .block;
-    border-radius:2rem;
+    // border-radius:2rem;
     max-width: 450px;
 
     .modal-body {

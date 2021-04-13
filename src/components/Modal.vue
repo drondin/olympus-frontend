@@ -33,7 +33,7 @@ export default {
     left: 0;
     right: 0;
     z-index: 99;
-    background: rgba(0, 0, 0, 0.4);
+    background: #212121; //rgba(0, 0, 0, 0.4);
   }
 
   .shell {
