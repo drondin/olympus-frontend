@@ -24,7 +24,7 @@ export default {
   right: 0;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 300;
 
   .backdrop {
     position: fixed;
@@ -33,7 +33,7 @@ export default {
     left: 0;
     right: 0;
     z-index: 99;
-    background: rgba(0, 0, 0, 0.4);
+    background: #212121; //rgba(0, 0, 0, 0.4);
   }
 
   .shell {
