@@ -1,6 +1,6 @@
 <template>
-
-  <div class="dapp-center-modal py-2">
+  <div class="d-flex align-items-center justify-content-center h-100">
+    <div class="dapp-center-modal py-2 px-4 py-md-4 px-md-2">
     <div class="dapp-modal-wrapper">
 
       <div class="swap-input-column">
@@ -75,10 +75,10 @@
           </div>
         </div>
 
-        <div  v-if='hasAllowance'  class="stake-button-container">
+        <div  v-if='hasAllowance'  class="d-flex align-self-center mb-2">
           <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
         </div>
-        <div v-else class="stake-button-container">
+        <div v-else class="d-flex align-self-center mb-2">
           <div class="stake-button" @click='seekApproval'>Approve</div>
         </div>
 
@@ -86,8 +86,7 @@
 
     </div>
   </div>
-
-
+  </div>
 </template>
 
 <script>

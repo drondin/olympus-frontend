@@ -391,7 +391,6 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
 }
 
 .dapp-modal-wrapper{
-  padding:2rem 0rem;
   max-width:330px;
   width:100%;
 }
@@ -541,6 +540,7 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
 
 .stake-toggle-row{
   margin:1rem auto;
+
   .toggle-switch{
     border-radius:2rem;overflow:hidden;
     li{
@@ -563,9 +563,6 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
       }
     }
   }
-
-  .stake-button-container{display:flex;flex-flow:row;justify-content:center;}
-  .redeem-button-container{display:flex;flex-flow:row;justify-content:space-evenly;}
 
 .stake-button{  font-size:0.8rem;
   cursor:pointer;background-color:#282828;
@@ -1007,10 +1004,6 @@ input.input:read-only {
     // top: 300px;
   }
 
-
-  .dapp-modal-wrapper{
-    padding:0rem 2rem;
-  }
 
   .dapp-sidebar {
     position: absolute;

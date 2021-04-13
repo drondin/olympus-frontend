@@ -1,6 +1,7 @@
 <template>
-  <div class="dapp-center-modal py-2">
-    <div class="dapp-modal-wrapper">
+  <div class="d-flex align-items-center justify-content-center h-100">
+    <div class="dapp-center-modal">
+    <div class="dapp-modal-wrapper py-2 px-4 py-md-4 px-md-2">
 
       <div class="swap-input-column">
 
@@ -84,15 +85,15 @@
           </div>
         </div>
 
-        <div v-if="isRedeem==true" class="redeem-button-container">
+        <div v-if="isRedeem==true" class="d-flex align-self-center mb-4">
           <div class="redeem-button" @click='redeem' >Claim Rewards</div>
         </div>
 
-        <div v-else-if="hasAllowance==true && isRedeem==false" class="redeem-button-container">
+        <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
           <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
         </div>
 
-        <div v-else class="redeem-button-container" >
+        <div v-else class="d-flex align-self-center mb-4" >
           <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
         </div>
 
@@ -117,7 +118,7 @@
       </div>
     </div>
   </div>
-
+  </div>
 </template>
 
 <script>

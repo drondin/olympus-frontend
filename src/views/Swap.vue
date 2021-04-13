@@ -1,6 +1,6 @@
 <template>
-
-  <div class="wrapper">
+  <div class="d-flex align-items-center justify-content-center h-100">
+    <div class="wrapper">
     <div class="dapp-center-modal">
       <div class="dapp-modal-wrapper">
         <div class="swap-input-column">
@@ -51,7 +51,7 @@
       </div>
     </div>
   </div>
-
+  </div>
 
 </template>
 
