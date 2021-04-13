@@ -823,16 +823,19 @@ input.input:read-only {
   opacity: 1;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: $secondary;
-  border: 0;
-  border-radius: 0;
-  background-clip: padding-box;
 
-  &:hover {
-    background-color: white;
-  }
-}
+// ::-webkit-scrollbar-thumb {
+//   background-color: $secondary;
+//   border: 0;
+//   border-radius: 0;
+//   background-clip: padding-box;
+//
+//   &:hover {
+//     background-color: white;
+//   }
+// }
+
+
 @keyframes wave{
   0%{  background-size:100%;
   }
