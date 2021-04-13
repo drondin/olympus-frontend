@@ -929,7 +929,7 @@ input.input:read-only {
   background-color: transparent !important;
 
   .animation {
-    border-color: transparentize(white, 0.8);
+    border-color: #212121; //transparentize(white, 0.8);
     border-width: 4px !important;
     width: 26px !important;
     height: 26px !important;
