@@ -1,123 +1,123 @@
 <template>
-  <div class="d-flex align-items-center justify-content-center h-100">
+  <div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="dapp-center-modal">
-    <div class="dapp-modal-wrapper py-2 px-4 py-md-4 px-md-2">
+      <div class="dapp-modal-wrapper py-2 px-4 py-md-4 px-md-2">
 
-      <div class="swap-input-column">
+        <div class="swap-input-column">
 
-        <div class="stake-toggle-row">
-          <toggle-switch
-            :options="myOptions"
-            v-model="selectedMapOption"
-            :value="selectedMapOption"
-            />
-        </div>
-
-        <div v-if="isRedeem==false" class="swap-input-row">
-
-          <div class="stake-input-container">
-            <input
-              v-on:keyup="onInputChange"
-              v-on:change="onInputChange"
-              id="bond-input-id"
-              placeholder="Type an amount"
-              class="bond-input"
-              type="number"
-            />
+          <div class="stake-toggle-row">
+            <toggle-switch
+              :options="myOptions"
+              v-model="selectedMapOption"
+              :value="selectedMapOption"
+              />
           </div>
 
-          <div v-if="isRedeem==true">
+          <div v-if="isRedeem==false" class="swap-input-row">
+
+            <div class="stake-input-container">
+              <input
+                v-on:keyup="onInputChange"
+                v-on:change="onInputChange"
+                id="bond-input-id"
+                placeholder="Type an amount"
+                class="bond-input"
+                type="number"
+              />
+            </div>
+
+            <div v-if="isRedeem==true">
+            </div>
+
           </div>
 
-        </div>
-
-        <div v-if="isRedeem==false" class="stake-amount-preset-row">
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-            25%
+          <div v-if="isRedeem==false" class="stake-amount-preset-row">
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
+              25%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
+              50%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
+              75%
+            </div>
+            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
+              100%
+            </div>
           </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-            50%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-            75%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-            100%
-          </div>
-        </div>
 
 
 
-        <div v-if="isRedeem==false" class="stake-price-data-column">
+          <div v-if="isRedeem==false" class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Balance</p>
+              <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Bond Price</p>
+              <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} DAI</p>
+            </div><div class="stake-price-data-row">
+              <p class="price-label">Market Price</p>
+              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
+            </div>
+
+            <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
+              <p class="price-label">You Will Get</p>
+              <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
+            </div>
+          </div>
+
+          <div v-else class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Balance</p>
+              <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
+            </div>
           <div class="stake-price-data-row">
-            <p class="price-label">Balance</p>
-            <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
-          </div><div class="stake-price-data-row">
-            <p class="price-label">Bond Price</p>
-            <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} DAI</p>
-          </div><div class="stake-price-data-row">
-            <p class="price-label">Market Price</p>
-            <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
+              <p class="price-label">Pending Rewards</p>
+              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.interestDue, 4 ) }} OHM</p>
+            </div>
+            <div class="stake-price-data-row">
+              <p class="price-label">Claimable Rewards</p>
+              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.pendingPayout, 4 ) }} OHM</p>
+            </div>
+            <div class="stake-price-data-row">
+              <p class="price-label">Full Bond Maturation</p>
+              <p id="bond-market-price-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
+            </div>
           </div>
 
-          <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
-            <p class="price-label">You Will Get</p>
-            <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
+          <div v-if="isRedeem==true" class="d-flex align-self-center mb-4">
+            <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
-        </div>
 
-        <div v-else class="stake-price-data-column">
-          <div class="stake-price-data-row">
-            <p class="price-label">Balance</p>
-            <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
+          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
+            <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
           </div>
-        <div class="stake-price-data-row">
-            <p class="price-label">Pending Rewards</p>
-            <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.interestDue, 4 ) }} OHM</p>
-          </div>
-          <div class="stake-price-data-row">
-            <p class="price-label">Claimable Rewards</p>
-            <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.pendingPayout, 4 ) }} OHM</p>
-          </div>
-          <div class="stake-price-data-row">
-            <p class="price-label">Full Bond Maturation</p>
-            <p id="bond-market-price-id" class="price-data">Block {{ $store.state.settings.bondMaturationBlock }}</p>
-          </div>
-        </div>
 
-        <div v-if="isRedeem==true" class="d-flex align-self-center mb-4">
-          <div class="redeem-button" @click='redeem' >Claim Rewards</div>
-        </div>
+          <div v-else class="d-flex align-self-center mb-4" >
+            <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
+          </div>
 
-        <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
-          <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
-        </div>
-
-        <div v-else class="d-flex align-self-center mb-4" >
-          <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
         </div>
 
       </div>
 
-    </div>
-
-    <div class="bond-data">
-      <div class="row bond-data-row p-4">
-        <div class="col-4 text-center">
-          <p>Debt Ratio</p>
-          <p>{{ trim( $store.state.settings.debtRatio / 10000000, 2 ) }}%</p>
-        </div>
-        <div class="col-4 text-center">
-          <p>Vesting Term</p>
-          <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
-        </div>
-        <div class="col-4 text-center">
-          <p>Discount</p>
-          <p>{{ trim( $store.state.settings.bondDiscount * 100, 2 ) }}%</p>
+      <div class="bond-data">
+        <div class="row bond-data-row p-4">
+          <div class="col-4 text-center">
+            <p>Debt Ratio</p>
+            <p>{{ trim( $store.state.settings.debtRatio / 10000000, 2 ) }}%</p>
+          </div>
+          <div class="col-4 text-center">
+            <p>Vesting Term</p>
+            <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
+          </div>
+          <div class="col-4 text-center">
+            <p>Discount</p>
+            <p>{{ trim( $store.state.settings.bondDiscount * 100, 2 ) }}%</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -210,9 +210,9 @@ export default {
     ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
 
     async setStake(value) {
-      // Calculate suppliedQuantity and round it to avoid conflicts with uint.
+      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
       let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
-      suppliedQuantity = Math.round( suppliedQuantity * 1000000000000000000)/1000000000000000000;
+      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
 
       switch(this.selectedMapOption) {
         case 'Bond':
