@@ -210,9 +210,9 @@ export default {
     ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
 
     async setStake(value) {
-      // Calculate suppliedQuantity and round it to avoid conflicts with uint.
+      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
       let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
-      suppliedQuantity = Math.round( suppliedQuantity * 1000000000000000000)/1000000000000000000;
+      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
 
       switch(this.selectedMapOption) {
         case 'Bond':
