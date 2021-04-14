@@ -11,7 +11,7 @@
         <div id="dapp" class="dapp overflow-hidden">
           <div class="container-fluid h-100">
             <div class="row h-100">
-              <nav class="navbar navbar-expand-lg navbar-light justify-content-end d-sm-none">
+              <nav class="navbar navbar-expand-lg navbar-light justify-content-end d-md-none">
                 <button class="navbar-toggler" type="button" @click='toggleNavbar' aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
                 </button>
@@ -21,7 +21,7 @@
 
               <div v-bind:class="[$store.state.isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
 
-              <div class="col-md-9 col-lg-10 mt-4 mt-md-0 overflow-auto">
+              <div class="col-lg-10 col-12 mt-4 mt-md-0 overflow-auto min-vh-100">
                 <router-view :key="$route.path" />
               </div>
             </div>

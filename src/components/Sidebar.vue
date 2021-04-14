@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="['col-md-3','col-lg-2', 'd-md-block', 'sidebar', 'collapse', {'show': isExpanded}]" id="sidebarContent">
+  <div v-bind:class="['col-lg-2', 'col-2', 'd-md-block', 'sidebar', 'collapse', {'show': isExpanded}]" id="sidebarContent">
     <div class="dapp-sidebar d-flex flex-column">
       <div class="dapp-menu-top">
         <div class="branding-header">
