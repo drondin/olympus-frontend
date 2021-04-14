@@ -295,7 +295,7 @@ const actions = {
 
           circSupply = await sohmMainContract.circulatingSupply();
 
-          stakingReward = await distributorContract.getCurrentRewardForNextEpoch();
+          stakingReward = await OlympusStaking.ohmToDistributeNextEpoch();
 
           stakingRebase = stakingReward / circSupply;
           fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3) - 1;
