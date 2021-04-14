@@ -57,7 +57,7 @@
     methods: {
       ...mapActions(['init']),
       toggleNavbar () {
-        this.$store.commit('toggleSidebar')
+        this.$store.commit('toggleSidebar', !this.$store.state.isSidebarExpanded)
       }
     },
 
