@@ -75,41 +75,17 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   data() {
-    return {
-      form: {
-        quantity: ''
-      },
-      modalLoginOpen: false,
-      modalMakepotionOpen: false
-    };
+    return {};
   },
   computed: {
-    ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
-    },
-    maxStrike() {
-      const exchangeRate = this.settings.exchangeRates[this.form.asset];
-      return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
-    }
+    ...mapState(['analytics']),
   },
   methods: {
-
-    ...mapActions(['SendDai']),
-    handleSubmit() {
-      this.SendDai({
-        //address: '0xb72027693a5B717B9e28Ea5E12eC59b67c944Df7',
-        value: this.form.quantity
-      });
-    },
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    },
-    disconnect() {
-      if(this.$store.state.settings.address)
-      return this.$store.state.address.initial
-      return null
-    }
+    ...mapActions(['getCoingeckoData']),
+  },
+  async created() {
+    this.getCoingeckoData();
+    console.log("DATA = ", this.$store.state.analytics)
   }
 };
 </script>
