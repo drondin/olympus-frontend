@@ -292,10 +292,11 @@ const actions = {
         if(addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
           distributorContract = new ethers.Contract(addresses[network.chainId].DISTRIBUTOR_ADDRESS, DistributorContract, provider);
           sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+          stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
 
           circSupply = await sohmMainContract.circulatingSupply();
 
-          stakingReward = await OlympusStaking.ohmToDistributeNextEpoch();
+          stakingReward = await stakingContract.ohmToDistributeNextEpoch();
 
           stakingRebase = stakingReward / circSupply;
           fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3) - 1;
