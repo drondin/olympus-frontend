@@ -160,7 +160,7 @@ export default {
 
       switch(this.selectedMapOption) {
         case 'Stake':
-          if( isNaN( this.quantity ) || parseInt(this.quantity) === 0 || this.quantity === '' ) {
+          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
             alert("Please enter a value!");
             return;
           } else {
