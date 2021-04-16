@@ -34,12 +34,12 @@
           <div class="drop-menu-item">
             <h4>Governance</h4>
             <div class="drop-menu-hidden">
-              <router-link :to="{ name: 'vote' }" class="">
-              <p>Vote</p>
-              </router-link>
-              <router-link :to="{ name: 'forum' }" class="">
-              <p>Forum</p>
-              </router-link>
+              <a href="http://vote.olympusdao.finance/">
+               <p>Vote</p>
+              </a>
+              <a href="https://forum.olympusdao.finance">
+               <p>Forum</p>
+              </a>
             </div>
           </div>
 
