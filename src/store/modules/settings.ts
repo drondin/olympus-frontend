@@ -283,7 +283,6 @@ const actions = {
 
         const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
 
-
         commit('set', { address });
         commit('set', {
           // name,
