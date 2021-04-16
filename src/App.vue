@@ -1,12 +1,16 @@
 <template>
-  <div id="app">
-    <VueLoadingIndicator v-if="settings.loading" class="overlay big" />
-    <div v-else-if="$route.path == '/'">
+  <div>
+    <div id="app" v-if="settings.loading">
+      <VueLoadingIndicator  class="overlay big" />
+    </div>
+
+    <div id="app" class="overflow-hidden" v-else-if="$route.path == '/'">
       <transition name="fade" mode="out-in">
         <router-view :key="$route.path" />
       </transition>
     </div>
-    <div v-else>
+
+    <div id="app" v-else>
       <transition name="fade" mode="out-in">
         <div id="dapp" class="dapp min-vh-100">
           <div class="container-fluid">
@@ -29,7 +33,13 @@
         </div>
       </transition>
     </div>
+
+
+
   </div>
+
+
+
 </template>
 <style scoped>
   .fade-enter-active,
