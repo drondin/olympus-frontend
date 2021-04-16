@@ -159,22 +159,20 @@ export default {
   methods: {
 
     ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
-    async executeStake() {console.log(this.selectedMapOption)
-        switch(this.selectedMapOption) {
-          case 'Stake':
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
+    async executeStake() {
+      switch(this.selectedMapOption) {
+        case 'Stake':
+          if ( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+            alert("Please enter a value!");
+            return;
+          } else {
+            await this.stakeLP(this.quantity.toString());
+          }
 
-            else {
-              await this.stakeLP(this.quantity.toString());
-            }
-
-            break;
-          case 'Unstake':
-            await this.unstakeLP();
-        }
-        //updatestats
+          break;
+        case 'Unstake':
+          await this.unstakeLP();
+      }
     },
 
     async claimLPRewards() {

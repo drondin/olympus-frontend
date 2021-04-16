@@ -562,7 +562,19 @@ const actions = {
   async stakeLP({commit}, value) {
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const stakeTx = await staking.stakeLP(ethers.utils.parseUnits(value, 'ether'));
+
+    // Deposit the bond
+    let stakeTx;
+    try {
+      stakeTx = await staking.stakeLP(ethers.utils.parseUnits(value, 'ether'));
+    } catch (error) {
+      if (error.code === -32603 && error.message.indexOf("ds-math-sub-underflow") >= 0) {
+        alert("You may be trying to bond more than your balance! Error code: 32603. Message: ds-math-sub-underflow");
+      } else {
+        alert(error.message);
+      }
+      return;
+    }
     await stakeTx.wait();
 
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
