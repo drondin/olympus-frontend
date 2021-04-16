@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container-fluid mt-4">
     <div class="row mt-4">
       <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
@@ -26,10 +26,10 @@
         </div>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <h4 class="card-title">Circulating supply/total supply</h4>
+            <h4 class="card-title">Supply (circulating/total)</h4>
             <h2 class="text-center">
               {{ new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format($store.state.analytics.circulatingSupply) }}
               /
@@ -42,16 +42,16 @@
 
 
     <div class="row mt-4">
-      <div class="col-md-6">
-        <div class="card olympus-card" style="height:400px;">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
           <div class="card-body">
             <iframe frameborder="0" src="https://duneanalytics.com/embeds/29153/58862/af89fc7b-f1df-4dbd-a568-85bcdc49dd99" title="Treasury value in DAI" style="height:400px;"></iframe>
           </div>
         </div>
       </div>
 
-      <div class="col-md-6">
-        <div class="card olympus-card" style="height:400px;">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
           <div class="card-body">
             <iframe frameborder="0" src="https://duneanalytics.com/embeds/29778/60051/6328b87b-183e-4456-888d-d91048ff8cff" title="Market value of Treasury" style="height:400px;"></iframe>
           </div>
@@ -63,15 +63,15 @@
 
 
     <div class="row mt-4 mb-4">
-      <div class="col-md-6">
-        <div class="card olympus-card" style="height:400px;">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
           <div class="card-body">
             <iframe frameborder="0" src="https://duneanalytics.com/embeds/28286/57140/b0e3c522-8ace-47e8-8ac9-bc4ebf10b8c7" title="Total Value Staking" style="height:400px;"></iframe>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card olympus-card" style="height:400px;">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
           <div class="card-body">
             <iframe frameborder="0" src="https://duneanalytics.com/embeds/28756/58813/a3658bd2-39dc-4f19-bd2e-2a666c9d5b39" title="OHM staked/non-staked" style="height:400px;"></iframe>
           </div>
