@@ -10,7 +10,7 @@ import {
   revitalisePotion,
   withdrawPotion
 } from '@/helpers/utils';
-import { ETHER } from '@/helpers/constants';
+import { ETHER, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
@@ -24,7 +24,6 @@ import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
-
 const parseEther = ethers.utils.parseEther;
 
 let provider;
@@ -37,11 +36,6 @@ if (ethereum) {
     store.dispatch('init')
   });
 }
-
-const EPOCH_INTERVAL = 2200;
-
-// NOTE could get this from an outside source since it changes slightly over time
-const BLOCK_RATE_SECONDS = 13.14;
 
 async function getNextEpoch(): Promise<[number, number, number]> {
   const height = await provider.getBlockNumber();
@@ -56,30 +50,6 @@ async function getNextEpoch(): Promise<[number, number, number]> {
 
   return [next, blocksAway, secondsAway];
 }
-
-const MARKET_API_URL =
-  'https://api.coingecko.com/api/v3/coins/olympus?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
-
-async function getSupplyAndMarketCap() {
-  try {
-    const result = await fetch(MARKET_API_URL);
-    const json = await result.json();
-
-    return {
-      circulatingSupply: json.market_data.circulating_supply,
-      marketCap: json.market_data.market_cap.usd,
-      currentPrice: json.market_data.current_price.usd
-    };
-  } catch (e) {
-    return {
-      circulatingSupply: 0,
-      marketCap: 0,
-      currentPrice: 0
-    };
-  }
-}
-
-
 
 const state = {
   approval: 0,
@@ -313,16 +283,6 @@ const actions = {
         console.log("stakeAllowance", stakeAllowance);
 
         const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
-
-        // TODO: Add this back in when we fetch data for dashboard.
-        // const { circulatingSupply, marketCap, currentPrice } = await getSupplyAndMarketCap();
-        // const supplyInGwei = ethers.utils.parseUnits(circulatingSupply.toFixed(5), 'gwei');
-        // const percentOfCirculatingOhmSupply = ohmBalance.gt(ethers.constants.Zero)
-        //   ? (ohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
-        //   : 0;
-        // const percentOfCirculatingSOhmSupply = sohmBalance.gt(ethers.constants.Zero)
-        //   ? (sohmBalance.toNumber() / supplyInGwei.toNumber()) * 100
-        //   : 0;
 
 
         commit('set', { address });
