@@ -5,9 +5,11 @@
         <div class="card ohm-dashboard-card">
           <div class="card-body">
             <h4 class="card-title">Price</h4>
-            <h1 class="text-center">
-              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format($store.state.analytics.currentPrice) }}
-            </h1>
+            <div class="my-auto">
+              <h1 class="text-center">
+                {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format($store.state.analytics.currentPrice) }}
+              </h1>
+            </div>
           </div>
         </div>
       </div>
@@ -18,7 +20,7 @@
           <div class="card-body">
             <h4 class="card-title">Market Cap</h4>
             <h1 class="text-center">
-              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format($store.state.analytics.marketCap) }}
+              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format($store.state.analytics.marketCap) }}
             </h1>
           </div>
         </div>
@@ -28,11 +30,11 @@
         <div class="card ohm-dashboard-card">
           <div class="card-body">
             <h4 class="card-title">Circulating supply/total supply</h4>
-            <h3 class="text-center">
-              {{ new Intl.NumberFormat('en-US', {}).format($store.state.analytics.circulatingSupply) }}
+            <h2 class="text-center">
+              {{ new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format($store.state.analytics.circulatingSupply) }}
               /
-              {{ new Intl.NumberFormat('en-US', {}).format($store.state.analytics.maxSupply) }}
-            </h3>
+              {{ new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format($store.state.analytics.maxSupply) }}
+            </h2>
           </div>
         </div>
       </div>
