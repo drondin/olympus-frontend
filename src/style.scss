@@ -13,7 +13,7 @@ $text-disabled: #888888;
 
 $body-font-size: 17px;
 $border-radius: 0px;
-$h1-size: 32px;
+// $h1-size: 32px;
 $body-line-height: 1.2;
 $border: 1px solid $bg-color;
 
@@ -47,11 +47,13 @@ html, body, #app {
 
 h1, h2, h3, .button {
   font-family: 'Square-Bold', cursive;
-    font-weight:800;
+  font-weight:800;
 }
 
-h3{font-size:2.25rem;
-line-height:2rem;}
+// h3{
+//   font-size:2.25rem;
+//   line-height:2rem;
+// }
 
 h6 {
   color: $bg-color;
@@ -104,14 +106,10 @@ background-attachment: fixed;}
 
 .no-marg-r{margin-right:unset!important;}
 
-nav{
+nav {
   z-index:1;
   position: absolute !important;
-  width: 100vw;}
-
-.row{
-  display:flex;
-  flex-flow:row;
+  width: 100vw;
 }
 
 .eth-img{margin: auto 2px ;}
@@ -471,8 +469,8 @@ a{font-weight:lighter;
 
 
 .dapp{
-  height:100vh;
-  width:100vw;
+  // height:100vh;
+  // width:100vw;
   background-position:center;
   background-size:cover;
   background-repeat:no-repeat;
@@ -651,7 +649,7 @@ padding:0rem 1rem;
   p{font-size:0.7rem;}}
 
 .dapp-sidebar{
-  position:absolute;
+  position: fixed;
   left:0px;top:0px;
   width:300px;
   height:100%;
@@ -755,17 +753,17 @@ padding:0rem 1rem;
     transition-delay:1s;
   }
 
-  &:hover .drop-menu-hidden {
+  &:hover .drop-menu-hidden, &:active .drop-menu-hidden {
     padding:0.5rem 1rem;
     border-radius:0.5rem;
-    // margin-top:0.5rem;
+    margin-top:0.5rem;
     display:flex;
     height:auto;
     flex-flow:column;
     justify-content:center;
     background:black;
     position:absolute;
-    // top: 3.5rem;
+    top: 3.5rem;
     text-align:left;
     opacity:1;
     transition:opacity 0.5s, height 0.5s ease;
@@ -1012,7 +1010,7 @@ input.input:read-only {
 
 
   .dapp-sidebar {
-    position: absolute;
+    position: fixed;
     left: 0px;
     top: 0px;
     width: 66%;
@@ -1051,53 +1049,6 @@ input.input:read-only {
 
   }
 
-  &:hover .drop-menu-hidden {
-
-    padding:0.5rem 1rem;
-    border-radius:0.5rem;
-    // margin-top:0.5rem;
-    display:flex;
-    height:auto;
-    flex-flow:column;
-    justify-content:center;
-    background:black;
-    position:absolute;
-    // top:2rem;
-    text-align:left;
-    opacity:1;
-    transition:opacity 0.5s, height 0.5s ease;
-    transition-delay:0s;
-    z-index:5;
-
-    a{
-      margin:1rem 0rem;
-    }
-
-  }
-
-
-    &:hover{
-      .drop-menu-hidden{
-        padding:0.5rem 1rem;
-        border-radius:0.5rem;
-        margin-top:0.5rem;
-        display:flex;
-        height:auto;
-        flex-flow:column;
-        justify-content:center;
-        background:black;
-        position:absolute;
-        top:2rem;text-align:left;
-        opacity:1;
-        transition:opacity 0.5s, height 0.5s ease;
-        transition-delay:0s;
-        z-index:5;
-
-        a{
-          margin:1rem 0rem;
-        }
-      }
-    }
 
 
   .dapp-menu-top{width:250px;}
@@ -1120,9 +1071,17 @@ input.input:read-only {
   box-shadow: 0px 5px 20px rgba(0,0,0,0.5);
 }
 
+.ohm-dashboard-card {
+  background-color:#424242dd;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.5);
+  min-height: 100px;
+}
+
+
 .card-body iframe {
   width: 100%;
 }
+
 
 
 .dapp-center-modal{ min-height:200px; }

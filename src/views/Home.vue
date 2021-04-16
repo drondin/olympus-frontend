@@ -5,7 +5,7 @@
     <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
     <p class="centered-text hero-desc">Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an infinite supply system.</p>
-     <router-link :to="{ name: 'migrate' }" style="margin:2rem auto;max-width:200px;" class="button button-primary button-centered">
+     <router-link :to="{ name: 'stake' }" style="margin:2rem auto;max-width:200px;" class="button button-primary button-centered">
           Enter Olympus
         </router-link>
   </div>
@@ -66,7 +66,7 @@
           <p>OHM is always backed by one DAI or one OHM backed by one DAI. This creates a demand-based constraint on issuance of supply.</p>
         </div>
 
-      </div>    
+      </div>
       <div class="works-module-responsive">
         <div class="works-icon"><img src="~/@/assets/graph.png" alt=""></div>
         <div class="works-desc">
@@ -85,7 +85,7 @@
           <p>The DAO controls policy tools that allow us to loosen, increasing profitability and volatility, or tighten, increasing stability and predictability.</p>
         </div>
 
-      </div>    
+      </div>
       <div class="works-module-responsive">
         <div class="works-icon"><img src="~/@/assets/hand.png" alt=""></div>
         <div class="works-desc">
@@ -111,8 +111,8 @@
   </div>
 
   <Footer />
-  
-  
+
+
 </div>
 </template>
 
@@ -140,7 +140,7 @@ export default {
     }
   },
   methods: {
-    
+
 
   }
 };
@@ -150,4 +150,3 @@ export default {
   cursor: pointer;
 }
 </style>
-

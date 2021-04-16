@@ -5,7 +5,7 @@
       <h3 class="mb-3 flex-auto">{{ monthName }} {{ year }}</h3>
       <a class="col-3 iconfont icongo text-right h3" @click="month++" />
     </div>
-    <div class="border-left border-top overflow-hidden">
+    <div class="border-left border-top">
       <div
         class="day border-bottom border-right text-white"
         v-for="dayOfWeek in daysOfWeek"
