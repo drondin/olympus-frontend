@@ -2,26 +2,37 @@
   <div class="container mt-4 col-12">
     <div class="row mt-4">
       <div class="col-md-4">
-        <div class="card olympus-card">
+        <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <iframe frameborder="0" src="https://duneanalytics.com/embeds/28168/57095/a5003dd2-5680-42d4-a708-c0a7cbef87ba" title="Price"></iframe>
+            <h4 class="card-title">Price</h4>
+            <h1 class="text-center">
+              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format($store.state.analytics.currentPrice) }}
+            </h1>
           </div>
         </div>
       </div>
 
 
       <div class="col-md-4">
-        <div class="card olympus-card">
+        <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <iframe frameborder="0" src="https://duneanalytics.com/embeds/28707/57953/61c41a85-7bad-4a12-bcf6-9cfbb97ee785" title="Market Cap"></iframe>
+            <h4 class="card-title">Market Cap</h4>
+            <h1 class="text-center">
+              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format($store.state.analytics.marketCap) }}
+            </h1>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div class="card olympus-card">
+        <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <iframe frameborder="0" src="https://duneanalytics.com/embeds/28599/57711/ea91c246-fbb0-4138-8200-b943782d954c" title="Supply"></iframe>
+            <h4 class="card-title">Circulating supply/total supply</h4>
+            <h3 class="text-center">
+              {{ new Intl.NumberFormat('en-US', {}).format($store.state.analytics.circulatingSupply) }}
+              /
+              {{ new Intl.NumberFormat('en-US', {}).format($store.state.analytics.maxSupply) }}
+            </h3>
           </div>
         </div>
       </div>
@@ -82,15 +93,14 @@ export default {
   },
   methods: {
     ...mapActions(['getCoingeckoData']),
+
+    formatCurrency(value) {
+      return this.formatCurrency(value)
+    },
+
   },
   async created() {
     this.getCoingeckoData();
-    console.log("DATA = ", this.$store.state.analytics)
   }
 };
 </script>
-<style scoped>
-.hasEffect {
-  cursor: pointer;
-}
-</style>
