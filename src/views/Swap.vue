@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center justify-content-center h-100">
+  <div class="d-flex align-items-center justify-content-center min-vh-100">
 
     <div class="dapp-center-modal">
       <div class="dapp-modal-wrapper">

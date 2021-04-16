@@ -1,7 +1,7 @@
 <template>
-  <div class="container mt-4 col-12">
+  <div class="container mt-4">
     <div class="row mt-4">
-      <div class="col-md-4">
+      <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
             <h4 class="card-title">Price</h4>
@@ -15,7 +15,7 @@
       </div>
 
 
-      <div class="col-md-4">
+      <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
             <h4 class="card-title">Market Cap</h4>

@@ -104,14 +104,10 @@ background-attachment: fixed;}
 
 .no-marg-r{margin-right:unset!important;}
 
-nav{
+nav {
   z-index:1;
   position: absolute !important;
-  width: 100vw;}
-
-.row{
-  display:flex;
-  flex-flow:row;
+  width: 100vw;
 }
 
 .eth-img{margin: auto 2px ;}
@@ -471,8 +467,8 @@ a{font-weight:lighter;
 
 
 .dapp{
-  height:100vh;
-  width:100vw;
+  // height:100vh;
+  // width:100vw;
   background-position:center;
   background-size:cover;
   background-repeat:no-repeat;
