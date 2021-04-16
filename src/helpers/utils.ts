@@ -20,15 +20,6 @@ export function shorten(str) {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
 }
 
-export async function getExchangeRatesFromCoinGecko() {
-  const ids = Object.entries(assets)
-    // @ts-ignore
-    .map(asset => asset[1].coingeckoId)
-    .join(',');
-  const uri = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`;
-  return await fetch(uri).then(res => res.json());
-}
-
 export function getPremiumDeposit(strike, price, days) {
   const otm = 1 - strike / price;
   let premiumDeposit;

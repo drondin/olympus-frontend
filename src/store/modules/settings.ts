@@ -4,7 +4,6 @@ import store from '@/store';
 //import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
 import {
-  getExchangeRatesFromCoinGecko,
   getPotions,
   getAllowances,
   revitalisePotion,
@@ -335,11 +334,6 @@ const actions = {
   loading: ({ commit }, payload) => {
     commit('set', { loading: payload });
   },
-  async getExchangeRates({ commit }) {
-    const exchangeRates = await getExchangeRatesFromCoinGecko();
-    commit('set', { exchangeRates });
-  },
-
   async calcBondDetails({ commit }, amount ) {
     let amountInWei;
     if (amount === '') {
