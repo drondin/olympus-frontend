@@ -753,17 +753,17 @@ padding:0rem 1rem;
     transition-delay:1s;
   }
 
-  &:hover .drop-menu-hidden {
+  &:hover .drop-menu-hidden, &:active .drop-menu-hidden {
     padding:0.5rem 1rem;
     border-radius:0.5rem;
-    // margin-top:0.5rem;
+    margin-top:0.5rem;
     display:flex;
     height:auto;
     flex-flow:column;
     justify-content:center;
     background:black;
     position:absolute;
-    // top: 3.5rem;
+    top: 3.5rem;
     text-align:left;
     opacity:1;
     transition:opacity 0.5s, height 0.5s ease;
@@ -1049,53 +1049,6 @@ input.input:read-only {
 
   }
 
-  &:hover .drop-menu-hidden {
-
-    padding:0.5rem 1rem;
-    border-radius:0.5rem;
-    // margin-top:0.5rem;
-    display:flex;
-    height:auto;
-    flex-flow:column;
-    justify-content:center;
-    background:black;
-    position:absolute;
-    // top:2rem;
-    text-align:left;
-    opacity:1;
-    transition:opacity 0.5s, height 0.5s ease;
-    transition-delay:0s;
-    z-index:5;
-
-    a{
-      margin:1rem 0rem;
-    }
-
-  }
-
-
-    &:hover{
-      .drop-menu-hidden{
-        padding:0.5rem 1rem;
-        border-radius:0.5rem;
-        margin-top:0.5rem;
-        display:flex;
-        height:auto;
-        flex-flow:column;
-        justify-content:center;
-        background:black;
-        position:absolute;
-        top:2rem;text-align:left;
-        opacity:1;
-        transition:opacity 0.5s, height 0.5s ease;
-        transition-delay:0s;
-        z-index:5;
-
-        a{
-          margin:1rem 0rem;
-        }
-      }
-    }
 
 
   .dapp-menu-top{width:250px;}
