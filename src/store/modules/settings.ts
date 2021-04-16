@@ -412,7 +412,15 @@ const actions = {
       return;
     }
 
-    const approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
+    // Approve tx
+    let approveTx;
+    try {
+      approveTx = await ohmContract.approve(addresses[state.network.chainId].STAKING_ADDRESS, ethers.utils.parseUnits('1000000000', 'gwei').toString());
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
     await approveTx.wait();
     await dispatch('getStakeAllowances')
   },
