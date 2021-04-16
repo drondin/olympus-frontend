@@ -139,15 +139,17 @@ export default {
     },
     hasAllowance() {
 
-      if(parseFloat(this.quantity)) {
-        switch(this.selectedMapOption) {
-          case 'Stake':
-              return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-          case 'Unstake':
-              return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-        }
-      }
-      return false;
+      return parseInt(this.$store.state.settings.stakeAllowance) > 0;
+
+      // if(parseFloat(this.quantity)) {
+      //   switch(this.selectedMapOption) {
+      //     case 'Stake':
+      //         return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+      //     case 'Unstake':
+      //         return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+      //   }
+      // }
+      // return false;
     },
   },
 
