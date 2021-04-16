@@ -21,6 +21,8 @@ $border: 1px solid $bg-color;
   outline: none;
 }
 
+
+
 @font-face {font-family: 'Square-Bold';
   src: url('./assets/fonts/EuclidSquare-Bold.ttf');
 }
@@ -71,9 +73,12 @@ a {
   color: white;
 
   &:hover {
-    text-decoration: none;
+    color: white !important;
+    text-decoration: none !important;
   }
 }
+
+
 .vue-particles{
   z-index:0;
   position:fixed;
