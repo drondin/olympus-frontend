@@ -129,16 +129,18 @@ export default {
       return parseFloat(this.form.quantity);
     },
     hasAllowance() {
-      if(parseFloat(this.quantity)) {
-        switch(this.selectedMapOption) {
-          case 'Stake':
-              return parseInt(this.$store.state.settings.lpStakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));
-          case 'Unstake':
-              return true;
-        }
+      return parseInt(this.$store.state.settings.lpStakeAllowance) > 0;
 
-      }
-      return false;
+      // if(parseFloat(this.quantity)) {
+      //   switch(this.selectedMapOption) {
+      //     case 'Stake':
+      //         return parseInt(this.$store.state.settings.lpStakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));
+      //     case 'Unstake':
+      //         return true;
+      //   }
+      //
+      // }
+      // return false;
     },
 
     isUnstake() {
