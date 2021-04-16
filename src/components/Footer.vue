@@ -1,6 +1,6 @@
 <template>
   <footer>
-      
+
     <div class="footer-row">
 
     <div class="footer-icon" >
@@ -15,9 +15,9 @@
         </div>
         <div class="footer-menu-column">
             <h4>Learn</h4>
-            <a href="#what">    
+            <a href="#what">
             <p>What is Olympus?</p>
-            </a> 
+            </a>
         <a href="#how">
          <p>How it works</p>
         </a>
@@ -42,16 +42,14 @@
             <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
             <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
         </div>
-    
+
     </div>
-   
-   
+
+
     <div class="footer-app-button">
-
-        <router-link :to="{ name: 'migrate' }" class="button button-primary">
-          Enter App
-        </router-link>
-
+      <router-link :to="{ name: 'migrate' }" class="button button-primary" style="color: black !important;">
+        Enter App
+      </router-link>
     </div>
 
 
