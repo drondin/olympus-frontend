@@ -139,45 +139,48 @@ export default {
     },
     hasAllowance() {
 
-      if(parseFloat(this.quantity)) {
-        switch(this.selectedMapOption) {
-          case 'Stake':
-              return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-          case 'Unstake':
-              return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-        }
-      }
-      return false;
+      return parseInt(this.$store.state.settings.stakeAllowance) > 0;
+
+      // if(parseFloat(this.quantity)) {
+      //   switch(this.selectedMapOption) {
+      //     case 'Stake':
+      //         return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+      //     case 'Unstake':
+      //         return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
+      //   }
+      // }
+      // return false;
     },
   },
 
   methods: {
 
     ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
-    async executeStake() {console.log(this.selectedMapOption)
-        switch(this.selectedMapOption) {
-          case 'Stake':
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
+    async executeStake() {
 
-            else {
-              await this.getCurrentBlockNumber();
-              await this.stakeOHM(this.quantity.toString());
-            }
+      switch(this.selectedMapOption) {
+        case 'Stake':
+          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+            alert("Please enter a value!");
+            return;
+          } else {
+            await this.getCurrentBlockNumber();
+            await this.stakeOHM(this.quantity.toString());
+          }
 
-            break;
-          case 'Unstake':
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
+          break;
+        case 'Unstake':
+          if( isNaN( this.quantity ) || parseInt(this.quantity) === 0 || this.quantity === '' ) {
+            alert("Please enter a value!");
+            return;
+          }
 
-            else {
-              await this.unstakeOHM(this.quantity.toString());
-            }
+          else {
+            await this.unstakeOHM(this.quantity.toString());
+          }
 
-        }
-        //updatestats
+      }
+      //updatestats
     },
     setStake(value) {
         switch(this.selectedMapOption) {
