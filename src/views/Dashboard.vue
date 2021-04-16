@@ -30,11 +30,11 @@
         <div class="card ohm-dashboard-card">
           <div class="card-body">
             <h4 class="card-title">Supply (circulating/total)</h4>
-            <h2 class="text-center">
+            <h1 class="text-center">
               {{ new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format($store.state.analytics.circulatingSupply) }}
               /
               {{ new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format($store.state.analytics.maxSupply) }}
-            </h2>
+            </h1>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
       <div class="col-sm-6 mb-2 mb-sm-0">
         <div class="card olympus-card">
           <div class="card-body">
-            <iframe frameborder="0" src="https://duneanalytics.com/embeds/29153/58862/af89fc7b-f1df-4dbd-a568-85bcdc49dd99" title="Treasury value in DAI" style="height:400px;"></iframe>
+            <iframe frameborder="0" src="https://duneanalytics.com/embeds/28286/57140/b0e3c522-8ace-47e8-8ac9-bc4ebf10b8c7" title="Total Value Staking" style="height:400px;"></iframe>
           </div>
         </div>
       </div>
@@ -66,7 +66,8 @@
       <div class="col-sm-6 mb-2 mb-sm-0">
         <div class="card olympus-card">
           <div class="card-body">
-            <iframe frameborder="0" src="https://duneanalytics.com/embeds/28286/57140/b0e3c522-8ace-47e8-8ac9-bc4ebf10b8c7" title="Total Value Staking" style="height:400px;"></iframe>
+
+            <iframe frameborder="0" src="https://duneanalytics.com/embeds/29815/60140/0be45969-dfc2-4625-9b48-d7af19a45546" title="Total Value Staking" style="height:400px;"></iframe>
           </div>
         </div>
       </div>
