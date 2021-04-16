@@ -138,8 +138,11 @@ export default {
       return parseFloat(this.form.quantity);
     },
     hasAllowance() {
-
-      return parseInt(this.$store.state.settings.stakeAllowance) > 0;
+      if (this.selectedMapOption === 'Stake') {
+        return parseInt(this.$store.state.settings.stakeAllowance) > 0;
+      } else {
+        return parseInt(this.$store.state.settings.unstakeAllowance) > 0;
+      }
 
       // if(parseFloat(this.quantity)) {
       //   switch(this.selectedMapOption) {
