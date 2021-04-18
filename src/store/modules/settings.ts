@@ -612,9 +612,14 @@ const actions = {
   async claimRewards() {
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const claimTx = await staking.claimRewards();
-    await claimTx.wait();
 
+    try {
+      const claimTx = await staking.claimRewards();
+      await claimTx.wait();
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
   },
 
   async bondLP({commit}, value) {
