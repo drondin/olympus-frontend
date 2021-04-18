@@ -590,8 +590,14 @@ const actions = {
   async unstakeLP({commit}, value) {
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[state.network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
-    const unstakeTx = await staking.unstakeLP();
-    await unstakeTx.wait();
+
+    try {
+      const unstakeTx = await staking.unstakeLP();
+      await unstakeTx.wait();
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
 
     const lpContract = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const lpBalance = await lpContract.balanceOf(state.address);
