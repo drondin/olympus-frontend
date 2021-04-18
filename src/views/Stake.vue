@@ -186,7 +186,13 @@ export default {
       //updatestats
     },
     setStake(value) {
-      let suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
+      let suppliedQuantity;
+      if (this.selectedMapOption === 'Stake') {
+        suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
+      } else {
+        suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
+      }
+
       suppliedQuantity     = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
       this.quantity        = suppliedQuantity;
     },
