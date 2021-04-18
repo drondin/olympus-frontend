@@ -62,12 +62,10 @@
 
         <div  v-if='hasAllowance'  class="d-flex align-self-center mb-4">
           <div class="stake-button" @click='executeStake'>{{selectedMapOption}}</div>
-        </div>
-        <div  v-else-if='isUnstake==true'  class="d-flex align-self-center mb-4">
-          <div class="stake-button" @click='executeStake'>{{selectedMapOption}} / Claim</div>
 
-          <div class="stake-button" @click='claimLPRewards'>Claim Rewards</div>
+          <div  v-if='isUnstake==true' class="stake-button" @click='claimLPRewards'>Claim Rewards</div>
         </div>
+
         <div v-else class="d-flex align-self-center mb-4">
           <div class="stake-button" @click='seekApproval'>Approve</div>
         </div>
