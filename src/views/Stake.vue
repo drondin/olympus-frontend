@@ -187,7 +187,7 @@ export default {
     },
     setStake(value) {
       let suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
-      suppliedQuantity     = Math.floor( this.quantity * 100000000000000000)/100000000000000000;
+      suppliedQuantity     = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
       this.quantity        = suppliedQuantity;
     },
 
