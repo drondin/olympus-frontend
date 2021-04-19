@@ -183,19 +183,20 @@ export default {
       suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
       this.quantity = suppliedQuantity;
     },
+
     async seekApproval() {
-        switch(this.selectedMapOption) {
-          case 'Stake':
+      switch(this.selectedMapOption) {
+        case 'Stake':
+          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+            alert("Please enter a value!");
+            return;
+          }
+          else {
+            await this.getLPStakeApproval(this.quantity.toString());
+          }
 
-            if( isNaN( this.quantity ) ) {
-              return;
-            }
-            else {
-              await this.getLPStakeApproval(this.quantity.toString());
-            }
-
-            break;
-        }
+          break;
+      }
 
     },
 
