@@ -178,12 +178,10 @@ export default {
     },
 
     setStake(value) {
-        switch(this.selectedMapOption) {
-          case 'Stake':
-            this.quantity = this.$store.state.settings.lpBalance * value / 100;
-            break;
-        }
-
+      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
+      let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
+      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
+      this.quantity = suppliedQuantity;
     },
     async seekApproval() {
         switch(this.selectedMapOption) {
