@@ -1,13 +1,5 @@
 import bs from 'black-scholes';
 import volatility from 'volatility';
-import provider from '@/helpers/provider';
-import assets from '@/helpers/assets.json';
-import premium from '@/helpers/premium.json';
-import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
-import { abi as factoryAbi } from '@/helpers/abi/Factory.json';
-import { abi as potionAbi } from '@/helpers/abi/Potion.json';
-import { abi as expierc20Abi } from '@/helpers/abi/ExpandedIERC20.json';
-import { ethers } from 'ethers';
 
 export function trim(number, precision){
     if( number == undefined ) {
@@ -79,11 +71,4 @@ export function getMinDay(mintDay) {
   const ms = new Date().getTime() + 86400000 * 5;
   const minDay = new Date(ms);
   return mintDay > minDay ? mintDay : minDay;
-}
-
-export async function getDeploymentTimestamp(address) {
-  // @ts-ignore
-  const potionContract = new ethers.Contract(address, potionAbi, provider);
-  const deploymentTimestamp = await potionContract.getDeploymentTimestamp();
-  return deploymentTimestamp.toString();
 }

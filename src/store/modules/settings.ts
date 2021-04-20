@@ -3,9 +3,6 @@ import { ethers } from 'ethers';
 import store from '@/store';
 //import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
-import {
-  getAllowances
-} from '@/helpers/utils';
 import { ETHER, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
