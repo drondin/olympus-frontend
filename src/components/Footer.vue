@@ -10,8 +10,8 @@
     <div class="footer-menu">
         <div class="footer-menu-column">
             <h4>Developers</h4>
-            <a href="https://ohmzeus.gitbook.io/olympus/"><p>Gitbook</p></a>
-            <a href=""><p>Github</p></a>
+            <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
+            <a href="https://github.com/olympusDAO"><p>Github</p></a>
         </div>
         <div class="footer-menu-column">
             <h4>Learn</h4>
@@ -28,12 +28,12 @@
         </div>
         <div class="footer-menu-column">
             <h4>Governance</h4>
-            <router-link :to="{ name: 'vote' }" class="">
-         <p>Vote</p>
-        </router-link>
-            <router-link :to="{ name: 'forum' }" class="">
-         <p>Forum</p>
-        </router-link>
+            <a href="http://vote.olympusdao.finance/">
+              <p>Vote</p>
+            </a>
+            <a href="https://forum.olympusdao.finance">
+              <p>Forum</p>
+            </a>
 
         </div>
         <div class="footer-menu-column">
@@ -47,7 +47,7 @@
 
 
     <div class="footer-app-button">
-      <router-link :to="{ name: 'migrate' }" class="button button-primary" style="color: black !important;">
+      <router-link :to="{ name: 'stake' }" class="button button-primary" style="color: black !important;">
         Enter App
       </router-link>
     </div>
