@@ -5,7 +5,7 @@
         <div class="d-flex flex-column">
           <div class="py-4 px-4 py-md-4 px-md-4">
             <h2 class="text-center mb-4">How do you want to bond?</h2>
-            <p>All bonds have a 5-day vesting term. Current market price of OHM is {{ trim( $store.state.settings.marketPrice, 2) }} DAI.</p>
+            <p>Bonds give you the opportunity to buy OHM from the protocol at a discount. All bonds have a 5-day vesting term. Current market price of OHM is {{ trim( $store.state.settings.marketPrice, 2) }} DAI.</p>
           </div>
 
           <ul class="list-group ohm-list-group">
@@ -22,7 +22,7 @@
               </div>
 
               <div class="text-light">
-                <h3>OHM-DAI SLP</h3>
+                <h3><a href="https://analytics.sushi.com/pairs/0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c" target="_blank">OHM-DAI SLP</a></h3>
                 <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p>
                 <p class="fs-6">Discount: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
               </div>
@@ -47,10 +47,16 @@
 
   export default {
     mixins: [mixin],
-    computed: {
-      ...mapState(['settings']),
-    },
 
+    async mounted() {
+      await this.calcBondDetails("")
+    },
+    computed: {
+      ...mapState(['settings'])
+    },
+    methods: {
+      ...mapActions(['calcBondDetails'])
+    }
   };
 
 </script>
