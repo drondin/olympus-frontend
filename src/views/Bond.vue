@@ -124,8 +124,11 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { ethers } from 'ethers';
+import mixin from '@/helpers/mixins';
 
 export default {
+  mixins: [mixin],
+
   async mounted() {
     const amount = document.getElementById('bond-input-id').value;
     await this.calcBondDetails( amount );
@@ -276,16 +279,6 @@ export default {
 
     async forfeit() {
       await this.forfeitBond();
-    },
-
-    trim(number, precision){
-        if( number == undefined ) {
-          number = 0
-        }
-        const array = number.toString().split(".");
-        array.push(array.pop().substring(0, precision));
-        const trimmedNumber =  array.join(".");
-        return(trimmedNumber);
     },
 
   }
