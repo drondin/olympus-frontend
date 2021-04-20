@@ -92,8 +92,10 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { ethers } from 'ethers';
+import mixin from '@/helpers/mixins';
 
 export default {
+  mixins: [mixin],
   data() {
     return {
       myOptions: {
@@ -197,15 +199,7 @@ export default {
       this.quantity        = suppliedQuantity;
     },
 
-    trim(number, precision){
-        if( number == undefined ) {
-          number = 0;
-        }
-        const array = number.toString().split(".");
-        array.push(array.pop().substring(0, precision));
-        const trimmedNumber =  array.join(".");
-        return(trimmedNumber);
-    },
+
 
     async seekApproval() {
         switch(this.selectedMapOption) {

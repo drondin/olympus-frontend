@@ -9,6 +9,16 @@ import { abi as potionAbi } from '@/helpers/abi/Potion.json';
 import { abi as expierc20Abi } from '@/helpers/abi/ExpandedIERC20.json';
 import { ethers } from 'ethers';
 
+export function trim(number, precision){
+    if( number == undefined ) {
+      number = 0;
+    }
+    const array = number.toString().split(".");
+    array.push(array.pop().substring(0, precision));
+    const trimmedNumber =  array.join(".");
+    return(trimmedNumber);
+}
+
 export function formatTs(ts) {
   if (!ts) return '';
   const date = new Date(ts * 1000);
