@@ -122,178 +122,141 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import { ethers } from 'ethers';
+  import { mapState, mapActions } from 'vuex';
+  import mixin from '@/helpers/mixins';
+  import { roundBalance } from '@/helpers/utils';
 
-export default {
-  async mounted() {
-    const amount = document.getElementById('bond-input-id').value;
-    await this.calcBondDetails( amount );
-  },
+  export default {
+    mixins: [mixin],
 
-  data() {
-    return {
-      myOptions: {
-        layout: {
-          color: 'white',
-          backgroundColor: '#282828',
-          selectedColor: 'white',
-          selectedBackgroundColor: 'green',
-          borderColor: 'white',
-          fontFamily: 'Arial',
-          fontWeight: 'normal',
-          lineHeight: '1',
-          fontWeightSelected: 'bold',
-          squareCorners: false,
-          noBorder: false
+    async mounted() {
+      const amount = document.getElementById('bond-input-id').value;
+      await this.calcBondDetails( amount );
+    },
+
+    data() {
+      return {
+        myOptions: {
+          layout: {
+            color: 'white',
+            backgroundColor: '#282828',
+            selectedColor: 'white',
+            selectedBackgroundColor: 'green',
+            borderColor: 'white',
+            fontFamily: 'Arial',
+            fontWeight: 'normal',
+            lineHeight: '1',
+            fontWeightSelected: 'bold',
+            squareCorners: false,
+            noBorder: false
+          },
+          size: {
+            fontSize: 1,
+            height: 2.5,
+            padding: 0.3,
+            width: 15,
+            borderRadius: 5,
+          },
+          items: {
+            delay: .4,
+            preSelected: 'unknown',
+            disabled: false,
+            labels: [
+              {name: 'Bond', color: 'black', backgroundColor: 'white'},
+              {name: 'Redeem', color: 'black', backgroundColor: 'white'}
+            ]
+          }
         },
-        size: {
-          fontSize: 1,
-          height: 2.5,
-          padding: 0.3,
-          width: 15,
-          borderRadius: 5,
-        },
-        items: {
-          delay: .4,
-          preSelected: 'unknown',
-          disabled: false,
-          labels: [
-            {name: 'Bond', color: 'black', backgroundColor: 'white'},
-            {name: 'Redeem', color: 'black', backgroundColor: 'white'}
-          ]
-        }
+        selectedMapOption: 'Bond',
+        bondToggle: true,
+      };
+    },
+    computed: {
+      ...mapState(['settings']),
+
+      hasEnteredAmount() {
+        return this.$store.state.settings.amount;
       },
-      selectedMapOption: 'Bond',
-      bondToggle: true,
-    };
-  },
-  computed: {
-    ...mapState(['settings']),
 
-    maxStrike() {
-      const exchangeRate = this.settings.exchangeRates[this.form.asset];
-      return exchangeRate && exchangeRate.usd ? exchangeRate.usd : 1e9;
-    },
+      isRedeem() {
+        return this.selectedMapOption === 'Redeem'
+      },
 
-    hasEnteredAmount() {
-      return this.$store.state.settings.amount;
-    },
-
-    isRedeem() {
-      if(this.selectedMapOption) {
-        switch(this.selectedMapOption) {
-            case 'Redeem':
-              return true;
-        }
+      hasAllowance() {
+        return this.$store.state.settings.lpBondAllowance > 0;
       }
-
-      return false;
     },
 
-    hasAllowance() {
-      const approval = this.$store.state.settings.lpBondAllowance;
 
-      if(approval > 0 ) {
-       return true;
-      }
+    methods: {
 
-      return false;
+      ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
 
-    }
+      async setStake(value) {
+        // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
+        const suppliedQuantity = roundBalance(this.$store.state.settings.lpBalance * value / 100)
 
-  },
-
-
-  methods: {
-
-    ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
-
-    async setStake(value) {
-      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
-      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
-
-      switch(this.selectedMapOption) {
-        case 'Bond':
+        if (this.selectedMapOption === 'Bond') {
           this.quantity = suppliedQuantity;
           document.getElementById('bond-input-id').value = suppliedQuantity;
-          break;
-      }
-
-      const amount = document.getElementById('bond-input-id').value;
-      await this.calcBondDetails( amount );
-    },
-
-    async onInputChange() {
-      const amount = document.getElementById('bond-input-id').value;
-      await this.calcBondDetails( amount );
-    },
-
-    async seekApproval() {
-      switch(this.selectedMapOption) {
-        case 'Bond':
-        if( isNaN( this.$store.state.settings.amount ) ) {
-          alert("The value entered is not a number. Please try again!");
-          return;
-        } else {
-          await this.getLPBondApproval(this.$store.state.settings.amount);
+          await this.calcBondDetails( suppliedQuantity );
         }
+      },
 
-        break;
-      }
+      async onInputChange() {
+        const amount = document.getElementById('bond-input-id').value;
+        await this.calcBondDetails( amount );
+      },
 
-    },
-
-    async bond() {
-      const value = this.$store.state.settings.amount;
-      const bondInterest  = this.$store.state.settings.interestDue;
-      const bondRewardDue = this.$store.state.settings.pendingPayout;
-
-      switch(this.selectedMapOption) {
-        case 'Bond':
-          if (value === '') {
-            alert("Please enter a value!");
-          } else if( isNaN(value) ) {
-            alert("Please enter a valid value!");
-          } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
-            const shouldProceed = confirm('You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
-            if (shouldProceed) {
-              await this.bondLP(value);
-            }
+      async seekApproval() {
+        switch(this.selectedMapOption) {
+          case 'Bond':
+          if( isNaN( this.$store.state.settings.amount ) ) {
+            alert("The value entered is not a number. Please try again!");
+            return;
           } else {
-            await this.bondLP(value);
+            await this.getLPBondApproval(this.$store.state.settings.amount);
           }
 
           break;
-
-      }
-    },
-
-    async redeem() {
-      await this.redeemBond();
-    },
-
-    async forfeit() {
-      await this.forfeitBond();
-    },
-
-    trim(number, precision){
-        if( number == undefined ) {
-          number = 0
         }
-        const array = number.toString().split(".");
-        array.push(array.pop().substring(0, precision));
-        const trimmedNumber =  array.join(".");
-        return(trimmedNumber);
-    },
 
-  }
-};
+      },
+
+      async bond() {
+        const value = this.$store.state.settings.amount;
+        const bondInterest  = this.$store.state.settings.interestDue;
+        const bondRewardDue = this.$store.state.settings.pendingPayout;
+
+        switch(this.selectedMapOption) {
+          case 'Bond':
+            if (value === '') {
+              alert("Please enter a value!");
+            } else if( isNaN(value) ) {
+              alert("Please enter a valid value!");
+            } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
+              const shouldProceed = confirm('You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
+              if (shouldProceed) {
+                await this.bondLP(value);
+              }
+            } else {
+              await this.bondLP(value);
+            }
+
+            break;
+
+        }
+      },
+
+      async redeem() {
+        await this.redeemBond();
+      },
+    }
+  };
 
 </script>
 <style scoped>
-.hasEffect {
-  cursor: pointer;
-}
+  .hasEffect {
+    cursor: pointer;
+  }
 </style>

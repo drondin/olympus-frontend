@@ -79,141 +79,102 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import { ethers } from 'ethers';
+  import { mapState, mapActions } from 'vuex';
+  import mixin from '@/helpers/mixins';
+  import { roundBalance } from '@/helpers/utils';
 
-export default {
-  data() {
-    return {
-      myOptions: {
-        layout: {
-          color: 'white',
-          backgroundColor: '#282828',
-          selectedColor: 'white',
-          selectedBackgroundColor: 'green',
-          borderColor: 'white',
-          fontFamily: 'Arial',
-          fontWeight: 'normal',
-          lineHeight: '1',
-          fontWeightSelected: 'bold',
-          squareCorners: false,
-          noBorder: false
+  export default {
+    mixins: [mixin],
+    data() {
+      return {
+        myOptions: {
+          layout: {
+            color: 'white',
+            backgroundColor: '#282828',
+            selectedColor: 'white',
+            selectedBackgroundColor: 'green',
+            borderColor: 'white',
+            fontFamily: 'Arial',
+            fontWeight: 'normal',
+            lineHeight: '1',
+            fontWeightSelected: 'bold',
+            squareCorners: false,
+            noBorder: false
+          },
+          size: {
+            fontSize: 1,
+            height: 2.5,
+            padding: 0.3,
+            width: 15,
+            borderRadius: 5,
+          },
+          items: {
+            delay: .4,
+            preSelected: 'unknown',
+            disabled: false,
+            labels: [
+              {name: 'Stake', color: 'black', backgroundColor: 'white'},
+              {name: 'Unstake', color: 'black', backgroundColor: 'white'}
+            ]
+          }
         },
-        size: {
-          fontSize: 1,
-          height: 2.5,
-          padding: 0.3,
-          width: 15,
-          borderRadius: 5,
-        },
-        items: {
-          delay: .4,
-          preSelected: 'unknown',
-          disabled: false,
-          labels: [
-            {name: 'Stake', color: 'black', backgroundColor: 'white'},
-            {name: 'Unstake', color: 'black', backgroundColor: 'white'}
-          ]
+        selectedMapOption: 'Stake',
+        quantity: '',
+        stakeToggle: true,
+      };
+    },
+    computed: {
+      ...mapState(['settings']),
+      hasAllowance() {
+        return parseInt(this.$store.state.settings.lpStakeAllowance) > 0;
+      },
+      isUnstake() {
+        return this.selectedMapOption === 'Unstake'
+      }
+    },
+
+    methods: {
+      ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
+      async executeStake() {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+            if ( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+              alert("Please enter a value!");
+              return;
+            } else {
+              await this.stakeLP(this.quantity.toString());
+            }
+
+            break;
+          case 'Unstake':
+            await this.unstakeLP();
         }
       },
-      selectedMapOption: 'Stake',
-      quantity: '',
-      stakeToggle: true,
-    };
-  },
-  computed: {
-    ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
-    },
-    hasAllowance() {
-      return parseInt(this.$store.state.settings.lpStakeAllowance) > 0;
 
-      // if(parseFloat(this.quantity)) {
-      //   switch(this.selectedMapOption) {
-      //     case 'Stake':
-      //         return parseInt(this.$store.state.settings.lpStakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'ether'));
-      //     case 'Unstake':
-      //         return true;
-      //   }
-      //
-      // }
-      // return false;
-    },
+      async claimLPRewards() {
+          await this.claimRewards();
+      },
 
-    isUnstake() {
+      setStake(value) {
+        this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
+      },
 
-        if(this.selectedMapOption) {
-            switch(this.selectedMapOption) {
-                case 'Unstake':
-                    return true;
+      async seekApproval() {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+            if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+              alert("Please enter a value!");
+              return;
             }
+            else {
+              await this.getLPStakeApproval(this.quantity.toString());
+            }
+
+            break;
         }
-    return false;
+      },
     }
-
-  },
-
-  methods: {
-
-    ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
-    async executeStake() {
-      switch(this.selectedMapOption) {
-        case 'Stake':
-          if ( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
-            alert("Please enter a value!");
-            return;
-          } else {
-            await this.stakeLP(this.quantity.toString());
-          }
-
-          break;
-        case 'Unstake':
-          await this.unstakeLP();
-      }
-    },
-
-    async claimLPRewards() {
-        await this.claimRewards();
-    },
-
-    setStake(value) {
-      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
-      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
-      this.quantity = suppliedQuantity;
-    },
-
-    async seekApproval() {
-      switch(this.selectedMapOption) {
-        case 'Stake':
-          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
-            alert("Please enter a value!");
-            return;
-          }
-          else {
-            await this.getLPStakeApproval(this.quantity.toString());
-          }
-
-          break;
-      }
-
-    },
-
-    trim(number, precision){
-        if( number == undefined ) {
-          number = 0
-        }
-        const array = number.toString().split(".");
-        array.push(array.pop().substring(0, precision));
-        const trimmedNumber =  array.join(".");
-        return(trimmedNumber);
-    },
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.lpBalance;
-    },
-  }
-};
+  };
 
 </script>
 <style scoped>

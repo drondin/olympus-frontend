@@ -11,8 +11,8 @@
           <div class="drop-menu-item">
             <h4>Developers</h4>
             <div class="drop-menu-hidden">
-              <a href="https://ohmzeus.gitbook.io/olympus/"><p>Gitbook</p></a>
-              <a href=""><p>Github</p></a>
+              <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
+              <a href="https://github.com/olympusDAO"><p>Github</p></a>
             </div>
           </div>
 

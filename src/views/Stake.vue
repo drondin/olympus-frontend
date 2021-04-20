@@ -90,124 +90,99 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import { ethers } from 'ethers';
+  import { mapState, mapActions } from 'vuex';
+  import mixin from '@/helpers/mixins';
+  import { roundBalance } from '@/helpers/utils';
 
-export default {
-  data() {
-    return {
-      myOptions: {
-        layout: {
-          color: 'white',
-          backgroundColor: '#282828',
-          selectedColor: 'white',
-          selectedBackgroundColor: 'green',
-          borderColor: 'white',
-          fontFamily: 'Arial',
-          fontWeight: 'normal',
-          lineHeight: '1',
-          fontWeightSelected: 'bold',
-          squareCorners: false,
-          noBorder: false
+  export default {
+    mixins: [mixin],
+    data() {
+      return {
+        myOptions: {
+          layout: {
+            color: 'white',
+            backgroundColor: '#282828',
+            selectedColor: 'white',
+            selectedBackgroundColor: 'green',
+            borderColor: 'white',
+            fontFamily: 'Arial',
+            fontWeight: 'normal',
+            lineHeight: '1',
+            fontWeightSelected: 'bold',
+            squareCorners: false,
+            noBorder: false
+          },
+          size: {
+            fontSize: 1,
+            height: 2.5,
+            padding: 0.3,
+            width: 15,
+            borderRadius: 5,
+          },
+          items: {
+            delay: .4,
+            preSelected: 'unknown',
+            disabled: false,
+            labels: [
+              {name: 'Stake', color: 'black', backgroundColor: 'white'},
+              {name: 'Unstake', color: 'black', backgroundColor: 'white'}
+            ]
+          }
         },
-        size: {
-          fontSize: 1,
-          height: 2.5,
-          padding: 0.3,
-          width: 15,
-          borderRadius: 5,
-        },
-        items: {
-          delay: .4,
-          preSelected: 'unknown',
-          disabled: false,
-          labels: [
-            {name: 'Stake', color: 'black', backgroundColor: 'white'},
-            {name: 'Unstake', color: 'black', backgroundColor: 'white'}
-          ]
+        selectedMapOption: 'Stake',
+        quantity: '',
+        stakeToggle: true,
+      };
+    },
+    computed: {
+      ...mapState(['settings']),
+      hasAllowance() {
+        if (this.selectedMapOption === 'Stake') {
+          return parseInt(this.$store.state.settings.stakeAllowance) > 0;
+        } else {
+          return parseInt(this.$store.state.settings.unstakeAllowance) > 0;
         }
       },
-      selectedMapOption: 'Stake',
-      quantity: '',
-      stakeToggle: true,
-    };
-  },
-  computed: {
-    ...mapState(['settings']),
-    isValid() {
-      return parseFloat(this.form.quantity);
-    },
-    hasAllowance() {
-      if (this.selectedMapOption === 'Stake') {
-        return parseInt(this.$store.state.settings.stakeAllowance) > 0;
-      } else {
-        return parseInt(this.$store.state.settings.unstakeAllowance) > 0;
-      }
-
-      // if(parseFloat(this.quantity)) {
-      //   switch(this.selectedMapOption) {
-      //     case 'Stake':
-      //         return parseInt(this.$store.state.settings.stakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-      //     case 'Unstake':
-      //         return parseInt(this.$store.state.settings.unstakeAllowance) >= parseInt(ethers.utils.parseUnits(this.quantity.toString(), 'gwei'));
-      //   }
-      // }
-      // return false;
-    },
-  },
-
-  methods: {
-
-    ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
-    async executeStake() {
-
-      switch(this.selectedMapOption) {
-        case 'Stake':
-          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
-            alert("Please enter a value!");
-            return;
-          } else {
-            await this.getCurrentBlockNumber();
-            await this.stakeOHM(this.quantity.toString());
-          }
-
-          break;
-        case 'Unstake':
-          if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
-            alert("Please enter a value!");
-            return;
-          }
-
-          else {
-            await this.unstakeOHM(this.quantity.toString());
-          }
-
-      }
-      //updatestats
-    },
-    setStake(value) {
-      let suppliedQuantity;
-      if (this.selectedMapOption === 'Stake') {
-        suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
-      } else {
-        suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
-      }
-
-      suppliedQuantity     = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
-      this.quantity        = suppliedQuantity;
     },
 
-    trim(number, precision){
-        if( number == undefined ) {
-          number = 0;
+    methods: {
+      ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
+      async executeStake() {
+        switch(this.selectedMapOption) {
+          case 'Stake':
+            if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+              alert("Please enter a value!");
+              return;
+            } else {
+              await this.getCurrentBlockNumber();
+              await this.stakeOHM(this.quantity.toString());
+            }
+
+            break;
+          case 'Unstake':
+            if( isNaN( this.quantity ) || this.quantity === 0 || this.quantity === '' ) {
+              alert("Please enter a value!");
+              return;
+            }
+
+            else {
+              await this.unstakeOHM(this.quantity.toString());
+            }
         }
-        const array = number.toString().split(".");
-        array.push(array.pop().substring(0, precision));
-        const trimmedNumber =  array.join(".");
-        return(trimmedNumber);
-    },
+      },
 
-    async seekApproval() {
+      setStake(value) {
+        let suppliedQuantity;
+        if (this.selectedMapOption === 'Stake') {
+          suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
+        } else {
+          suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
+        }
+
+        this.quantity = roundBalance(suppliedQuantity);
+      },
+
+      async seekApproval() {
         switch(this.selectedMapOption) {
           case 'Stake':
             if( isNaN( this.quantity )) {
@@ -227,17 +202,13 @@ export default {
             }
 
         }
-
-    },
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.balance;
-    },
-  }
-};
+      },
+    }
+  };
 
 </script>
 <style scoped>
-.hasEffect {
-  cursor: pointer;
-}
+  .hasEffect {
+    cursor: pointer;
+  }
 </style>
