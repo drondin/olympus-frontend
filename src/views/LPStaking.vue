@@ -201,10 +201,6 @@ export default {
       }
 
     },
-
-    maxStake() {
-      this.form.quantity = this.$store.state.settings.lpBalance;
-    },
   }
 };
 
