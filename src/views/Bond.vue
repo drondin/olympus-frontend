@@ -210,7 +210,7 @@ export default {
 
   methods: {
 
-    ...mapActions(['redeemBond', 'bondLP', 'forfeitBond', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
+    ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
 
     async setStake(value) {
       // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -276,11 +276,6 @@ export default {
     async redeem() {
       await this.redeemBond();
     },
-
-    async forfeit() {
-      await this.forfeitBond();
-    },
-
   }
 };
 
