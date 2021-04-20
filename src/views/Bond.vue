@@ -123,7 +123,6 @@
 
 <script>
   import { mapState, mapActions } from 'vuex';
-  import { ethers } from 'ethers';
   import mixin from '@/helpers/mixins';
   import { roundBalance } from '@/helpers/utils';
 
@@ -195,7 +194,7 @@
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-        let suppliedQuantity = roundBalance(this.$store.state.settings.lpBalance * value / 100)
+        const suppliedQuantity = roundBalance(this.$store.state.settings.lpBalance * value / 100)
 
         if (this.selectedMapOption === 'Bond') {
           this.quantity = suppliedQuantity;
