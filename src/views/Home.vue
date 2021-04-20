@@ -126,7 +126,6 @@ export default {
         quantity: ''
       },
       modalLoginOpen: false,
-      modalMakepotionOpen: false
     };
   },
   computed: {

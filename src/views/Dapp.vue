@@ -19,7 +19,6 @@
         form: {
           quantity: ''
         },
-        modalMakepotionOpen: false
       };
     },
     computed: {
