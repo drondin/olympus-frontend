@@ -8,7 +8,7 @@
        Stake
      </router-link>
 
-     <router-link :to="{ name: 'bond' }" class="button button-dapp-menu">
+     <router-link :to="{ name: 'choose_bond' }" class="button button-dapp-menu">
        Bond
      </router-link>
 

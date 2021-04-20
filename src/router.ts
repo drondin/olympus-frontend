@@ -5,10 +5,9 @@ import Dapp from './views/Dapp.vue';
 import Dashboard from './views/Dashboard.vue';
 import Stake from './views/Stake.vue';
 import Bond from './views/Bond.vue';
+import ChooseBond from './views/ChooseBond.vue';
 import Migrate from './views/Swap.vue';
 import LPStaking from './views/LPStaking.vue';
-//import Presale from './views/Presale.vue';
-//import Presale3 from './views/Presale3.vue';
 import store from './store/index'
 
 Vue.use(VueRouter);
@@ -18,9 +17,8 @@ const routes: Array<RouteConfig> = [
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
   { path: '/stake', name: 'stake', component: Stake },
   { path: '/bond', name: 'bond', component: Bond },
+  { path: '/choose_bond', name: 'choose_bond', component: ChooseBond },
   { path: '/lpstake', name: 'lpstake', component: LPStaking },
-  //{ path: '/presale', name: 'presale', component: Presale },
- /// { path: '/presale3', name: 'presale3', component: Presale3 },
   { path: '/migrate', name: 'migrate', component: Migrate },
   { path: '/app', name: 'dapp', component: Dapp }
 ];
