@@ -4,10 +4,7 @@ import store from '@/store';
 //import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
 import {
-  getPotions,
-  getAllowances,
-  revitalisePotion,
-  withdrawPotion
+  getAllowances
 } from '@/helpers/utils';
 import { ETHER, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';

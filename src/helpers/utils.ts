@@ -39,42 +39,6 @@ export function getPremiumDeposit(strike, price, days) {
   return premiumDeposit;
 }
 
-export async function getPotion(address) {
-  const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-  const potionContract = new ethers.Contract(address, potionAbi, provider);
-  // @ts-ignore
-  const factoryContract = new ethers.Contract(factoryAddress, factoryAbi, provider);
-  const potion = await factoryContract.getPotionData(potionContract.address);
-  const potionToken = new ethers.Contract(
-    await potionContract.tokenCurrency(),
-    expierc20Abi,
-    provider
-  );
-  return {
-    contractAddress: potionContract.address,
-    address: potionToken.address,
-    asset: potion.asset,
-    mintAprice: ethers.utils.formatEther(potion.mintAprice.rawValue),
-    mintSprice: ethers.utils.formatEther(potion.mintSprice.rawValue),
-    mintDepo: ethers.utils.formatEther(potion.mintDepo.rawValue),
-    expiry: potion.expiry.toString(),
-    revitID: potion.revitID.toString(),
-    amountRev: ethers.utils.formatEther(potion.amountRev.rawValue),
-    collateralToWithdraw: ethers.utils.formatEther(potion.collateralToWithdraw.rawValue)
-  };
-}
-
-export async function getPotions(address) {
-  const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-  // @ts-ignore
-  const contract = new ethers.Contract(factoryAddress, factoryAbi, provider);
-  const addresses = await contract.getBuyerPotions(address);
-  const promises = [];
-  // @ts-ignore
-  addresses.forEach(potionAddress => promises.push(getPotion(potionAddress)));
-  return await Promise.all(promises);
-}
-
 export async function getAllowances(address, tokenAddresses) {
   const allowances = {};
   const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
@@ -90,42 +54,6 @@ export async function getAllowances(address, tokenAddresses) {
     });
   });
   return allowances;
-}
-
-export async function revitalisePotion(payload) {
-  const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-  const poolLpAddress = process.env.VUE_APP_POOL_LP_ADDRESS;
-  const signer = provider.getSigner();
-  // @ts-ignore
-  const factory = new ethers.Contract(factoryAddress, factoryAbi, provider);
-  const factoryWithSigner = factory.connect(signer);
-  const tx = await factoryWithSigner.revitalisePotion(
-    payload.contractAddress,
-    poolLpAddress,
-    { rawValue: ethers.utils.parseEther(payload.quantity) }, // nTokens
-    { rawValue: ethers.utils.parseEther(payload.price) }, // assetPrice
-    { rawValue: ethers.utils.parseEther('5') }, // dvmBond
-    { rawValue: ethers.utils.parseEther('1') }, // finalDeposit
-    { gasLimit: 7e6, gasPrice: ethers.utils.parseUnits('20', 'gwei') }
-  );
-  console.log('Revitalize tx', tx.hash);
-  await tx.wait();
-}
-
-export async function withdrawPotion(payload) {
-  const factoryAddress = process.env.VUE_APP_FACTORY_ADDRESS;
-  const poolLpAddress = process.env.VUE_APP_POOL_LP_ADDRESS;
-  const signer = provider.getSigner();
-  // @ts-ignore
-  const factory = new ethers.Contract(factoryAddress, factoryAbi, provider);
-  const factoryWithSigner = factory.connect(signer);
-  const tx = await factoryWithSigner.withdrawPotion(
-    payload.revitalID,
-    payload.potionAddress,
-    poolLpAddress
-  );
-  console.log('Withdraw tx', tx.hash);
-  await tx.wait();
 }
 
 export async function getMarketChartFromCoinGecko(coingeckoId) {

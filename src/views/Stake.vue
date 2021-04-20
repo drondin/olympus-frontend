@@ -187,6 +187,7 @@ export default {
       }
       //updatestats
     },
+
     setStake(value) {
       let suppliedQuantity;
       if (this.selectedMapOption === 'Stake') {
