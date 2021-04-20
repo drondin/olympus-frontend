@@ -22,7 +22,12 @@
               </div>
 
               <div class="text-light">
-                <h3><a href="https://analytics.sushi.com/pairs/0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c" target="_blank">OHM-DAI SLP</a></h3>
+                <h3>
+                  OHM-DAI SLP
+                  <a href="https://analytics.sushi.com/pairs/0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c" target="_blank">
+                    <i class="fas fa-external-link-alt fa-sm ml-1"></i>
+                  </a>
+                </h3>
                 <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p>
                 <p class="fs-6">Discount: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
               </div>
