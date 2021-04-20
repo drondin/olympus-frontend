@@ -82,6 +82,7 @@
 import { mapState, mapActions } from 'vuex';
 import { ethers } from 'ethers';
 import mixin from '@/helpers/mixins';
+import { roundBalance } from '@/helpers/utils';
 
 export default {
   mixins: [mixin],
@@ -180,10 +181,7 @@ export default {
     },
 
     setStake(value) {
-      // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      let suppliedQuantity = this.$store.state.settings.lpBalance * value / 100;
-      suppliedQuantity = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
-      this.quantity = suppliedQuantity;
+      this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
     },
 
     async seekApproval() {

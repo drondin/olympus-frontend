@@ -1,6 +1,11 @@
 import bs from 'black-scholes';
 import volatility from 'volatility';
 
+// Used to round user's balance (OHM, SLP, etc) that won't cause contract overflow issues.
+export function roundBalance(value) {
+  return Math.floor(value * Math.pow(10,15))/Math.pow(10,15);
+}
+
 export function trim(number, precision){
     if( number == undefined ) {
       number = 0;

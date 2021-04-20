@@ -93,6 +93,7 @@
 import { mapState, mapActions } from 'vuex';
 import { ethers } from 'ethers';
 import mixin from '@/helpers/mixins';
+import { roundBalance } from '@/helpers/utils';
 
 export default {
   mixins: [mixin],
@@ -196,11 +197,8 @@ export default {
         suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
       }
 
-      suppliedQuantity     = Math.floor( suppliedQuantity * 100000000000000000)/100000000000000000;
-      this.quantity        = suppliedQuantity;
+      this.quantity = roundBalance(suppliedQuantity);
     },
-
-
 
     async seekApproval() {
         switch(this.selectedMapOption) {
