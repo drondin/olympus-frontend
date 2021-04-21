@@ -395,7 +395,7 @@ const actions = {
   async calcDaiBondDetails({ commit }, amount ) {
     let amountInWei;
     if (amount === '') {
-      amountInWei = ethers.utils.parseEther("1");
+      amountInWei = ethers.utils.parseEther("1000");
     } else {
       amountInWei = ethers.utils.parseEther(amount.toString());
     }
@@ -425,6 +425,7 @@ const actions = {
     const bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
     const pendingPayout       = await daiBondContract.calculatePendingPayout( state.address );
 
+    console.log("amountInWei = ", amountInWei.toString())
     console.log("amount = ", amount)
     console.log("marketPrice = ", marketPrice)
     console.log("discount = ", discount)

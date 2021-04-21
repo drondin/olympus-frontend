@@ -18,7 +18,7 @@ const routes: Array<RouteConfig> = [
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
   { path: '/stake', name: 'stake', component: Stake },
   { path: '/bond', name: 'bond', component: Bond },
-  { path: '/dai_bond', name: 'dai_bond', component: DaiBond },
+  { path: '/bondai', name: 'bondai', component: DaiBond },
   { path: '/choose_bond', name: 'choose_bond', component: ChooseBond },
   { path: '/lpstake', name: 'lpstake', component: LPStaking },
   { path: '/migrate', name: 'migrate', component: Migrate },
