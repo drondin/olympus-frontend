@@ -411,6 +411,20 @@ const actions = {
     const bondPrice = amountInWei / bondValue;
     const discount  = 1 - bondPrice/ (marketPrice / 1000000000);
 
+
+    const bondingCalcContract = new ethers.Contract(addresses[state.network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
+    const ohmContract         = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+    const ohmTotalSupply      = await ohmContract.totalSupply();
+
+    const totalDebtDo = await daiBondContract.totalDebt();
+    const debtRatio   = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
+
+    const vestingPeriodInBlocks = await daiBondContract.vestingPeriodInBlocks();
+    const bondDetails         = await daiBondContract.depositorInfo( state.address );
+    const interestDue         = bondDetails[1];
+    const bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
+    const pendingPayout       = await daiBondContract.calculatePendingPayout( state.address );
+
     console.log("amount = ", amount)
     console.log("marketPrice = ", marketPrice)
     console.log("discount = ", discount)
@@ -419,11 +433,16 @@ const actions = {
 
     commit('set', {
       daiBond: {
-        ...state.daiBond,
         value: bondValue,
         price: bondPrice,
         discount,
         marketPrice: marketPrice / 1000000000,
+
+        vestingPeriodInBlocks,
+        interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
+        bondMaturationBlock: bondMaturationBlock,
+        pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
+        debtRatio,
       }
     });
   },
