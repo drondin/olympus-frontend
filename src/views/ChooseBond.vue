@@ -40,7 +40,7 @@
             </li>
 
 
-            <!-- <li class="list-group-item d-flex align-items-center px-4">
+            <li class="list-group-item d-flex align-items-center px-4">
 
               <div class="ohm-pairs d-flex mr-4" style="width:64px;">
                 <div class="ohm-pair" style="z-index: 1;">
@@ -52,8 +52,8 @@
                 <h3>
                   DAI
                 </h3>
-                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price / 1000000000, 2) }} DAI</p>
-                <p class="fs-6">Discount: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%</p>
+                <!-- <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price / 1000000000, 2) }} DAI</p>
+                <p class="fs-6">Discount: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%</p> -->
               </div>
 
               <div class="col">
@@ -61,7 +61,7 @@
                   View
                 </router-link>
               </div>
-            </li> -->
+            </li>
           </ul>
 
         </div>
