@@ -6,6 +6,7 @@ import Dashboard from './views/Dashboard.vue';
 import Stake from './views/Stake.vue';
 import Bond from './views/Bond.vue';
 import ChooseBond from './views/ChooseBond.vue';
+import DaiBond from './views/DaiBond.vue';
 import Migrate from './views/Swap.vue';
 import LPStaking from './views/LPStaking.vue';
 import store from './store/index'
@@ -17,6 +18,7 @@ const routes: Array<RouteConfig> = [
   { path: '/dashboard', name: 'dashboard', component: Dashboard },
   { path: '/stake', name: 'stake', component: Stake },
   { path: '/bond', name: 'bond', component: Bond },
+  { path: '/dai_bond', name: 'dai_bond', component: DaiBond },
   { path: '/choose_bond', name: 'choose_bond', component: ChooseBond },
   { path: '/lpstake', name: 'lpstake', component: LPStaking },
   { path: '/migrate', name: 'migrate', component: Migrate },

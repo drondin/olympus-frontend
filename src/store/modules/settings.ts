@@ -13,6 +13,7 @@ import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
+import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
