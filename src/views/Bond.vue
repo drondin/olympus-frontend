@@ -1,7 +1,32 @@
 <template>
   <div class="d-flex align-items-center justify-content-center min-vh-100">
-    <div class="dapp-center-modal">
-      <div class="dapp-modal-wrapper py-2 px-4 py-md-4 px-md-2">
+    <div class="dapp-center-modal flex-column" style="margin: auto;">
+      <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
+        <router-link :to="{ name: 'choose_bond'}" class="align-items-center" style="position:absolute">
+          <i class="fa fa-chevron-left"></i>
+          Back
+        </router-link>
+
+        <div class="d-flex flex-row col justify-content-center">
+          <div class="ohm-pairs d-sm-flex mr-2 d-none">
+            <div class="ohm-pair" style="z-index: 2;">
+              <img src="https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x383518188C0C6d7730D91b2c03a03C837814a899/logo.png">
+            </div>
+
+            <div class="ohm-pair" style="z-index: 1;">
+              <img src="https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png">
+            </div>
+          </div>
+
+          <div class="text-light align-self-center">
+            <h3>
+              OHM-DAI SLP Bond
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2">
 
         <div class="swap-input-column">
 
