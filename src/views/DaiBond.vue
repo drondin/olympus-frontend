@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-center min-vh-100">
-    <div class="dapp-center-modal flex-column" style="margin: auto;">
+    <div class="dapp-center-modal flex-column">
       <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
         <router-link :to="{ name: 'choose_bond'}" class="align-items-center" style="position:absolute">
           <i class="fa fa-chevron-left"></i>
@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2">
+      <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
 
         <div class="swap-input-column">
 
@@ -242,21 +242,19 @@
       },
 
       async bond() {
-        const value         = this.quantity;
         const bondInterest  = this.$store.state.settings.daiBond.interestDue;
         const bondRewardDue = this.$store.state.settings.daiBond.pendingPayout;
 
-        if (this.quantity === '') {
+        if (!this.quantity || this.quantity === '' || isNaN(this.quantity)) {
           alert("Please enter a value!");
-        } else if( isNaN(this.quantity) ) {
-          alert("Please enter a valid value!");
+          return;
         } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
           const shouldProceed = confirm('You have an existing DAI bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
           if (shouldProceed) {
-            await this.bondDAI(value.toString());
+            await this.bondDAI(this.quantity);
           }
         } else {
-          await this.bondDAI(value.toString());
+          await this.bondDAI(this.quantity);
         }
       },
 
