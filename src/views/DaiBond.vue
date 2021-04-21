@@ -84,7 +84,7 @@
 
             <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
               <p class="price-label">You Will Get</p>
-              <p id="bond-value-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.value / 1000000000000000, 2 ) }} OHM</p>
+              <p id="bond-value-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.value / Math.pow(10, 18), 4 ) }} OHM</p>
             </div>
           </div>
 
@@ -155,8 +155,7 @@
     mixins: [mixin],
 
     async mounted() {
-      const amount = document.getElementById('dai-bond-input-id').value;
-      await this.calcDaiBondDetails( amount );
+      await this.calcDaiBondDetails('');
     },
 
     data() {
@@ -202,7 +201,7 @@
       ...mapState(['settings']),
 
       hasEnteredAmount() {
-        return this.quantity !== '';
+        return !!this.quantity && this.quantity !== '';
       },
 
       isRedeem() {
