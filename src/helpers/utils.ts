@@ -16,6 +16,11 @@ export function trim(number, precision){
     return(trimmedNumber);
 }
 
+
+export function trimNumber(number, precision) {
+  return new Intl.NumberFormat('en-US', { maximumFractionDigits: precision }).format(number);
+}
+
 export function formatTs(ts) {
   if (!ts) return '';
   const date = new Date(ts * 1000);
