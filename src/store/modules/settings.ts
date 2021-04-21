@@ -825,7 +825,7 @@ const actions = {
 
     // Calculate maxPremium based on premium and slippage.
     const calculatePremium = await daiBondContract.calculatePremium();
-    const maxPremium       = calculatePremium * (1 + acceptedSlippage);
+    const maxPremium       = Math.round(calculatePremium * (1 + acceptedSlippage));
 
     console.log("value = ", value);
     console.log("calculatePremium = ", calculatePremium)
