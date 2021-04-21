@@ -305,37 +305,35 @@ const actions = {
           lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
           lpStaked: ethers.utils.formatUnits(lpStaked, 'ether'),
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
-          lpStakingAPY: lpStakingAPY,
+          lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
           fiveDayRate,
           stakingAPY,
           stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
-          nextEpochBlock: nextEpochBlock,
-          currentBlock: currentBlock,
-          bondValue: bondValue,
-          bondPrice: bondPrice,
+          nextEpochBlock,
+          currentBlock,
+          bondValue,
+          bondPrice,
           marketPrice: marketPrice / 1000000000,
-          debtRatio: debtRatio,
+          debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
           bondMaturationBlock,
-          bondDiscount: bondDiscount,
+          bondDiscount,
           pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
           vestingPeriodInBlocks: vestingPeriodInBlocks,
           aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei'),
           epochBlock,
           epochBlocksAway,
           epochSecondsAway,
-          // percentOfCirculatingOhmSupply,
-          // percentOfCirculatingSOhmSupply
           daiBond: {
             value: daiBondValue,
             price: daiBondPrice,
             discount: daiBondDiscount,
             vestingPeriodInBlocks: daiVestingPeriodInBlocks,
-            interestDue: daiInterestDue,
+            interestDue: ethers.utils.formatUnits(daiInterestDue, 'gwei'),
             bondMaturationBlock: daiBondMaturationBlock,
-            pendingPayout: daiPendingPayout,
+            pendingPayout: ethers.utils.formatUnits(daiPendingPayout, 'gwei'),
             debtRatio: daiDebtRatio
           }
         });
@@ -404,7 +402,6 @@ const actions = {
 
     const daiBondContract = new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, provider);
     const pairContract    = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
-    const contract        = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const daiContract     = new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
 
     const reserves    = await pairContract.getReserves();
@@ -417,7 +414,7 @@ const actions = {
     console.log("amount = ", amount)
     console.log("marketPrice = ", marketPrice)
     console.log("discount = ", discount)
-    console.log("bondvalue = ", bondValue)
+    console.log("bondvalue = ", bondValue.toString())
     console.log("bondPrice = ", bondPrice)
 
     commit('set', {
@@ -516,10 +513,10 @@ const actions = {
   },
 
   async getStakeAllowances({commit}) {
-    if(state.address) {
-    const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    const stakeAllowance = await ohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
-    commit('set', {stakeAllowance});
+    if (state.address) {
+      const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+      const stakeAllowance = await ohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
+      commit('set', {stakeAllowance});
     }
   },
 
@@ -609,7 +606,6 @@ const actions = {
   async unstakeOHM({commit}, value) {
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[state.network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
-    console.log(ethers.utils.parseUnits(value, 'gwei').toString())
     const stakeTx = await staking.unstakeOHM(ethers.utils.parseUnits(value, 'gwei'));
     await stakeTx.wait();
     const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);

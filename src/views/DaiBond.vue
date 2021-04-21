@@ -63,7 +63,7 @@
 
             <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
               <p class="price-label">You Will Get</p>
-              <p id="bond-value-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.price, 2 ) }} OHM</p>
+              <p id="bond-value-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.value / 1000000000000000, 2 ) }} OHM</p>
             </div>
           </div>
 
@@ -208,7 +208,6 @@
       },
 
       async onInputChange() {
-        console.log("this.quantity = ", this.quantity)
         await this.calcDaiBondDetails( this.quantity );
       },
 
