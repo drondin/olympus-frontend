@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-center min-vh-100">
-    <div class="dapp-center-modal flex-column" style="margin: auto;">
+    <div class="dapp-center-modal flex-column">
       <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
         <router-link :to="{ name: 'choose_bond'}" class="align-items-center" style="position:absolute">
           <i class="fa fa-chevron-left"></i>
@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2">
+      <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
 
         <div class="swap-input-column">
 
