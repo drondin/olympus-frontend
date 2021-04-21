@@ -28,8 +28,8 @@
                     <i class="fas fa-external-link-alt fa-sm ml-1"></i>
                   </a>
                 </h3>
-                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p>
-                <p class="fs-6">Discount: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
+                <p class="fs-6 mb-0">Bond Price:</p>
+                <p class="fs-6">Discount: </p>
               </div>
 
               <div class="col">
