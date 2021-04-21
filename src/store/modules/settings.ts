@@ -816,7 +816,7 @@ const actions = {
     // NOTE: These should become dynamic
     const depositorAddress = state.address; // TODO: Change to BZBG
     const acceptedSlippage = 0.02; // 2%
-    const valueInWei = ethers.utils.parseUnits( value );
+    const valueInWei = ethers.utils.parseUnits( value.toString(), 'ether' );
 
     // Get the bonding contract
     const signer  = provider.getSigner();
