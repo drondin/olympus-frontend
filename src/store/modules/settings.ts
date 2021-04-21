@@ -318,7 +318,7 @@ const actions = {
           marketPrice: marketPrice / 1000000000,
           debtRatio: debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
-          bondMaturationBlock: bondMaturationBlock,
+          bondMaturationBlock,
           bondDiscount: bondDiscount,
           pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
           vestingPeriodInBlocks: vestingPeriodInBlocks,
@@ -334,7 +334,7 @@ const actions = {
             discount: daiBondDiscount,
             vestingPeriodInBlocks: daiVestingPeriodInBlocks,
             interestDue: daiInterestDue,
-            maturationBlock: daiBondMaturationBlock,
+            bondMaturationBlock: daiBondMaturationBlock,
             pendingPayout: daiPendingPayout,
             debtRatio: daiDebtRatio
           }
@@ -402,15 +402,14 @@ const actions = {
       amountInWei = ethers.utils.parseEther(amount.toString());
     }
 
-    const bondingContract = new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, provider);
+    const daiBondContract = new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, provider);
     const pairContract    = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
     const contract        = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, ierc20Abi, provider);
     const daiContract     = new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
 
-    const reserves   = await pairContract.getReserves();
-    const marketPrice  = reserves[1] / reserves[0];
-
-    const bondValue   = await bondingContract.calculateBondInterest(amountInWei.toString());
+    const reserves    = await pairContract.getReserves();
+    const marketPrice = reserves[1] / reserves[0];
+    const bondValue   = await daiBondContract.calculateBondInterest(amountInWei.toString());
 
     const bondPrice = amountInWei / bondValue;
     const discount  = 1 - bondPrice/ (marketPrice / 1000000000);
@@ -715,8 +714,14 @@ const actions = {
   async redeemBond() {
     const signer = provider.getSigner();
     const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const redeemTx = await bonding.redeemBond( );
-    await redeemTx.wait();
+
+    try {
+      const redeemTx = await bonding.redeemBond();
+      await redeemTx.wait();
+    } catch (error) {
+      alert(error.message);
+    }
+
   },
 
   async forfeitBond() {
@@ -780,37 +785,42 @@ const actions = {
     }
   },
 
+  async redeemDaiBond() {
+    const signer = provider.getSigner();
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, BondContract, signer);
+
+    try {
+      const redeemTx = await bonding.redeem();
+      await redeemTx.wait();
+    } catch (error) {
+      alert(error.message);
+    }
+  },
 
   async bondDAI({commit}, value) {
     // NOTE: These should become dynamic
-    const depositorAddress = state.address; // Change to BZBG
+    const depositorAddress = state.address; // TODO: Change to BZBG
     const acceptedSlippage = 0.02; // 2%
-    const valueInEth = ethers.utils.parseEther( value );
+    const valueInWei = ethers.utils.parseUnits( value );
 
     // Get the bonding contract
     const signer  = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, signer);
+    const daiBondContract = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, signer);
 
     // Calculate maxPremium based on premium and slippage.
-    const calculatePremium = await bonding.calculatePremium();
+    const calculatePremium = await daiBondContract.calculatePremium();
     const maxPremium       = calculatePremium * (1 + acceptedSlippage);
 
     console.log("value = ", value);
-    console.log('valueInEth = ', valueInEth.toString());
+    console.log("calculatePremium = ", calculatePremium)
+    console.log('valueInWei = ', valueInWei.toString());
     console.log("depositorAddress = ", depositorAddress)
-    console.log("ethers.utils.parseUnits( value, 'ether' )", valueInEth)
     console.log("maxPremium = ", maxPremium.toString());
-
-    const bondInterest = await bonding.calculateBondInterest(valueInEth);
-    console.log("bondInterest = ", parseInt(bondInterest));
-
-    const maxPayout = await bonding.getMaxPayoutAmount();
-    console.log("maxPayout = ", parseInt(maxPayout));
 
     // Deposit the bond
     let bondTx;
     try {
-      bondTx = await bonding.deposit( valueInEth, maxPremium, depositorAddress );
+      bondTx = await daiBondContract.deposit( valueInWei, maxPremium, depositorAddress );
       await bondTx.wait();
     } catch (error) {
       if (error.code === -32603 && error.message.indexOf("ds-math-sub-underflow") >= 0) {
