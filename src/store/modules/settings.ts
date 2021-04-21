@@ -13,6 +13,7 @@ import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
+import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
@@ -134,7 +135,8 @@ const actions = {
         let distributorContract, fiveDayRate = 0, stakingAPY=0, stakingRebase=0, stakingReward=0, nextEpochBlock=0, currentBlock=0;
         let distributorContractSigner, currentIndex=0;
         let bondingCalcContract, bondValue=0;
-        let bondingContract, marketPrice=0, bondPrice=0, debtRatio=0, lpBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
+        let bondingContract, marketPrice=0, bondPrice=0, daiBondPrice=0, debtRatio=0, lpBondAllowance=0, daiBondAllowance=0, interestDue=0, vestingPeriodInBlocks, bondMaturationBlock=0, bondDiscount=0, pendingPayout=0;
+        let daiBondValue = 0, daiBondContract, daiBondDiscount = 0, daiVestingPeriodInBlocks, daiInterestDue = 0, daiPendingPayout = 0, daiBondMaturationBlock, daiDebtRatio;
         let pairContract;
         let migrateContract, aOHMAbleToClaim=0;
 
@@ -145,53 +147,48 @@ const actions = {
         const balance = await daiContract.balanceOf(address);
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
 
+
+        // Calculate OHM-level stats.
+        ohmContract          = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+        const ohmTotalSupply = await ohmContract.totalSupply();
+
+
         if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
           bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
           lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
 
         }
 
-
         if(addresses[network.chainId].BOND_ADDRESS) {
-          bondingContract = new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, provider);
+          bondingContract     = new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, provider);
           bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
-          pairContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, PairContract, provider);
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
-          ohmContract = new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+          pairContract        = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, PairContract, provider);
+          lpContract          = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
 
-          lpBalance = await lpContract.balanceOf(address);
 
-          const totalLP = await lpContract.totalSupply();
-
+          // Calculate LP Bond
+          lpBalance      = await lpContract.balanceOf(address);
+          const totalLP  = await lpContract.totalSupply();
           const reserves = await pairContract.getReserves();
+          marketPrice    = reserves[1] / reserves[0];
 
-          bondValue = await bondingContract.calculateBondInterest( await lpContract.balanceOf( address ) );
-
-
-          marketPrice = reserves[1] / reserves[0];
-
-          if( lpBalance == 0 ) {
-            bondPrice = 0;
-            bondDiscount = 0;
+          if (lpBalance == 0) {
+            bondPrice       = 0;
+            bondDiscount    = 0;
           } else {
-            bondPrice = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
+            bondValue    = await bondingContract.calculateBondInterest(lpBalance);
+            bondPrice    = ( 2 * reserves[1] * ( lpBalance / totalLP ) ) / bondValue;
             bondDiscount = 1 - bondPrice / marketPrice;
           }
 
           const totalDebtDo = await bondingContract.totalDebt();
-
-          const ohmTotalSupply = await ohmContract.totalSupply();
-
-
           debtRatio = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
 
+          // Calculating allowance.
+          lpBondAllowance  = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
 
-          lpBondAllowance = await lpContract.allowance( address, addresses[network.chainId].BOND_ADDRESS );
-
-
+          // Calculate bond details.
           const bondDetails = await bondingContract.depositorInfo( address );
-
-
           vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
 
           interestDue = bondDetails[1];
@@ -199,9 +196,33 @@ const actions = {
           pendingPayout = await bondingContract.calculatePendingPayout( address );
         }
 
-        if(addresses[network.chainId].MIGRATE_ADDRESS) {
-          migrateContract = new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, provider);
+        // Calculate DAI bonds
+        if (addresses[network.chainId].DAI_BOND_ADDRESS) {
+          daiBondContract   = new ethers.Contract(addresses[network.chainId].DAI_BOND_ADDRESS, DaiBondContract, provider);
+          daiBondAllowance  = await daiContract.allowance( address, addresses[network.chainId].DAI_BOND_ADDRESS );
 
+          if( balance == 0 ) {
+            daiBondPrice    = 0;
+            daiBondDiscount = 0;
+          } else {
+            daiBondValue    = await daiBondContract.calculateBondInterest(balance);
+            daiBondPrice    = balance / daiBondValue;
+            daiBondDiscount = 1 - daiBondPrice / marketPrice;
+          }
+
+          const totalDebtDo = await daiBondContract.totalDebt();
+          daiDebtRatio      = await bondingCalcContract.calcDebtRatio( totalDebtDo, ohmTotalSupply );
+          daiVestingPeriodInBlocks = await daiBondContract.vestingPeriodInBlocks();
+
+          // Calculate bond details
+          const bondDetails      = await daiBondContract.depositorInfo( address );
+          daiInterestDue         = bondDetails[1];
+          daiBondMaturationBlock = +bondDetails[3] + +bondDetails[2];
+          daiPendingPayout       = await daiBondContract.calculatePendingPayout( address );
+        }
+
+        if (addresses[network.chainId].MIGRATE_ADDRESS) {
+          migrateContract = new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, provider);
           aOHMAbleToClaim = await migrateContract.senderInfo( address );
         }
 
@@ -225,13 +246,7 @@ const actions = {
           const OHMInLP = await ohmContract.balanceOf( addresses[network.chainId].LP_ADDRESS );
 
           const rewardPerBlock = await lpStakingContract.rewardPerBlock()
-
-          // alert(totalLPStaked);
-          // alert(OHMInLP);
-          // alert(totalLP);
-
           lpStakingAPY = ( rewardPerBlock * 6650 * 366 * 100) / (totalLPStaked * OHMInLP / totalLP * 2 )
-          //alert( lpStakingAPY );
         }
 
         if(addresses[network.chainId].OHM_ADDRESS) {
@@ -290,32 +305,48 @@ const actions = {
           lpBalance: ethers.utils.formatUnits(lpBalance, 'ether'),
           lpStaked: ethers.utils.formatUnits(lpStaked, 'ether'),
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
-          lpStakingAPY: lpStakingAPY,
+          lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
           fiveDayRate,
           stakingAPY,
           stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
-          nextEpochBlock: nextEpochBlock,
-          currentBlock: currentBlock,
-          bondValue: bondValue,
-          bondPrice: bondPrice,
+          nextEpochBlock,
+          currentBlock,
+          bondValue,
+          bondPrice,
           marketPrice: marketPrice / 1000000000,
-          debtRatio: debtRatio,
+          debtRatio,
           interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
-          bondMaturationBlock: bondMaturationBlock,
-          bondDiscount: bondDiscount,
+          bondMaturationBlock,
+          bondDiscount,
           pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
           vestingPeriodInBlocks: vestingPeriodInBlocks,
           aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei'),
           epochBlock,
           epochBlocksAway,
           epochSecondsAway,
-          // percentOfCirculatingOhmSupply,
-          // percentOfCirculatingSOhmSupply
-
+          daiBond: {
+            value: daiBondValue,
+            price: daiBondPrice,
+            discount: daiBondDiscount,
+            vestingPeriodInBlocks: daiVestingPeriodInBlocks,
+            interestDue: ethers.utils.formatUnits(daiInterestDue, 'gwei'),
+            bondMaturationBlock: daiBondMaturationBlock,
+            pendingPayout: ethers.utils.formatUnits(daiPendingPayout, 'gwei'),
+            debtRatio: daiDebtRatio
+          }
         });
-        commit('set', { allowance, stakeAllowance, unstakeAllowance, lpStakeAllowance, lpBondAllowance });
+
+        commit('set', {
+          allowance,
+          stakeAllowance,
+          unstakeAllowance,
+          lpStakeAllowance,
+          lpBondAllowance,
+          daiBondAllowance,
+        });
+
         dispatch('getAllotmentPerBuyer');
       } catch (error) {
         console.error(error);
@@ -327,6 +358,7 @@ const actions = {
   loading: ({ commit }, payload) => {
     commit('set', { loading: payload });
   },
+
   async calcBondDetails({ commit }, amount ) {
     let amountInWei;
     if (amount === '') {
@@ -358,7 +390,42 @@ const actions = {
       marketPrice: marketPrice / 1000000000,
       bondDiscount: bondDiscount
     });
+  },
 
+  async calcDaiBondDetails({ commit }, amount ) {
+    let amountInWei;
+    if (amount === '') {
+      amountInWei = ethers.utils.parseEther("1");
+    } else {
+      amountInWei = ethers.utils.parseEther(amount.toString());
+    }
+
+    const daiBondContract = new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, provider);
+    const pairContract    = new ethers.Contract(addresses[state.network.chainId].LP_ADDRESS, PairContract, provider);
+    const daiContract     = new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+
+    const reserves    = await pairContract.getReserves();
+    const marketPrice = reserves[1] / reserves[0];
+    const bondValue   = await daiBondContract.calculateBondInterest(amountInWei.toString());
+
+    const bondPrice = amountInWei / bondValue;
+    const discount  = 1 - bondPrice/ (marketPrice / 1000000000);
+
+    console.log("amount = ", amount)
+    console.log("marketPrice = ", marketPrice)
+    console.log("discount = ", discount)
+    console.log("bondvalue = ", bondValue.toString())
+    console.log("bondPrice = ", bondPrice)
+
+    commit('set', {
+      daiBond: {
+        ...state.daiBond,
+        value: bondValue,
+        price: bondPrice,
+        discount,
+        marketPrice: marketPrice / 1000000000,
+      }
+    });
   },
 
   async getOHM({commit}, value) {
@@ -443,14 +510,13 @@ const actions = {
     const approveTx = await lpContract.approve(addresses[state.network.chainId].BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
     await approveTx.wait();
     await dispatch('getLPBondAllowance')
-
   },
 
   async getStakeAllowances({commit}) {
-    if(state.address) {
-    const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
-    const stakeAllowance = await ohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
-    commit('set', {stakeAllowance});
+    if (state.address) {
+      const ohmContract = await new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
+      const stakeAllowance = await ohmContract.allowance(state.address, addresses[state.network.chainId].STAKING_ADDRESS);
+      commit('set', {stakeAllowance});
     }
   },
 
@@ -540,7 +606,6 @@ const actions = {
   async unstakeOHM({commit}, value) {
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[state.network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
-    console.log(ethers.utils.parseUnits(value, 'gwei').toString())
     const stakeTx = await staking.unstakeOHM(ethers.utils.parseUnits(value, 'gwei'));
     await stakeTx.wait();
     const ohmContract = new ethers.Contract(addresses[state.network.chainId].OHM_ADDRESS, ierc20Abi, provider);
@@ -645,8 +710,13 @@ const actions = {
   async redeemBond() {
     const signer = provider.getSigner();
     const bonding = await new ethers.Contract(addresses[state.network.chainId].BOND_ADDRESS, BondContract, signer);
-    const redeemTx = await bonding.redeemBond( );
-    await redeemTx.wait();
+
+    try {
+      const redeemTx = await bonding.redeemBond();
+      await redeemTx.wait();
+    } catch (error) {
+      alert(error.message);
+    }
 
   },
 
@@ -691,7 +761,79 @@ const actions = {
 
     const reclaimTx = await migrateContact.reclaim( );
     await reclaimTx.wait();
-  }
+  },
+
+
+  // Dai Bonds
+  async getDaiBondApproval({ commit, dispatch }) {
+    const signer    = provider.getSigner();
+    const contract  = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, signer);
+    const approveTx = await contract.approve(addresses[state.network.chainId].DAI_BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
+    await approveTx.wait();
+    await dispatch('getDaiBondAllowance')
+  },
+
+  async getDaiBondAllowance({commit}) {
+    if (state.address) {
+      const contract  = await new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+      const daiBondAllowance = await contract.allowance(state.address, addresses[state.network.chainId].DAI_BOND_ADDRESS);
+      commit('set', { daiBondAllowance });
+    }
+  },
+
+  async redeemDaiBond() {
+    const signer = provider.getSigner();
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, BondContract, signer);
+
+    try {
+      const redeemTx = await bonding.redeem();
+      await redeemTx.wait();
+    } catch (error) {
+      alert(error.message);
+    }
+  },
+
+  async bondDAI({commit}, value) {
+    // NOTE: These should become dynamic
+    const depositorAddress = state.address; // TODO: Change to BZBG
+    const acceptedSlippage = 0.02; // 2%
+    const valueInWei = ethers.utils.parseUnits( value );
+
+    // Get the bonding contract
+    const signer  = provider.getSigner();
+    const daiBondContract = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, signer);
+
+    // Calculate maxPremium based on premium and slippage.
+    const calculatePremium = await daiBondContract.calculatePremium();
+    const maxPremium       = calculatePremium * (1 + acceptedSlippage);
+
+    console.log("value = ", value);
+    console.log("calculatePremium = ", calculatePremium)
+    console.log('valueInWei = ', valueInWei.toString());
+    console.log("depositorAddress = ", depositorAddress)
+    console.log("maxPremium = ", maxPremium.toString());
+
+    // Deposit the bond
+    let bondTx;
+    try {
+      bondTx = await daiBondContract.deposit( valueInWei, maxPremium, depositorAddress );
+      await bondTx.wait();
+    } catch (error) {
+      if (error.code === -32603 && error.message.indexOf("ds-math-sub-underflow") >= 0) {
+        alert("You may be trying to bond more than your balance! Error code: 32603. Message: ds-math-sub-underflow");
+      } else {
+        alert(error.message);
+      }
+      return;
+    }
+
+    // Update the balance
+    const contract   = new ethers.Contract(addresses[state.network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+    const daiBalance = await contract.balanceOf(state.address);
+    commit('set', {
+      balance: ethers.utils.formatUnits(daiBalance, 'ether')
+    });
+  },
 
 };
 
