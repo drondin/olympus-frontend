@@ -242,21 +242,19 @@
       },
 
       async bond() {
-        const value         = this.quantity;
         const bondInterest  = this.$store.state.settings.daiBond.interestDue;
         const bondRewardDue = this.$store.state.settings.daiBond.pendingPayout;
 
-        if (this.quantity === '') {
+        if (!this.quantity || this.quantity === '' || isNaN(this.quantity)) {
           alert("Please enter a value!");
-        } else if( isNaN(this.quantity) ) {
-          alert("Please enter a valid value!");
+          return;
         } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
           const shouldProceed = confirm('You have an existing DAI bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
           if (shouldProceed) {
-            await this.bondDAI(value.toString());
+            await this.bondDAI(this.quantity);
           }
         } else {
-          await this.bondDAI(value.toString());
+          await this.bondDAI(this.quantity);
         }
       },
 
