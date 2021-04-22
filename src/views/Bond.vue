@@ -157,6 +157,7 @@
     async mounted() {
       const amount = document.getElementById('bond-input-id').value;
       await this.calcBondDetails( amount );
+      await this.calculateUserBondDetails();
     },
 
     data() {
@@ -215,7 +216,7 @@
 
     methods: {
 
-      ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
+      ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails', 'calculateUserBondDetails']),
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -225,12 +226,14 @@
           this.quantity = suppliedQuantity;
           document.getElementById('bond-input-id').value = suppliedQuantity;
           await this.calcBondDetails( suppliedQuantity );
+          await this.calculateUserBondDetails();
         }
       },
 
       async onInputChange() {
         const amount = document.getElementById('bond-input-id').value;
         await this.calcBondDetails( amount );
+        await this.calculateUserBondDetails();
       },
 
       async seekApproval() {

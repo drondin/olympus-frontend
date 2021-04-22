@@ -156,6 +156,7 @@
 
     async mounted() {
       await this.calcDaiBondDetails('');
+      await this.calculateUserDaiBondDetails();
     },
 
     data() {
@@ -215,7 +216,7 @@
 
 
     methods: {
-      ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails']),
+      ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -224,11 +225,13 @@
         if (this.selectedMapOption === 'Bond') {
           this.quantity = suppliedQuantity;
           await this.calcDaiBondDetails( suppliedQuantity );
+          await this.calculateUserDaiBondDetails();
         }
       },
 
       async onInputChange() {
         await this.calcDaiBondDetails( this.quantity );
+        await this.calculateUserDaiBondDetails();
       },
 
       async seekApproval() {

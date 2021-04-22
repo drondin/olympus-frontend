@@ -81,6 +81,7 @@
       await this.calcBondDetails("")
       await this.calcDaiBondDetails("")
     },
+
     computed: {
       ...mapState(['settings'])
     },
