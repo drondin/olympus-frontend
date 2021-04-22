@@ -84,10 +84,8 @@ const mutations = {
 };
 
 const actions = {
-  login: async ({ commit, dispatch, rootState }) => {
+  loadAccountDetails: async ({ commit, dispatch, rootState }) => {
     console.log("Logging in...")
-    console.log(rootState)
-
     provider = rootState.provider;
     network  = rootState.network;
     address  = rootState.address;

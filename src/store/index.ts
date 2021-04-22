@@ -52,15 +52,23 @@ const store = new Vuex.Store({
         commit('set', { address, network });
       }
 
-
       // Calculate bond-level data.
       await dispatch('calcBondDetails', "");
       await dispatch('calcDaiBondDetails', "");
 
       if (address)
-        await dispatch("login");
+        await dispatch("loadAccountDetails");
 
       commit('set', { appLoading: false });
+    },
+
+    login: async () => {
+      try {
+        // @ts-ignore
+        const enable = await window.ethereum.enable();
+      } catch (error) {
+        window.alert(error.message);
+      }
     },
 
     disconnectWallet: ({ commit }) => {

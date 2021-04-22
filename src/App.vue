@@ -92,14 +92,14 @@
       }
     },
     methods: {
-      ...mapActions(['init']),
+      ...mapActions(['init', 'login']),
       toggleNavbar () {
         this.$store.commit('toggleSidebar', !this.$store.state.isSidebarExpanded)
       },
 
       async handleLogin() {
         this.isLoading = true;
-        this.init();
+        this.login();
       }
 
     },

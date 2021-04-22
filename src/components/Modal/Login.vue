@@ -25,10 +25,10 @@
       };
     },
     methods: {
-      ...mapActions(['init']),
+      ...mapActions(['login']),
       async handleLogin() {
         this.isLoading = true;
-        await this.init();
+        await this.login();
         this.$emit('close');
       }
     }
