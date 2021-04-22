@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { COINGECKO_URL } from '@/helpers/constants';
+import { COINGECKO_URL, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 import { ethers } from 'ethers';
 import addresses from '@/helpers/addresses';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
@@ -14,7 +14,8 @@ const state = {
   marketCap: null,
   marketPrice: null,
   ohmTotalSupply: null,
-  currentPrice: null
+  currentPrice: null,
+  daiBond: {}
 };
 
 const actions = {
@@ -34,6 +35,22 @@ const actions = {
       Vue.set(state, 'currentPrice', null);
     }
 
+  },
+
+  async secondsUntilRebase({ rootState }) {
+    // NOTE: This will modify provider which is part of Vuex store. You'll
+    // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
+    const height = await rootState.provider.getBlockNumber();
+
+    if (height % EPOCH_INTERVAL === 0) {
+      return 0;
+    }
+
+    const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
+    const blocksAway = next - height;
+    const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
+
+    return secondsAway;
   },
 
   async getMarketPrice({ commit, rootState }) {
@@ -134,9 +151,11 @@ const actions = {
 
     console.log("Calculated user DAI bond data: ", {bondMaturationBlock, pendingPayout, interestDue});
 
+    const bondData = state.daiBond || {}
+
     commit('set', {
       daiBond: {
-        ...state.daiBond,
+        ...bondData,
         interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
         bondMaturationBlock: bondMaturationBlock,
         pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),

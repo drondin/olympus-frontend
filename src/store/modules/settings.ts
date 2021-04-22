@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 import store from '@/store';
 //import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
-import { EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 import assets from '@/helpers/assets.json';
 import analytics from '@/store/modules/analytics';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
@@ -23,21 +22,6 @@ const parseEther = ethers.utils.parseEther;
 
 let provider, network, address;
 
-async function getNextEpoch(): Promise<[number, number, number]> {
-  // NOTE: This will modify provider which is part of Vuex store. You'll
-  // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
-  const height = await provider.getBlockNumber();
-
-  if (height % EPOCH_INTERVAL === 0) {
-    return [0, 0, 0];
-  }
-
-  const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
-  const blocksAway = next - height;
-  const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
-
-  return [next, blocksAway, secondsAway];
-}
 
 const state = {
   approval: 0,
@@ -64,10 +48,6 @@ const state = {
   maxPurchase: 0,
   maxSwap: 0,
   amountSwap: 0,
-  epochBlock: null,
-  epochBlocksAway: null,
-  epochSecondsAway: null,
-
   daiBond: {}
 };
 
@@ -194,11 +174,8 @@ const actions = {
           currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
         }
 
-        //const balance = balanceBefore.toFixed(2);
-        console.log("Allowance", allowance);
-        console.log("stakeAllowance", stakeAllowance);
-
-        const [epochBlock, epochBlocksAway, epochSecondsAway] = await getNextEpoch();
+        // Calculate rebase time.
+        const secondsUntilRebase = await dispatch('secondsUntilRebase', null, {root: true});
 
         commit('set', {
           balance: ethers.utils.formatEther(balance),
@@ -217,14 +194,7 @@ const actions = {
           stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei'),
-          epochBlock,
-          epochBlocksAway,
-          epochSecondsAway,
-        });
-
-
-
-        commit('set', {
+          secondsUntilRebase,
           allowance,
           stakeAllowance,
           unstakeAllowance,
