@@ -803,7 +803,7 @@ const actions = {
 
   async redeemDaiBond() {
     const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, BondContract, signer);
+    const bonding = await new ethers.Contract(addresses[state.network.chainId].DAI_BOND_ADDRESS, DaiBondContract, signer);
 
     try {
       const redeemTx = await bonding.redeem();
