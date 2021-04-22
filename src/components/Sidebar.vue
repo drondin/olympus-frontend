@@ -49,8 +49,8 @@
     props: ['isExpanded'],
     computed: {
       address() {
-        if (this.$store.state.settings.address)
-          return this.$store.state.settings.address
+        if (this.$store.state.address)
+          return this.$store.state.address
         return null
       },
     },

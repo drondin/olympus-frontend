@@ -701,7 +701,10 @@ padding:0rem 1rem;
   border:1px solid #0001;
   background-color: transparent;
   border-radius: 1rem;
-  &:hover{background-color:#e8e8e8;}
+  cursor:pointer;
+  &:hover{
+    background-color:#e8e8e8;}
+
 }
 
 .social-row{
