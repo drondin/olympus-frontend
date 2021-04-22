@@ -215,7 +215,7 @@
 
 
     methods: {
-      ...mapActions(['redeemBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails']),
+      ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails']),
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -258,7 +258,7 @@
       },
 
       async redeem() {
-        await this.redeemBond();
+        await this.redeemDaiBond();
       },
     }
   };
