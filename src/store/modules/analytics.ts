@@ -136,6 +136,7 @@ const actions = {
 
     commit('set', {
       daiBond: {
+        ...state.daiBond,
         interestDue: ethers.utils.formatUnits(interestDue, 'gwei'),
         bondMaturationBlock: bondMaturationBlock,
         pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei'),
