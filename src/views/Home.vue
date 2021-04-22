@@ -2,7 +2,24 @@
 <div class="column">
 <Nav />
   <div class="block hero">
-    <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
+    <div class="d-flex flex-column" style="position:absolute">
+       <a href="https://defipulse.com/" target="_blank">
+         <img src="~/@/assets/defipulse.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://olympusdao.medium.com/" target="_blank">
+         <img src="~/@/assets/medium.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://twitter.com/OlympusDAO" target="_blank">
+         <img src="~/@/assets/twitter.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://discord.gg/6QjjtUcfM4" target="_blank">
+         <img src="~/@/assets/discord.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+     </div>
+
+    <div class="hero-icon">
+      <img src="~/@/assets/logo.svg" alt="">
+    </div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
     <p class="centered-text hero-desc">Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an infinite supply system.</p>
      <router-link :to="{ name: 'stake' }" style="margin:2rem auto;max-width:200px; color: black !important;" class="button button-primary button-centered">
