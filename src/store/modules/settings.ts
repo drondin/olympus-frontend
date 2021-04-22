@@ -253,6 +253,12 @@ const actions = {
 
 
   async getOHM({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
+
     const signer = provider.getSigner();
     const presale = await new ethers.Contract(addresses[network.chainId].PRESALE_ADDRESS, OHMPreSale, signer);
     const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, signer);
@@ -266,6 +272,12 @@ const actions = {
   },
 
   async getApproval({commit, dispatch}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
+
     const signer = provider.getSigner();
     const daiContract = await new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, signer);
 
@@ -283,13 +295,18 @@ const actions = {
 
   async getAllowances({commit}) {
     if (address) {
-    const diaContract = await new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
-    const allowance = await diaContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS);
-    commit('set', {allowance});
+      const diaContract = await new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+      const allowance = await diaContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS);
+      commit('set', {allowance});
     }
   },
 
   async getStakeApproval({commit, dispatch}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const ohmContract = await new ethers.Contract(addresses[network.chainId].OHM_ADDRESS, ierc20Abi, signer);
     if (value <= 0) {
@@ -311,6 +328,12 @@ const actions = {
   },
 
   async getLPStakeApproval({ commit, dispatch}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
+
     const signer = provider.getSigner();
     const lpContract = await new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, signer);
     if(value <= 0) {
@@ -324,6 +347,12 @@ const actions = {
   },
 
   async getLPBondApproval({ commit, dispatch }, value ) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
+
     const signer = provider.getSigner();
     const lpContract = await new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, signer);
     if(value <= 0) {
@@ -361,6 +390,12 @@ const actions = {
   },
 
   async getunStakeApproval({commit, dispatch}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
+
     const signer = provider.getSigner();
     const sohmContract = await new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, signer);
     if(value <= 0) {
@@ -375,9 +410,9 @@ const actions = {
 
   async getunStakeAllowances({commit}) {
     if(address) {
-    const sohmContract = await new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-    const unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS);
-    commit('set', {unstakeAllowance});
+      const sohmContract = await new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+      const unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS);
+      commit('set', {unstakeAllowance});
     }
   },
   async calculateSaleQuote({commit}, value) {
@@ -387,20 +422,35 @@ const actions = {
   },
 
   async getAllotmentPerBuyer({commit}) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const presale = await new ethers.Contract(addresses[network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
     const allotment = await presale.getAllotmentPerBuyer()
     commit('set', {allotment:ethers.utils.formatUnits(allotment, 'gwei')});
   },
 
   async getMaxPurchase({commit, dispatch}) {
-      const presale = await new ethers.Contract(addresses[network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
-      const salePrice = await presale.salePrice();
-      const total = state.allotment * salePrice;
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
 
-      commit('set', {maxPurchase:ethers.utils.formatUnits(total.toString(), 'ether')})
+    const presale = await new ethers.Contract(addresses[network.chainId].PRESALE_ADDRESS, OHMPreSale, provider);
+    const salePrice = await presale.salePrice();
+    const total = state.allotment * salePrice;
+
+    commit('set', {maxPurchase:ethers.utils.formatUnits(total.toString(), 'ether')})
   },
 
   async stakeOHM({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
 
@@ -426,7 +476,13 @@ const actions = {
       sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),
     });
   },
+
   async unstakeOHM({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, signer);
     const stakeTx = await staking.unstakeOHM(ethers.utils.parseUnits(value, 'gwei'));
@@ -442,6 +498,11 @@ const actions = {
   },
 
   async stakeLP({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
 
@@ -470,6 +531,11 @@ const actions = {
   },
 
   async unstakeLP({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
 
@@ -492,6 +558,11 @@ const actions = {
   },
 
   async claimRewards() {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const staking = await new ethers.Contract(addresses[network.chainId].LPSTAKING_ADDRESS, LPStaking, signer);
 
@@ -505,6 +576,11 @@ const actions = {
   },
 
   async bondLP({commit}, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const  bonding = await new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, signer);
 
@@ -531,6 +607,11 @@ const actions = {
   },
 
   async redeemBond() {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const bonding = await new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, signer);
 
@@ -544,6 +625,11 @@ const actions = {
   },
 
   async forfeitBond() {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const bonding = await new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, signer);
     const forfeitTx = await bonding.withdrawPrincipleAndForfeitInterest( );
@@ -551,6 +637,11 @@ const actions = {
   },
 
   async getMaxSwap({commit, dispatch}) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const aOHMContract = await new ethers.Contract(addresses[network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
     const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf( address );
     const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
