@@ -79,15 +79,15 @@
               <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
             </div><div class="stake-price-data-row">
               <p class="price-label">Bond Price</p>
-              <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} DAI</p>
+              <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice, 2 ) }} DAI</p>
             </div><div class="stake-price-data-row">
               <p class="price-label">Market Price</p>
-              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
+              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 2 ) }} DAI</p>
             </div>
 
             <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
               <p class="price-label">You Will Get</p>
-              <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
+              <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / Math.pow(10, 9), 4 ) }} OHM</p>
             </div>
           </div>
 

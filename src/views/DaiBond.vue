@@ -95,11 +95,11 @@
             </div>
           <div class="stake-price-data-row">
               <p class="price-label">Pending Rewards</p>
-              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 2 ) }} OHM</p>
+              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 4 ) }} OHM</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Claimable Rewards</p>
-              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 2 ) }} OHM</p>
+              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 4 ) }} OHM</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Full Bond Maturation</p>

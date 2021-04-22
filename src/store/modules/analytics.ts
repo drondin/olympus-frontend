@@ -127,7 +127,7 @@ const actions = {
       bondValue,
       bondDiscount,
       debtRatio,
-      bondPrice,
+      bondPrice: bondPrice / Math.pow(10, 9),
       vestingPeriodInBlocks,
       marketPrice: marketPrice / Math.pow(10, 9),
     });
