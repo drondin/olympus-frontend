@@ -115,7 +115,7 @@
           </div>
 
           <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
-            <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
+            <div id="bond-button-id" class="redeem-button" @click='bond'>Bond</div>
           </div>
 
           <div v-else class="d-flex align-self-center mb-4" >
