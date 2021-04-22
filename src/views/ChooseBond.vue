@@ -11,7 +11,7 @@
           <ul class="list-group ohm-list-group">
             <li class="list-group-item d-flex align-items-center px-4">
 
-              <div class="ohm-pairs d-flex mr-4" style="width:64px;">
+              <div class="ohm-pairs d-flex mr-4 justify-content-center" style="width:64px;">
                 <div class="ohm-pair" style="z-index: 2;">
                   <img src="https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x383518188C0C6d7730D91b2c03a03C837814a899/logo.png">
                 </div>
@@ -28,7 +28,7 @@
                     <i class="fas fa-external-link-alt fa-sm ml-1"></i>
                   </a>
                 </h3>
-                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p>
+                <!-- <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p> -->
                 <p class="fs-6">Discount: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
               </div>
 
@@ -42,7 +42,7 @@
 
             <li class="list-group-item d-flex align-items-center px-4">
 
-              <div class="ohm-pairs d-flex mr-4" style="width:64px;">
+              <div class="ohm-pairs d-flex mr-4 justify-content-center" style="width:64px;">
                 <div class="ohm-pair" style="z-index: 1;">
                   <img src="https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png">
                 </div>
@@ -52,7 +52,7 @@
                 <h3>
                   DAI
                 </h3>
-                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price / 1000000000, 2) }} DAI</p>
+                <!-- <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price / 1000000000, 2) }} DAI</p> -->
                 <p class="fs-6">Discount: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%</p>
               </div>
 
