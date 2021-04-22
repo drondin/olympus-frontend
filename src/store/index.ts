@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import modules from './modules';
 import { ethers } from 'ethers';
 
+
 Vue.use(Vuex);
 
 // store: {state: {}, constants: {}, settings: {}}
@@ -12,10 +13,11 @@ const store = new Vuex.Store({
   state: {
     appLoading: false,
     isSidebarExpanded: false,
-    address: '',
-    network: {chainId: 0},
-    provider: null
+    address: null,
+    network: {chainId: 1},
+    provider: null,
   },
+
   mutations: {
     toggleSidebar(state, value) {
       state.isSidebarExpanded = value;
@@ -28,39 +30,50 @@ const store = new Vuex.Store({
       });
     }
   },
+
   actions: {
-    init: async ({ commit, dispatch, state }) => {
+    init: async ({ commit, dispatch, state, getters }) => {
       commit('set', { appLoading: true });
 
-      let provider;
+      let signer, address, network;
+      const provider = await dispatch('getProvider');
 
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const ethereum = window['ethereum'];
-        provider = new ethers.providers.Web3Provider(ethereum);
-        commit('set', { provider });
-      }
-
-      if (provider) {
-        try {
-          await window.ethereum.enable()
-          const signer  = provider.getSigner();
-          const address = await signer.getAddress();
-          commit('set', { address });
-
-          const network = await provider.getNetwork();
-          store.commit('set', { network });
-
-          // Run the login script for the user.
-          await dispatch("login");
-        } catch (e) {
-          alert(e.message);
-        }
-      } else {
+      if (!provider) {
         console.error('This website require MetaMask');
+      } else {
+        signer  = provider.getSigner();
+        network = await provider.getNetwork();
+        try {
+          address = await signer.getAddress();
+        } catch (error) {
+          console.log(error)
+        }
+
+        commit('set', { address, network });
       }
+
+
+      // Calculate bond-level data.
+      await dispatch('calcBondDetails', "");
+      await dispatch('calcDaiBondDetails', "");
+
+      if (address)
+        await dispatch("login");
 
       commit('set', { appLoading: false });
+    },
+
+    disconnectWallet: ({ commit }) => {
+      commit('set', {address: null})
+    },
+
+    getProvider: async ({ commit }) => {
+      // @ts-ignore
+      if (typeof window.ethereum !== 'undefined') {
+        const provider = new ethers.providers.Web3Provider(window['ethereum']);
+        commit('set', { provider });
+        return provider;
+      }
     }
   }
 });
