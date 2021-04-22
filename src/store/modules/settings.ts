@@ -649,6 +649,11 @@ const actions = {
 
 
   async migrateToOHM ({ commit }, value) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const migrateContact = await new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
 
@@ -668,6 +673,11 @@ const actions = {
   },
 
   async reclaimAOHM() {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const migrateContact = await new ethers.Contract(addresses[network.chainId].MIGRATE_ADDRESS, MigrateToOHM, signer);
 
@@ -678,6 +688,11 @@ const actions = {
 
   // Dai Bonds
   async getDaiBondApproval({ commit, dispatch }) {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer    = provider.getSigner();
     const contract  = await new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, signer);
     const approveTx = await contract.approve(addresses[network.chainId].DAI_BOND_ADDRESS, ethers.utils.parseUnits('1000000000', 'ether').toString());
@@ -694,6 +709,11 @@ const actions = {
   },
 
   async redeemDaiBond() {
+    if (!provider) {
+      alert("Please connect your wallet!");
+      return;
+    }
+
     const signer = provider.getSigner();
     const bonding = await new ethers.Contract(addresses[network.chainId].DAI_BOND_ADDRESS, DaiBondContract, signer);
 
