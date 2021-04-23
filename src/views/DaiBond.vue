@@ -72,7 +72,7 @@
               />
           </div>
 
-          <div v-if="isRedeem==false" class="swap-input-row">
+          <div v-if="!isRedeem" class="swap-input-row">
 
             <div class="stake-input-container">
               <input
@@ -85,13 +85,9 @@
                 type="number"
               />
             </div>
-
-            <div v-if="isRedeem==true">
-            </div>
-
           </div>
 
-          <div v-if="isRedeem==false" class="stake-amount-preset-row">
+          <div v-if="!isRedeem" class="stake-amount-preset-row">
             <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
               25%
             </div>
@@ -108,7 +104,7 @@
 
 
 
-          <div v-if="isRedeem==false" class="stake-price-data-column">
+          <div v-if="!isRedeem" class="stake-price-data-column">
             <div class="stake-price-data-row">
               <p class="price-label">Balance</p>
               <p class="price-data">{{ trimNumber( $store.state.settings.balance, 2 ) }} DAI</p>
@@ -134,7 +130,7 @@
           <div class="stake-price-data-row">
               <p class="price-label">Pending Rewards</p>
               <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 4 ) }} OHM</p>
-            </div>
+          </div>
             <div class="stake-price-data-row">
               <p class="price-label">Claimable Rewards</p>
               <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 4 ) }} OHM</p>
@@ -145,16 +141,29 @@
             </div>
           </div>
 
-          <div v-if="isRedeem==true" class="d-flex align-self-center mb-4">
+          <div v-if="isRedeem" class="d-flex align-self-center mb-4">
             <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
 
-          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
+          <div v-else-if="hasAllowance==true && !isRedeem" class="d-flex align-self-center mb-4">
             <div id="bond-button-id" class="redeem-button" @click='bond' >Bond DAI</div>
           </div>
 
+
           <div v-else class="d-flex align-self-center mb-4" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
+          </div>
+
+          <div v-if="!isRedeem" class="stake-price-data-column">
+            <div class="stake-price-data-row" v-if="slippage != 2">
+              <p class="price-label">Slippage Tolerance</p>
+              <p id="bond-value-id" class="price-data">{{ slippage }}%</p>
+            </div>
+
+            <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
+              <p class="price-label">Recipient</p>
+              <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
+            </div>
           </div>
 
         </div>
@@ -195,11 +204,15 @@
     async mounted() {
       await this.calcDaiBondDetails('');
       await this.calculateUserDaiBondDetails();
+      this.recipientAddress = this.$store.state.address;
     },
 
     data() {
       return {
         quantity: null,
+        showAdvancedMenu: false,
+        slippage: 2,
+        recipientAddress: this.$store.state.address,
 
         myOptions: {
           layout: {
@@ -255,6 +268,19 @@
 
     methods: {
       ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
+
+      onRecipientChange() {
+        if (this.recipientAddress !== this.$store.state.address) {
+          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
+          if (!confirm) {
+            this.recipientAddress = this.$store.state.address;
+          }
+        }
+      },
+
+      toggleAdvancedMenu () {
+        this.showAdvancedMenu = !this.showAdvancedMenu
+      },
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
