@@ -79,15 +79,15 @@
               <p class="price-data">{{ trim( $store.state.settings.lpBalance, 4 ) }} SLP</p>
             </div><div class="stake-price-data-row">
               <p class="price-label">Bond Price</p>
-              <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice / 1000000000, 4 ) }} DAI</p>
+              <p id="bond-price-id" class="price-data">{{ trim( $store.state.settings.bondPrice, 2 ) }} DAI</p>
             </div><div class="stake-price-data-row">
               <p class="price-label">Market Price</p>
-              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 4 ) }} DAI</p>
+              <p id="bond-market-price-id" class="price-data">{{ trim( $store.state.settings.marketPrice, 2 ) }} DAI</p>
             </div>
 
             <div class="stake-price-data-row" :style="{visibility: hasEnteredAmount ? 'visible' : 'hidden'}">
               <p class="price-label">You Will Get</p>
-              <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / 1000000000, 4 ) }} OHM</p>
+              <p id="bond-value-id" class="price-data">{{ trim( $store.state.settings.bondValue / Math.pow(10, 9), 4 ) }} OHM</p>
             </div>
           </div>
 
@@ -115,7 +115,7 @@
           </div>
 
           <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
-            <div id="bond-button-id" class="redeem-button" @click='bond' >Bond</div>
+            <div id="bond-button-id" class="redeem-button" @click='bond'>Bond</div>
           </div>
 
           <div v-else class="d-flex align-self-center mb-4" >
@@ -157,6 +157,7 @@
     async mounted() {
       const amount = document.getElementById('bond-input-id').value;
       await this.calcBondDetails( amount );
+      await this.calculateUserBondDetails();
     },
 
     data() {
@@ -215,7 +216,7 @@
 
     methods: {
 
-      ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails']),
+      ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails', 'calculateUserBondDetails']),
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -225,12 +226,14 @@
           this.quantity = suppliedQuantity;
           document.getElementById('bond-input-id').value = suppliedQuantity;
           await this.calcBondDetails( suppliedQuantity );
+          await this.calculateUserBondDetails();
         }
       },
 
       async onInputChange() {
         const amount = document.getElementById('bond-input-id').value;
         await this.calcBondDetails( amount );
+        await this.calculateUserBondDetails();
       },
 
       async seekApproval() {

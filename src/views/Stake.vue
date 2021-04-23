@@ -50,9 +50,7 @@
           <div class="stake-price-data-row">
             <p class="price-label">Time until rebase</p>
             <p class="price-data">
-              {{
-                $store.state.settings.epochBlock ? `${($store.state.settings.epochSecondsAway / 60 / 60).toFixed(1)} hours` : ''
-              }}
+              {{ timeUntilRebase() }}
             </p>
           </div>
 
@@ -146,7 +144,12 @@
     },
 
     methods: {
-      ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber']),
+      ...mapActions(['SendDai', 'getStakeApproval', 'stakeOHM', 'unstakeOHM', 'getunStakeApproval', 'getStakingAPY', 'getCurrentBlockNumber', 'secondsUntilRebase']),
+
+       timeUntilRebase() {
+        return this.prettifySeconds(this.$store.state.settings.secondsUntilRebase);
+      },
+
       async executeStake() {
         switch(this.selectedMapOption) {
           case 'Stake':

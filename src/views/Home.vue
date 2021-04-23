@@ -2,7 +2,24 @@
 <div class="column">
 <Nav />
   <div class="block hero">
-    <div class="hero-icon"><img src="~/@/assets/logo.svg" alt=""></div>
+    <div class="d-flex flex-column" style="position:absolute">
+       <a href="https://defipulse.com/" target="_blank">
+         <img src="~/@/assets/defipulse.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://olympusdao.medium.com/" target="_blank">
+         <img src="~/@/assets/medium.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://twitter.com/OlympusDAO" target="_blank">
+         <img src="~/@/assets/twitter.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+       <a href="https://discord.gg/6QjjtUcfM4" target="_blank">
+         <img src="~/@/assets/discord.svg" alt="" class="social-icon-small" style="height: 25px; width: 25px;">
+       </a>
+     </div>
+
+    <div class="hero-icon">
+      <img src="~/@/assets/logo.svg" alt="">
+    </div>
     <h1 class="mb-4 main-title">An Algorithmic Currency Protocol </h1>
     <p class="centered-text hero-desc">Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an infinite supply system.</p>
      <router-link :to="{ name: 'stake' }" style="margin:2rem auto;max-width:200px; color: black !important;" class="button button-primary button-centered">
@@ -46,11 +63,11 @@
     </div>
   </div>
   <div class="block row-responsive no-pad">
-    <dif class="row-flex-max feature-row">
+    <div class="row-flex-max feature-row">
       <div class="row-flex-desc"><h2>What makes Olympus unique?</h2>
       <p>Olympus is a floating algorithmic currency. This means that it has mechanisms to promote stability and predictablility without directly pegging to any asset. However, we take it one step further with the introduction of adjustable policy; the DAO can move certain variables up and down to target growth and profitability or stability and predictability.</p>
       </div>
-    </dif>
+    </div>
     <div class="row-flex-image feature-image"><img src="~/@/assets/Whatmakesolyuniue.png" alt=""></div>
   </div>
 
@@ -103,11 +120,11 @@
   <div class="block row-responsive no-pad">
         <div class="row-flex-image feature-image"><img src="~/@/assets/worldofopp-image.png" alt=""></div>
 
-    <dif class="row-flex-max feature-row">
+    <div class="row-flex-max feature-row">
       <div class="row-flex-desc"><h2>A world of opportunity</h2>
       <p>The Olympus reserve system enables new implementations of a multitude of DeFi primitives. Interest and liquidation-free leverage and borrowing, counterparty-free options and derivatives, trustless undercollateralized lending and more are possible. The future is bright.</p>
       </div>
-    </dif>
+    </div>
   </div>
 
   <Footer />

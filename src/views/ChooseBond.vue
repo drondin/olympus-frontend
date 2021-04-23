@@ -28,7 +28,7 @@
                     <i class="fas fa-external-link-alt fa-sm ml-1"></i>
                   </a>
                 </h3>
-                <!-- <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice / 1000000000, 2) }} DAI</p> -->
+                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.bondPrice, 2) }} DAI</p>
                 <p class="fs-6">Discount: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
               </div>
 
@@ -52,7 +52,7 @@
                 <h3>
                   DAI
                 </h3>
-                <!-- <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price / 1000000000, 2) }} DAI</p> -->
+                <p class="fs-6 mb-0">Bond Price: {{ trim( $store.state.settings.daiBond.price, 2) }} DAI</p>
                 <p class="fs-6">Discount: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%</p>
               </div>
 
@@ -81,6 +81,7 @@
       await this.calcBondDetails("")
       await this.calcDaiBondDetails("")
     },
+
     computed: {
       ...mapState(['settings'])
     },

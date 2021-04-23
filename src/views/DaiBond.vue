@@ -95,11 +95,11 @@
             </div>
           <div class="stake-price-data-row">
               <p class="price-label">Pending Rewards</p>
-              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 2 ) }} OHM</p>
+              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 4 ) }} OHM</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Claimable Rewards</p>
-              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 2 ) }} OHM</p>
+              <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 4 ) }} OHM</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Full Bond Maturation</p>
@@ -156,6 +156,7 @@
 
     async mounted() {
       await this.calcDaiBondDetails('');
+      await this.calculateUserDaiBondDetails();
     },
 
     data() {
@@ -215,7 +216,7 @@
 
 
     methods: {
-      ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails']),
+      ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
 
       async setStake(value) {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -224,11 +225,13 @@
         if (this.selectedMapOption === 'Bond') {
           this.quantity = suppliedQuantity;
           await this.calcDaiBondDetails( suppliedQuantity );
+          await this.calculateUserDaiBondDetails();
         }
       },
 
       async onInputChange() {
         await this.calcDaiBondDetails( this.quantity );
+        await this.calculateUserDaiBondDetails();
       },
 
       async seekApproval() {
