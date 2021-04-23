@@ -50,14 +50,14 @@ const store = new Vuex.Store({
         }
 
         commit('set', { address, network });
+
+        // Calculate bond-level data.
+        await dispatch('calcBondDetails', "");
+        await dispatch('calcDaiBondDetails', "");
+
+        if (address)
+          await dispatch("loadAccountDetails");
       }
-
-      // Calculate bond-level data.
-      await dispatch('calcBondDetails', "");
-      await dispatch('calcDaiBondDetails', "");
-
-      if (address)
-        await dispatch("loadAccountDetails");
 
       commit('set', { appLoading: false });
     },
