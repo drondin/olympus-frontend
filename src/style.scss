@@ -491,7 +491,6 @@ a{font-weight:lighter;
 .stake-input-container{
   display:flex;
   padding:0.5rem 1rem;
-
 }
 .swap-input{
   background:transparent;
@@ -507,15 +506,17 @@ a{font-weight:lighter;
   &:focus{color:#aaa;}}
 
 
-  .bond-input{  background:transparent;
-    border:unset;
-    color:#555;
-    &:focus{color:#aaa;}}
+.bond-input{
+  background:transparent;
+  border:unset;
+  color:#555;
+  &:focus{color:#aaa;}
+}
 
-    .redeem-input{  background:transparent;
-      border:unset;
-      color:#555;
-      &:focus{color:#aaa;}}
+.redeem-input{  background:transparent;
+  border:unset;
+  color:#555;
+  &:focus{color:#aaa;}}
 
 .bond-data {
   width: 100%;
@@ -1201,6 +1202,17 @@ input.input:read-only {
   max-width: 500px;
 }
 
+// For formatting main OHM card
+.ohm-popover-card {
+  min-height:425px;
+  border-radius:2rem;
+  z-index: 10;
+  background-color: #424242;
+  width: 350px;
+  position:absolute;
+  top:10;
+  right: 0;
+}
 
 // Variation on .button-primary
 .ohm-button {
@@ -1220,5 +1232,19 @@ input.input:read-only {
 
   &:hover{
     color: $primary !important;
+  }
+}
+
+.ohm-form-control {
+  background-color: #282828;
+  border-radius:2rem !important;
+  padding:0.5rem 1rem;
+
+  border:unset;
+  color: #555;
+
+  &:focus{
+    background-color: #282828;
+    color: #555;
   }
 }
