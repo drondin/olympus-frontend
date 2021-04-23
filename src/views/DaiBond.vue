@@ -20,6 +20,44 @@
             </h3>
           </div>
         </div>
+
+        <div style="position:relative;">
+          <a role="button" @click='toggleAdvancedMenu' v-if='!isRedeem'>
+            <i class="fa fa-cog fa-2x" />
+          </a>
+
+          <div v-if="showAdvancedMenu" class="card ohm-popover-card">
+
+            <div class="card-body">
+              <h2 class="card-title mb-4">Zeus Mode</h2>
+              <form>
+                <div class="mb-3">
+                  <label for="slippage" class="form-label">Slippage</label>
+
+                  <div class="input-group">
+                    <input v-model='slippage' type="number" class="form-control ohm-form-control" id="slippage">
+                    <!-- <span class="input-group-text" id="basic-addon2">%</span> -->
+                  </div>
+                  <div id="emailHelp" class="form-text">Transaction may revert if price changes by more than slippage %</div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="slippage" class="form-label">Recipient Address</label>
+
+                  <div class="input-group">
+                    <input v-on:keyup="onRecipientChange" v-model='recipientAddress' type="text" class="form-control ohm-form-control">
+                  </div>
+                  <div class="form-text">Choose recipient address. By default, this is your currently connected address</div>
+                </div>
+              </form>
+
+
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
