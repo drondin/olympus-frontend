@@ -52,7 +52,7 @@
             <p class="price-label">Pending Rewards</p>
             <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
           </div><div class="stake-price-data-row">
-            <p class="price-label">APY</p>
+            <p class="price-label">APR</p>
             <p class="price-data">{{trim( $store.state.settings.lpStakingAPY, 4 ) }}%</p> <!-- 1+rebase^1095-1 -->
           </div><div class="stake-price-data-row">
             <p class="price-label">Total Staked</p>
