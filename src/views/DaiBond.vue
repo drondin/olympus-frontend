@@ -338,10 +338,10 @@
         } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
           const shouldProceed = confirm('You have an existing DAI bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
           if (shouldProceed) {
-            await this.bondDAI(this.quantity);
+            await this.bondDAI({ value: this.quantity, slippage: this.slippage, recipientAddress: this.recipientAddress });
           }
         } else {
-          await this.bondDAI(this.quantity);
+          await this.bondDAI({ value: this.quantity, slippage: this.slippage, recipientAddress: this.recipientAddress });
         }
       },
 
