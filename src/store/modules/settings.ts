@@ -70,6 +70,11 @@ const actions = {
     network  = rootState.network;
     address  = rootState.address;
 
+    if (!addresses[network.chainId]) {
+      alert("We detected an unsupported network. Please change your network to Ethereum mainnet");
+      return;
+    }
+
     if (provider) {
       try {
         const aOHMContract = await new ethers.Contract(addresses[network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
