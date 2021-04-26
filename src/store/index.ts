@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import modules from './modules';
 import { ethers } from 'ethers';
-
+import addresses from '@/helpers/addresses';
 
 Vue.use(Vuex);
 
@@ -51,9 +51,11 @@ const store = new Vuex.Store({
 
         commit('set', { address, network });
 
-        // Calculate bond-level data.
-        await dispatch('calcBondDetails', "");
-        await dispatch('calcDaiBondDetails', "");
+        if (addresses[network.chainId]) {
+          // Calculate bond-level data.
+          await dispatch('calcBondDetails', "");
+          await dispatch('calcDaiBondDetails', "");
+        }
 
         if (address)
           await dispatch("loadAccountDetails");
