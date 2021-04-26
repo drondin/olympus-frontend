@@ -72,7 +72,13 @@
               />
           </div>
 
-          <div v-if="!isRedeem" class="swap-input-row">
+          <div v-if="!isRedeem" class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+            <input v-model='quantity' v-on:keyup="onInputChange" v-on:change="onInputChange" id="dai-bond-input-id" type="number" class="form-control" placeholder="Type an amount">
+            <button class="btn" type="button" @click='setMax'>Max</button>
+          </div>
+
+
+          <!-- <div v-if="isRedeem==false" class="swap-input-row">
 
             <div class="stake-input-container">
               <input
@@ -85,9 +91,13 @@
                 type="number"
               />
             </div>
-          </div>
 
-          <div v-if="!isRedeem" class="stake-amount-preset-row">
+            <div v-if="isRedeem==true">
+            </div>
+
+          </div> -->
+
+          <!-- <div v-if="isRedeem==false" class="stake-amount-preset-row">
             <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
               25%
             </div>
@@ -100,7 +110,7 @@
             <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
               100%
             </div>
-          </div>
+          </div> -->
 
 
 
@@ -282,9 +292,20 @@
         this.showAdvancedMenu = !this.showAdvancedMenu
       },
 
-      async setStake(value) {
+      // async setStake(value) {
+      //   // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
+      //   const suppliedQuantity = roundBalance(this.$store.state.settings.balance * value / 100)
+      //
+      //   if (this.selectedMapOption === 'Bond') {
+      //     this.quantity = suppliedQuantity;
+      //     await this.calcDaiBondDetails( suppliedQuantity );
+      //     await this.calculateUserDaiBondDetails();
+      //   }
+      // },
+
+      async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-        const suppliedQuantity = roundBalance(this.$store.state.settings.balance * value / 100)
+        const suppliedQuantity = this.$store.state.settings.balance;
 
         if (this.selectedMapOption === 'Bond') {
           this.quantity = suppliedQuantity;

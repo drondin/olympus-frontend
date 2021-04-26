@@ -13,13 +13,21 @@
             />
         </div>
 
-        <div class="swap-input-row">
+        <div class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+          <input v-model='quantity' type="number" class="form-control" placeholder="Type an amount">
+          <button class="btn" type="button" @click='setMax'>Max</button>
+        </div>
+
+        <!-- <div class="swap-input-row">
           <div class="stake-input-container">
             <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
-
-            </div>
+          </div>
         </div>
-        <div class="stake-amount-preset-row">
+
+        <div class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+          <input v-model='quantity' type="text" class="form-control" placeholder="Type an amount">
+          <button class="btn" type="button" @click='setMax'>Max</button>
+        </div><div class="stake-amount-preset-row">
           <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
             25%
           </div>
@@ -32,7 +40,7 @@
           <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
             100%
           </div>
-        </div>
+        </div> -->
 
 
 
@@ -174,16 +182,27 @@
         }
       },
 
-      setStake(value) {
+      setMax() {
         let suppliedQuantity;
         if (this.selectedMapOption === 'Stake') {
-          suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
+          suppliedQuantity = this.$store.state.settings.ohmBalance;
         } else {
-          suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
+          suppliedQuantity = this.$store.state.settings.sohmBalance;
         }
 
-        this.quantity = roundBalance(suppliedQuantity);
+        this.quantity = suppliedQuantity;
       },
+
+      // setStake(value) {
+      //   let suppliedQuantity;
+      //   if (this.selectedMapOption === 'Stake') {
+      //     suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
+      //   } else {
+      //     suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
+      //   }
+      //
+      //   this.quantity = roundBalance(suppliedQuantity);
+      // },
 
       async seekApproval() {
         switch(this.selectedMapOption) {

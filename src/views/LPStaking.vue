@@ -13,7 +13,13 @@
             />
         </div>
 
-        <div v-if="isUnstake==false" class="swap-input-row">
+        <div v-if="isUnstake==false" class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+          <input v-model='quantity' type="number" class="form-control" placeholder="Type an amount">
+          <button class="btn" type="button" @click='setMax'>Max</button>
+        </div>
+
+
+        <!-- <div v-if="isUnstake==false" class="swap-input-row">
           <div class="stake-input-container">
             <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
           </div>
@@ -37,7 +43,7 @@
           <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
             100%
           </div>
-        </div>
+        </div> -->
 
 
 
@@ -52,7 +58,7 @@
             <p class="price-label">Pending Rewards</p>
             <p class="price-data">{{ trim( $store.state.settings.pendingRewards, 4 ) }} OHM</p>
           </div><div class="stake-price-data-row">
-            <p class="price-label">APY</p>
+            <p class="price-label">APR</p>
             <p class="price-data">{{trim( $store.state.settings.lpStakingAPY, 4 ) }}%</p> <!-- 1+rebase^1095-1 -->
           </div><div class="stake-price-data-row">
             <p class="price-label">Total Staked</p>
@@ -155,8 +161,12 @@
           await this.claimRewards();
       },
 
-      setStake(value) {
-        this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
+      // setStake(value) {
+      //   this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
+      // },
+
+      setMax() {
+        this.quantity = this.$store.state.settings.lpBalance;
       },
 
       async seekApproval() {

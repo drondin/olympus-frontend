@@ -500,10 +500,12 @@ a{font-weight:lighter;
   &:focus{color:#aaa;}
 }
 
-.stake-input{  background:transparent;
+.stake-input {
+  background:transparent;
   border:unset;
   color:#555;
-  &:focus{color:#aaa;}}
+  &:focus{ color:#aaa; }
+}
 
 
 .bond-input{
@@ -543,12 +545,13 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
   justify-content:space-between;
 }
 
-.stake-toggle-row{
-  margin:1rem auto;
+.stake-toggle-row {
+  margin: 1rem auto;
 
-  .toggle-switch{
+  .toggle-switch {
     border-radius:2rem;overflow:hidden;
-    li{
+
+    li {
       label{font-family: 'Square', 'cursive';}
 
       &:first-child{
@@ -559,15 +562,16 @@ padding:0rem 1rem;&:hover{color:white;background:black;}
             .selected{border-radius:2rem!important;}}
         }
       &:last-child{
-          label{
-            border-width:2px!important;
-            border-bottom-right-radius:2rem!important;
-            border-top-right-radius:2rem!important;
-            .selected{border-radius:2rem!important;}}
+        label{
+          border-width:2px!important;
+          border-bottom-right-radius:2rem!important;
+          border-top-right-radius:2rem!important;
+          .selected{border-radius:2rem!important;}
         }
       }
     }
   }
+}
 
 .stake-button{  font-size:0.8rem;
   cursor:pointer;background-color:#282828;
@@ -1235,16 +1239,35 @@ input.input:read-only {
   }
 }
 
-.ohm-form-control {
-  background-color: #282828;
-  border-radius:2rem !important;
-  padding:0.5rem 1rem;
+.ohm-input-group {
+  .form-control {
 
-  border:unset;
-  color: #555;
+    background-color: #282828 !important;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
 
-  &:focus{
-    background-color: #282828;
+    background: transparent;
+    border: unset;
     color: #555;
+    &:focus {
+      color:#aaa;
+    }
+
+  }
+
+
+  button {
+    // width:64px;
+    // display:flex;flex-flow:wrap;justify-content:center;
+    background: white;
+    color: black;
+    line-height: 36px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 0rem 1rem;
+    &:hover{
+      color:white;
+      background:black;
+    }
   }
 }
