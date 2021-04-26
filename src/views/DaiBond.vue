@@ -27,14 +27,13 @@
           </a>
 
           <div v-if="showAdvancedMenu" class="card ohm-popover-card">
-
             <div class="card-body">
               <h2 class="card-title mb-4">Zeus Mode</h2>
               <form>
                 <div class="mb-3">
                   <label for="slippage" class="form-label">Slippage</label>
 
-                  <div class="input-group">
+                  <div class="input-group ohm-input-group">
                     <input v-model='slippage' type="number" class="form-control ohm-form-control" id="slippage">
                     <!-- <span class="input-group-text" id="basic-addon2">%</span> -->
                   </div>
@@ -44,14 +43,12 @@
                 <div class="mb-3">
                   <label for="slippage" class="form-label">Recipient Address</label>
 
-                  <div class="input-group">
+                  <div class="input-group ohm-input-group">
                     <input v-on:keyup="onRecipientChange" v-model='recipientAddress' type="text" class="form-control ohm-form-control">
                   </div>
                   <div class="form-text">Choose recipient address. By default, this is your currently connected address</div>
                 </div>
               </form>
-
-
             </div>
           </div>
         </div>
