@@ -13,7 +13,13 @@
             />
         </div>
 
-        <div v-if="isUnstake==false" class="swap-input-row">
+        <div v-if="isUnstake==false" class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+          <input v-model='quantity' type="number" class="form-control" placeholder="Type an amount">
+          <button class="btn" type="button" @click='setMax'>Max</button>
+        </div>
+
+
+        <!-- <div v-if="isUnstake==false" class="swap-input-row">
           <div class="stake-input-container">
             <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
           </div>
@@ -37,7 +43,7 @@
           <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
             100%
           </div>
-        </div>
+        </div> -->
 
 
 
@@ -155,8 +161,12 @@
           await this.claimRewards();
       },
 
-      setStake(value) {
-        this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
+      // setStake(value) {
+      //   this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
+      // },
+
+      setMax() {
+        this.quantity = this.$store.state.settings.lpBalance;
       },
 
       async seekApproval() {
