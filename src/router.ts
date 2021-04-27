@@ -9,7 +9,7 @@ import ChooseBond from './views/ChooseBond.vue';
 import DaiBond from './views/DaiBond.vue';
 import Migrate from './views/Swap.vue';
 import LPStaking from './views/LPStaking.vue';
-import store from './store/index'
+import store from './store/index';
 
 Vue.use(VueRouter);
 
@@ -30,7 +30,7 @@ const router = new VueRouter({
 });
 
 router.afterEach((to, from) => {
-  store.commit("toggleSidebar", false)
-})
+  store.commit('toggleSidebar', false);
+});
 
 export default router;

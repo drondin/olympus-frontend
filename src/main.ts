@@ -10,11 +10,11 @@ import messages from '@/helpers/messages.json';
 import numberFormats from '@/helpers/number.json';
 import VueParticles from 'vue-particles';
 import 'bootstrap';
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import '@/style.scss';
-import ToggleSwitch from 'vuejs-toggle-switch'
-Vue.use(ToggleSwitch)
+import ToggleSwitch from 'vuejs-toggle-switch';
+Vue.use(ToggleSwitch);
 Vue.use(VueParticles);
 Vue.use(VueUi);
 Vue.use(VueI18n);

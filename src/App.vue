@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="app" v-if="$store.state.appLoading">
-      <VueLoadingIndicator  class="overlay big" />
+      <VueLoadingIndicator class="overlay big" />
     </div>
 
     <div id="app" class="overflow-hidden" v-else-if="isHome">
@@ -16,14 +16,27 @@
           <div class="container-fluid">
             <div class="row">
               <nav class="navbar navbar-expand-lg navbar-light justify-content-end d-md-none">
-                <button class="navbar-toggler" type="button" @click='toggleNavbar' aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button
+                  class="navbar-toggler"
+                  type="button"
+                  @click="toggleNavbar"
+                  aria-controls="navbarSupportedContent"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation"
+                >
                   <span class="navbar-toggler-icon"></span>
                 </button>
               </nav>
 
-              <Sidebar v-bind:isExpanded=$store.state.isSidebarExpanded />
+              <Sidebar v-bind:isExpanded="$store.state.isSidebarExpanded" />
 
-              <div v-bind:class="[$store.state.isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close', 'ohm-backdrop']" @click='toggleNavbar'></div>
+              <div
+                v-bind:class="[
+                  $store.state.isSidebarExpanded ? 'ohm-backdrop-show' : 'ohm-backdrop-close',
+                  'ohm-backdrop'
+                ]"
+                @click="toggleNavbar"
+              ></div>
 
               <div v-if="isConnected || isPublic" class="col-lg-10 col-12 mt-4 mt-md-0">
                 <router-view :key="$route.path" />
@@ -35,9 +48,9 @@
                     <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
                       <div class="wallet-button col w-100 text-center" @click="handleLogin">
                         <div class="wallet-column py-4 w-100">
-                            <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
-                            <div class="flex-auto py-2" style="color:black;" >MetaMask</div>
-                            <div class="flex-auto" style="color:#c5c5c5">Connect to MetaMask</div>
+                          <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
+                          <div class="flex-auto py-2" style="color:black;">MetaMask</div>
+                          <div class="flex-auto" style="color:#c5c5c5">Connect to MetaMask</div>
                         </div>
                       </div>
                     </div>
@@ -49,63 +62,58 @@
         </div>
       </transition>
     </div>
-
-
-
   </div>
-
-
-
 </template>
 <style scoped>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition-duration: 100ms;
-    transition-property: opacity;
-    transition-timing-function: ease;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 100ms;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
 
-  .fade-enter,
-  .fade-leave-active {
-    opacity: 0
-  }
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
 </style>
 <script>
-  import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
-  export default {
-    data() {
-      return {
-        isLoading: false
-      }
+export default {
+  data() {
+    return {
+      isLoading: false
+    };
+  },
+  computed: {
+    ...mapState(['settings', 'constants']),
+    isConnected() {
+      return !!this.$store.state.address;
     },
-    computed: {
-      ...mapState(['settings', 'constants']),
-      isConnected () {
-        return !!this.$store.state.address;
-      },
-      isPublic() {
-        return ['dashboard', 'choose_bond', 'bond', 'bondai'].indexOf(this.$route.name) >= 0 || this.isHome;
-      },
-      isHome() {
-        return this.$route.name === 'home';
-      }
+    isPublic() {
+      return (
+        ['dashboard', 'choose_bond', 'bond', 'bondai'].indexOf(this.$route.name) >= 0 || this.isHome
+      );
     },
-    methods: {
-      ...mapActions(['init', 'login']),
-      toggleNavbar () {
-        this.$store.commit('toggleSidebar', !this.$store.state.isSidebarExpanded)
-      },
-
-      async handleLogin() {
-        this.isLoading = true;
-        this.login();
-      }
-
-    },
-
-    async created() {
-      this.init();
+    isHome() {
+      return this.$route.name === 'home';
     }
-  };
+  },
+  methods: {
+    ...mapActions(['init', 'login']),
+    toggleNavbar() {
+      this.$store.commit('toggleSidebar', !this.$store.state.isSidebarExpanded);
+    },
+
+    async handleLogin() {
+      this.isLoading = true;
+      this.login();
+    }
+  },
+
+  async created() {
+    this.init();
+  }
+};
 </script>

@@ -14,8 +14,8 @@ const store = new Vuex.Store({
     appLoading: false,
     isSidebarExpanded: false,
     address: null,
-    network: {chainId: 1},
-    provider: null,
+    network: { chainId: 1 },
+    provider: null
   },
 
   mutations: {
@@ -41,24 +41,23 @@ const store = new Vuex.Store({
       if (!provider) {
         console.error('This website require MetaMask');
       } else {
-        signer  = provider.getSigner();
+        signer = provider.getSigner();
         network = await provider.getNetwork();
         try {
           address = await signer.getAddress();
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
 
         commit('set', { address, network });
 
         if (addresses[network.chainId]) {
           // Calculate bond-level data.
-          await dispatch('calcBondDetails', "");
-          await dispatch('calcDaiBondDetails', "");
+          await dispatch('calcBondDetails', '');
+          await dispatch('calcDaiBondDetails', '');
         }
 
-        if (address)
-          await dispatch("loadAccountDetails");
+        if (address) await dispatch('loadAccountDetails');
       }
 
       commit('set', { appLoading: false });
@@ -74,7 +73,7 @@ const store = new Vuex.Store({
     },
 
     disconnectWallet: ({ commit }) => {
-      commit('set', {address: null})
+      commit('set', { address: null });
     },
 
     getProvider: async ({ commit }) => {
@@ -88,16 +87,14 @@ const store = new Vuex.Store({
   }
 });
 
-
-
 const ethereum = window['ethereum'];
 if (ethereum) {
   ethereum.on('accountsChanged', () => {
     store.dispatch('init');
-  })
+  });
 
   ethereum.on('networkChanged', network => {
-    store.dispatch('init')
+    store.dispatch('init');
   });
 }
 

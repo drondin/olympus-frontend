@@ -3,19 +3,18 @@ import volatility from 'volatility';
 
 // Used to round user's balance (OHM, SLP, etc) that won't cause contract overflow issues.
 export function roundBalance(value) {
-  return Math.floor(value * Math.pow(10,15))/Math.pow(10,15);
+  return Math.floor(value * Math.pow(10, 15)) / Math.pow(10, 15);
 }
 
-export function trim(number, precision){
-    if( number == undefined ) {
-      number = 0;
-    }
-    const array = number.toString().split(".");
-    array.push(array.pop().substring(0, precision));
-    const trimmedNumber =  array.join(".");
-    return(trimmedNumber);
+export function trim(number, precision) {
+  if (number == undefined) {
+    number = 0;
+  }
+  const array = number.toString().split('.');
+  array.push(array.pop().substring(0, precision));
+  const trimmedNumber = array.join('.');
+  return trimmedNumber;
 }
-
 
 export function trimNumber(number, precision) {
   return new Intl.NumberFormat('en-US', { maximumFractionDigits: precision }).format(number);
