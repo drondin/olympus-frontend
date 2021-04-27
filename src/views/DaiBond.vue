@@ -26,31 +26,13 @@
             <i class="fa fa-cog fa-2x" />
           </a>
 
-          <div v-if="showAdvancedMenu" class="card ohm-popover-card">
-            <div class="card-body">
-              <h2 class="card-title mb-4">Zeus Mode</h2>
-              <form>
-                <div class="mb-3">
-                  <label for="slippage" class="form-label">Slippage</label>
-
-                  <div class="input-group ohm-input-group">
-                    <input v-model='slippage' type="number" class="form-control ohm-form-control" id="slippage">
-                    <!-- <span class="input-group-text" id="basic-addon2">%</span> -->
-                  </div>
-                  <div id="emailHelp" class="form-text">Transaction may revert if price changes by more than slippage %</div>
-                </div>
-
-                <div class="mb-3">
-                  <label for="slippage" class="form-label">Recipient Address</label>
-
-                  <div class="input-group ohm-input-group">
-                    <input v-on:keyup="onRecipientChange" v-model='recipientAddress' type="text" class="form-control ohm-form-control">
-                  </div>
-                  <div class="form-text">Choose recipient address. By default, this is your currently connected address</div>
-                </div>
-              </form>
-            </div>
-          </div>
+          <AdvancedSettings
+            v-bind:slippage="slippage"
+            v-bind:recipientAddress="recipientAddress"
+            v-bind:showAdvancedMenu="showAdvancedMenu"
+            @onSlippageChange="onSlippageChange"
+            @onRecipientChange="onRecipientChange"
+          />
         </div>
 
 
@@ -73,42 +55,6 @@
             <input v-model='quantity' v-on:keyup="onInputChange" v-on:change="onInputChange" id="dai-bond-input-id" type="number" class="form-control" placeholder="Type an amount">
             <button class="btn" type="button" @click='setMax'>Max</button>
           </div>
-
-
-          <!-- <div v-if="isRedeem==false" class="swap-input-row">
-
-            <div class="stake-input-container">
-              <input
-                v-on:keyup="onInputChange"
-                v-on:change="onInputChange"
-                v-model='quantity'
-                id="dai-bond-input-id"
-                placeholder="Type an amount"
-                class="bond-input"
-                type="number"
-              />
-            </div>
-
-            <div v-if="isRedeem==true">
-            </div>
-
-          </div> -->
-
-          <!-- <div v-if="isRedeem==false" class="stake-amount-preset-row">
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-              25%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-              50%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-              75%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-              100%
-            </div>
-          </div> -->
-
 
 
           <div v-if="!isRedeem" class="stake-price-data-column">
@@ -157,14 +103,16 @@
           </div>
 
 
-          <div v-else class="d-flex align-self-center mb-4" >
+          <div v-else class="d-flex align-self-center" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
           </div>
 
           <div v-if="!isRedeem" class="stake-price-data-column">
-            <div class="stake-price-data-row" v-if="slippage != 2">
+            <div class="stake-price-data-row">
               <p class="price-label">Slippage Tolerance</p>
-              <p id="bond-value-id" class="price-data">{{ slippage }}%</p>
+              <p id="bond-value-id" class="price-data">
+                {{ slippage }}%
+              </p>
             </div>
 
             <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
@@ -211,7 +159,6 @@
     async mounted() {
       await this.calcDaiBondDetails('');
       await this.calculateUserDaiBondDetails();
-      this.recipientAddress = this.$store.state.address;
     },
 
     data() {
@@ -276,29 +223,24 @@
     methods: {
       ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
 
-      onRecipientChange() {
-        if (this.recipientAddress !== this.$store.state.address) {
-          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
-          if (!confirm) {
-            this.recipientAddress = this.$store.state.address;
-          }
-        }
-      },
-
       toggleAdvancedMenu () {
         this.showAdvancedMenu = !this.showAdvancedMenu
       },
 
-      // async setStake(value) {
-      //   // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      //   const suppliedQuantity = roundBalance(this.$store.state.settings.balance * value / 100)
-      //
-      //   if (this.selectedMapOption === 'Bond') {
-      //     this.quantity = suppliedQuantity;
-      //     await this.calcDaiBondDetails( suppliedQuantity );
-      //     await this.calculateUserDaiBondDetails();
-      //   }
-      // },
+      onSlippageChange(value) {
+        this.slippage = value;
+      },
+
+      onRecipientChange(value) {
+        if (value !== this.$store.state.address) {
+          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
+          if (!confirm) {
+            this.recipientAddress = this.$store.state.address;
+          } else {
+            this.recipientAddress = value;
+          }
+        }
+      },
 
       async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.

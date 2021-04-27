@@ -24,6 +24,22 @@
             </h3>
           </div>
         </div>
+
+
+        <div style="position:relative;">
+          <a role="button" @click='toggleAdvancedMenu' v-if='!isRedeem'>
+            <i class="fa fa-cog fa-2x" />
+          </a>
+
+          <AdvancedSettings
+            v-bind:slippage="slippage"
+            v-bind:recipientAddress="recipientAddress"
+            v-bind:showAdvancedMenu="showAdvancedMenu"
+            @onSlippageChange="onSlippageChange"
+            @onRecipientChange="onRecipientChange"
+          />
+        </div>
+
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
@@ -42,35 +58,6 @@
             <input v-on:keyup="onInputChange" v-on:change="onInputChange" id="bond-input-id" type="number" class="form-control" placeholder="Type an amount">
             <button class="btn" type="button" @click='setMax'>Max</button>
           </div>
-
-          <!-- <div v-if="isRedeem==false" class="swap-input-row">
-            <div class="stake-input-container">
-              <input
-                v-on:keyup="onInputChange"
-                v-on:change="onInputChange"
-                id="bond-input-id"
-                placeholder="Type an amount"
-                class="bond-input"
-                type="number"
-              />
-            </div>
-          </div> -->
-
-          <!-- <div v-if="isRedeem==false" class="stake-amount-preset-row">
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-              25%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-              50%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-              75%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-              100%
-            </div>
-          </div> -->
-
 
 
           <div v-if="isRedeem==false" class="stake-price-data-column">
@@ -114,12 +101,26 @@
             <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
 
-          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
+          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center">
             <div id="bond-button-id" class="redeem-button" @click='bond'>Bond</div>
           </div>
 
           <div v-else class="d-flex align-self-center mb-4" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
+          </div>
+
+          <div v-if="!isRedeem" class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Slippage Tolerance</p>
+              <p id="bond-value-id" class="price-data">
+                {{ slippage }}%
+              </p>
+            </div>
+
+            <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
+              <p class="price-label">Recipient</p>
+              <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
+            </div>
           </div>
 
         </div>
@@ -162,6 +163,11 @@
 
     data() {
       return {
+        showAdvancedMenu: false,
+        slippage: 2,
+        recipientAddress: this.$store.state.address,
+
+
         myOptions: {
           layout: {
             color: 'white',
@@ -218,17 +224,25 @@
 
       ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails', 'calculateUserBondDetails']),
 
-      // async setStake(value) {
-      //   // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      //   const suppliedQuantity = roundBalance(this.$store.state.settings.lpBalance * value / 100)
-      //
-      //   if (this.selectedMapOption === 'Bond') {
-      //     this.quantity = suppliedQuantity;
-      //     document.getElementById('bond-input-id').value = suppliedQuantity;
-      //     await this.calcBondDetails( suppliedQuantity );
-      //     await this.calculateUserBondDetails();
-      //   }
-      // },
+      toggleAdvancedMenu () {
+        this.showAdvancedMenu = !this.showAdvancedMenu
+      },
+
+      onSlippageChange(value) {
+        this.slippage = value;
+      },
+
+      onRecipientChange(value) {
+        if (value !== this.$store.state.address) {
+          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
+          if (!confirm) {
+            this.recipientAddress = this.$store.state.address;
+          } else {
+            this.recipientAddress = value;
+          }
+        }
+      },
+
 
       async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
