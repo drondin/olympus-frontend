@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <div style="position:relative;">
+        <div style="position:relative;" v-if="shouldShowHades">
           <a role="button" @click='toggleAdvancedMenu' v-if='!isRedeem'>
             <i class="fa fa-cog fa-2x" />
           </a>
@@ -160,7 +160,6 @@
       await this.calcDaiBondDetails('');
       await this.calculateUserDaiBondDetails();
     },
-
     data() {
       return {
         quantity: null,
@@ -216,12 +215,19 @@
 
       hasAllowance() {
         return this.$store.state.settings.daiBondAllowance > 0;
+      },
+
+      // Temporary feature flag
+      shouldShowHades() {
+        return true;
       }
     },
 
 
     methods: {
       ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
+
+
 
       toggleAdvancedMenu () {
         this.showAdvancedMenu = !this.showAdvancedMenu
