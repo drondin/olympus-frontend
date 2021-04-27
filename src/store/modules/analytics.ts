@@ -34,7 +34,6 @@ const actions = {
       Vue.set(state, 'marketCap', null);
       Vue.set(state, 'currentPrice', null);
     }
-
   },
 
   async secondsUntilRebase({ rootState }) {

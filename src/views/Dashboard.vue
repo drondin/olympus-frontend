@@ -4,7 +4,7 @@
       <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <h4 class="card-title">Price</h4>
+            <h4 class="card-title">Price (SushiSwap OHM-DAI Pool)</h4>
             <div class="my-auto">
               <h1 class="text-center">
                 {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format($store.state.analytics.marketPrice) }}
@@ -20,7 +20,7 @@
           <div class="card-body">
             <h4 class="card-title">Market Cap</h4>
             <h1 class="text-center">
-              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format($store.state.analytics.marketCap) }}
+              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(getMarketCap()) }}
             </h1>
           </div>
         </div>
@@ -96,6 +96,10 @@ export default {
   },
   methods: {
     ...mapActions(['getCoingeckoData']),
+
+    getMarketCap() {
+      return this.$store.state.analytics.marketPrice * this.$store.state.analytics.circulatingSupply
+    },
 
     formatCurrency(value) {
       return this.formatCurrency(value)
