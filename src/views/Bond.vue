@@ -203,11 +203,9 @@
       hasEnteredAmount() {
         return this.$store.state.settings.amount;
       },
-
       isRedeem() {
         return this.selectedMapOption === 'Redeem'
       },
-
       hasAllowance() {
         return this.$store.state.settings.lpBondAllowance > 0;
       }
