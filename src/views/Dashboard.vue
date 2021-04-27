@@ -100,32 +100,71 @@
       </div>
     </div>
 
-    <div class="row mt-4 mb-4">
+
+    <div class="row mt-4">
       <div class="col-sm-6 mb-2 mb-sm-0">
         <div class="card olympus-card">
           <div class="card-body">
+            <iframe
+              frameborder="0"
+              src="https://duneanalytics.com/embeds/29153/58862/b6d18145-763a-48b6-ac4c-a8e43ec1c1f6"
+              title="Risk Free Value of Treasury"
+              style="height:400px;"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
+          <div class="card-body">
+
+
             <iframe
               frameborder="0"
               src="https://duneanalytics.com/embeds/29815/60140/0be45969-dfc2-4625-9b48-d7af19a45546"
               title="Total Value Staking"
               style="height:400px;"
             ></iframe>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4 mb-4">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
+          <div class="card-body">
+
+            <iframe
+              frameborder="0"
+              src="https://duneanalytics.com/embeds/27661/55859/fd0e3db2-d033-4000-9f70-c65de52ef9a9"
+              title="Holders"
+              style="height:400px;"
+            ></iframe>
+
           </div>
         </div>
       </div>
       <div class="col-sm-6 mb-2 mb-sm-0">
         <div class="card olympus-card">
           <div class="card-body">
+
             <iframe
               frameborder="0"
-              src="https://duneanalytics.com/embeds/28756/58813/a3658bd2-39dc-4f19-bd2e-2a666c9d5b39"
-              title="OHM staked/non-staked"
+              src="https://duneanalytics.com/embeds/34202/69216/17e353f6-ccb4-42ff-b6cb-150f69543f4d"
+              title="APY Over Time"
               style="height:400px;"
             ></iframe>
+
           </div>
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 
