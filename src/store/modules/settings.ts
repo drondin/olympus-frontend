@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import { ethers } from 'ethers';
-import store from '@/store';
-//import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
-import assets from '@/helpers/assets.json';
-import analytics from '@/store/modules/analytics';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
@@ -15,7 +11,6 @@ import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.js
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
-import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 const parseEther = ethers.utils.parseEther;
@@ -113,7 +108,6 @@ const actions = {
         let bondingCalcContract;
         let lpBondAllowance = 0,
           daiBondAllowance = 0;
-        let pairContract;
         let migrateContract,
           aOHMAbleToClaim = 0;
 
@@ -390,7 +384,7 @@ const actions = {
     }
   },
 
-  async getStakeApproval({ commit, dispatch }, value) {
+  async getStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -423,7 +417,7 @@ const actions = {
     await dispatch('getStakeAllowances');
   },
 
-  async getLPStakeApproval({ commit, dispatch }, value) {
+  async getLPStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -448,7 +442,7 @@ const actions = {
     await dispatch('getLPStakeAllowance');
   },
 
-  async getLPBondApproval({ commit, dispatch }, value) {
+  async getLPBondApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -518,7 +512,7 @@ const actions = {
     }
   },
 
-  async getunStakeApproval({ commit, dispatch }, value) {
+  async getunStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -582,7 +576,7 @@ const actions = {
     commit('set', { allotment: ethers.utils.formatUnits(allotment, 'gwei') });
   },
 
-  async getMaxPurchase({ commit, dispatch }) {
+  async getMaxPurchase({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -724,7 +718,7 @@ const actions = {
     });
   },
 
-  async unstakeLP({ commit }, value) {
+  async unstakeLP({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -863,7 +857,7 @@ const actions = {
     await forfeitTx.wait();
   },
 
-  async getMaxSwap({ commit, dispatch }) {
+  async getMaxSwap({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -936,7 +930,7 @@ const actions = {
   },
 
   // Dai Bonds
-  async getDaiBondApproval({ commit, dispatch }) {
+  async getDaiBondApproval({ dispatch }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
