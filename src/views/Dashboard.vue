@@ -4,7 +4,15 @@
       <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <h4 class="card-title">Price (SushiSwap OHM-DAI Pool)</h4>
+            <h4 class="card-title">
+              Price (SushiSwap OHM-DAI Pool)
+              <a
+                href="https://analytics.sushi.com/pairs/0x34d7d7aaf50ad4944b70b320acb24c95fa2def7c"
+                target="_blank"
+              >
+                <i class="fas fa-external-link-alt fa-sm ml-1"></i>
+              </a>
+            </h4>
             <div class="my-auto">
               <h1 class="text-center">
                 {{
@@ -40,7 +48,15 @@
       <div class="col-sm-4 mb-2 mb-sm-0">
         <div class="card ohm-dashboard-card">
           <div class="card-body">
-            <h4 class="card-title">Supply (circulating/total)</h4>
+            <h4 class="card-title">
+              Supply (circulating/total)
+              <a
+                href="https://www.coingecko.com/en/coins/olympus"
+                target="_blank"
+              >
+                <i class="fas fa-external-link-alt fa-sm ml-1"></i>
+              </a>
+            </h4>
             <h1 class="text-center">
               {{
                 new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(
