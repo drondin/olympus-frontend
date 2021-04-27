@@ -53,14 +53,17 @@ const actions = {
   },
 
   // Uses PairContract
-  async getMarketPrice({ rootState }) {
+  async getMarketPrice({ commit, rootState }) {
     const pairContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_ADDRESS,
       PairContract,
       rootState.provider
     );
-    const reserves = await pairContract.getReserves();
-    return reserves[1] / reserves[0];
+    const reserves    = await pairContract.getReserves();
+    const marketPrice = reserves[1] / reserves[0];
+
+    commit('set', { marketPrice: marketPrice / Math.pow(10, 9) });
+    return marketPrice;
   },
 
   async getTokenSupply({ commit, rootState }) {
