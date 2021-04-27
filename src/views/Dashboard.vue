@@ -50,10 +50,7 @@
           <div class="card-body">
             <h4 class="card-title">
               Supply (circulating/total)
-              <a
-                href="https://www.coingecko.com/en/coins/olympus"
-                target="_blank"
-              >
+              <a href="https://www.coingecko.com/en/coins/olympus" target="_blank">
                 <i class="fas fa-external-link-alt fa-sm ml-1"></i>
               </a>
             </h4>

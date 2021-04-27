@@ -59,7 +59,7 @@ const actions = {
       PairContract,
       rootState.provider
     );
-    const reserves    = await pairContract.getReserves();
+    const reserves = await pairContract.getReserves();
     const marketPrice = reserves[1] / reserves[0];
 
     commit('set', { marketPrice: marketPrice / Math.pow(10, 9) });
@@ -140,10 +140,10 @@ const actions = {
     const vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
 
     const totalDebtDo = await bondingContract.totalDebt();
-    const debtRatio   = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
+    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
     const marketPrice = await dispatch('getMarketPrice');
 
-    const reserves  = await pairContract.getReserves();
+    const reserves = await pairContract.getReserves();
     const bondValue = await bondingContract.calculateBondInterest(amountInWei.toString());
     const bondPrice = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
@@ -175,11 +175,6 @@ const actions = {
     const bondingCalcContract = new ethers.Contract(
       addresses[rootState.network.chainId].BONDINGCALC_ADDRESS,
       BondCalcContract,
-      rootState.provider
-    );
-    const ohmContract = new ethers.Contract(
-      addresses[rootState.network.chainId].OHM_ADDRESS,
-      ierc20Abi,
       rootState.provider
     );
 
@@ -229,14 +224,9 @@ const actions = {
       BondCalcContract,
       rootState.provider
     );
-    const ohmContract = new ethers.Contract(
-      addresses[rootState.network.chainId].OHM_ADDRESS,
-      ierc20Abi,
-      rootState.provider
-    );
 
     const marketPrice = await dispatch('getMarketPrice');
-    const bondValue   = await daiBondContract.calculateBondInterest(amountInWei.toString());
+    const bondValue = await daiBondContract.calculateBondInterest(amountInWei.toString());
     const bondPrice = amountInWei / bondValue;
     const discount = 1 - bondPrice / (marketPrice / 1000000000);
 

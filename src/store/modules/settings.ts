@@ -10,7 +10,6 @@ import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
-import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 const parseEther = ethers.utils.parseEther;
@@ -85,8 +84,7 @@ const actions = {
         let sohmBalance = 0,
           stakeAllowance = 0,
           unstakeAllowance = 0;
-        let stakingContract,
-          profit = 0;
+        let stakingContract;
         let lpStakingContract,
           totalLPStaked = 0,
           lpStaked = 0,
@@ -100,12 +98,9 @@ const actions = {
           stakingAPY = 0,
           stakingRebase = 0,
           stakingReward = 0;
-        let distributorContractSigner,
-          currentIndex = 0;
-        let bondingCalcContract;
+        let currentIndex = 0;
         let lpBondAllowance = 0,
           daiBondAllowance = 0;
-        let pairContract;
         let migrateContract,
           aOHMAbleToClaim = 0;
 
@@ -133,19 +128,6 @@ const actions = {
           provider
         );
         const circSupply = await sohmMainContract.circulatingSupply();
-
-        if (addresses[network.chainId].BONDINGCALC_ADDRESS) {
-          bondingCalcContract = new ethers.Contract(
-            addresses[network.chainId].BONDINGCALC_ADDRESS,
-            BondCalcContract,
-            provider
-          );
-          lpContract = new ethers.Contract(
-            addresses[network.chainId].LP_ADDRESS,
-            ierc20Abi,
-            provider
-          );
-        }
 
         if (addresses[network.chainId].BOND_ADDRESS) {
           lpBondAllowance = await lpContract.allowance(
@@ -228,20 +210,13 @@ const actions = {
             addresses[network.chainId].STAKING_ADDRESS
           )!;
         }
+
         if (addresses[network.chainId].SOHM_ADDRESS) {
           sohmBalance = await sohmContract.balanceOf(address);
           unstakeAllowance = await sohmContract.allowance(
             address,
             addresses[network.chainId].STAKING_ADDRESS
           )!;
-        }
-        if (addresses[network.chainId].STAKING_ADDRESS) {
-          stakingContract = new ethers.Contract(
-            addresses[network.chainId].STAKING_ADDRESS,
-            OlympusStaking,
-            provider
-          );
-          profit = await stakingContract.ohmToDistributeNextEpoch();
         }
 
         if (addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
