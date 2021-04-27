@@ -24,6 +24,7 @@
             </h3>
           </div>
         </div>
+
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
@@ -42,35 +43,6 @@
             <input v-on:keyup="onInputChange" v-on:change="onInputChange" id="bond-input-id" type="number" class="form-control" placeholder="Type an amount">
             <button class="btn" type="button" @click='setMax'>Max</button>
           </div>
-
-          <!-- <div v-if="isRedeem==false" class="swap-input-row">
-            <div class="stake-input-container">
-              <input
-                v-on:keyup="onInputChange"
-                v-on:change="onInputChange"
-                id="bond-input-id"
-                placeholder="Type an amount"
-                class="bond-input"
-                type="number"
-              />
-            </div>
-          </div> -->
-
-          <!-- <div v-if="isRedeem==false" class="stake-amount-preset-row">
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-              25%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-              50%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-              75%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-              100%
-            </div>
-          </div> -->
-
 
 
           <div v-if="isRedeem==false" class="stake-price-data-column">
@@ -121,7 +93,6 @@
           <div v-else class="d-flex align-self-center mb-4" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
           </div>
-
         </div>
 
       </div>
@@ -215,18 +186,6 @@
     methods: {
 
       ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails', 'calculateUserBondDetails']),
-
-      // async setStake(value) {
-      //   // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      //   const suppliedQuantity = roundBalance(this.$store.state.settings.lpBalance * value / 100)
-      //
-      //   if (this.selectedMapOption === 'Bond') {
-      //     this.quantity = suppliedQuantity;
-      //     document.getElementById('bond-input-id').value = suppliedQuantity;
-      //     await this.calcBondDetails( suppliedQuantity );
-      //     await this.calculateUserBondDetails();
-      //   }
-      // },
 
       async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.

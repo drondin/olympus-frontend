@@ -20,6 +20,23 @@
             </h3>
           </div>
         </div>
+
+        <div style="position:relative;" v-if="shouldShowHades">
+          <a role="button" @click='toggleAdvancedMenu' v-if='!isRedeem'>
+            <i class="fa fa-cog fa-2x" />
+          </a>
+
+          <AdvancedSettings
+            v-bind:slippage="slippage"
+            v-bind:recipientAddress="recipientAddress"
+            v-bind:showAdvancedMenu="showAdvancedMenu"
+            @onSlippageChange="onSlippageChange"
+            @onRecipientChange="onRecipientChange"
+          />
+        </div>
+
+
+
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
@@ -34,49 +51,13 @@
               />
           </div>
 
-          <div v-if="isRedeem==false" class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
+          <div v-if="!isRedeem" class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
             <input v-model='quantity' v-on:keyup="onInputChange" v-on:change="onInputChange" id="dai-bond-input-id" type="number" class="form-control" placeholder="Type an amount">
             <button class="btn" type="button" @click='setMax'>Max</button>
           </div>
 
 
-          <!-- <div v-if="isRedeem==false" class="swap-input-row">
-
-            <div class="stake-input-container">
-              <input
-                v-on:keyup="onInputChange"
-                v-on:change="onInputChange"
-                v-model='quantity'
-                id="dai-bond-input-id"
-                placeholder="Type an amount"
-                class="bond-input"
-                type="number"
-              />
-            </div>
-
-            <div v-if="isRedeem==true">
-            </div>
-
-          </div> -->
-
-          <!-- <div v-if="isRedeem==false" class="stake-amount-preset-row">
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-              25%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-              50%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-              75%
-            </div>
-            <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-              100%
-            </div>
-          </div> -->
-
-
-
-          <div v-if="isRedeem==false" class="stake-price-data-column">
+          <div v-if="!isRedeem" class="stake-price-data-column">
             <div class="stake-price-data-row">
               <p class="price-label">Balance</p>
               <p class="price-data">{{ trimNumber( $store.state.settings.balance, 2 ) }} DAI</p>
@@ -102,7 +83,7 @@
           <div class="stake-price-data-row">
               <p class="price-label">Pending Rewards</p>
               <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.interestDue, 4 ) }} OHM</p>
-            </div>
+          </div>
             <div class="stake-price-data-row">
               <p class="price-label">Claimable Rewards</p>
               <p id="bond-market-price-id" class="price-data">{{ trimNumber( $store.state.settings.daiBond.pendingPayout, 4 ) }} OHM</p>
@@ -113,16 +94,31 @@
             </div>
           </div>
 
-          <div v-if="isRedeem==true" class="d-flex align-self-center mb-4">
+          <div v-if="isRedeem" class="d-flex align-self-center mb-4">
             <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
 
-          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
+          <div v-else-if="hasAllowance==true && !isRedeem" class="d-flex align-self-center">
             <div id="bond-button-id" class="redeem-button" @click='bond' >Bond DAI</div>
           </div>
 
-          <div v-else class="d-flex align-self-center mb-4" >
+
+          <div v-else class="d-flex align-self-center" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
+          </div>
+
+          <div v-if="!isRedeem" class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Slippage Tolerance</p>
+              <p id="bond-value-id" class="price-data">
+                {{ slippage }}%
+              </p>
+            </div>
+
+            <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
+              <p class="price-label">Recipient</p>
+              <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
+            </div>
           </div>
 
         </div>
@@ -164,10 +160,12 @@
       await this.calcDaiBondDetails('');
       await this.calculateUserDaiBondDetails();
     },
-
     data() {
       return {
         quantity: null,
+        showAdvancedMenu: false,
+        slippage: 2,
+        recipientAddress: this.$store.state.address,
 
         myOptions: {
           layout: {
@@ -217,6 +215,11 @@
 
       hasAllowance() {
         return this.$store.state.settings.daiBondAllowance > 0;
+      },
+
+      // Temporary feature flag
+      shouldShowHades() {
+        return (this.$route.query.hades === "1");
       }
     },
 
@@ -224,16 +227,26 @@
     methods: {
       ...mapActions(['redeemDaiBond', 'bondDAI', 'getDaiBondApproval', 'calcDaiBondDetails', 'calculateUserDaiBondDetails']),
 
-      // async setStake(value) {
-      //   // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
-      //   const suppliedQuantity = roundBalance(this.$store.state.settings.balance * value / 100)
-      //
-      //   if (this.selectedMapOption === 'Bond') {
-      //     this.quantity = suppliedQuantity;
-      //     await this.calcDaiBondDetails( suppliedQuantity );
-      //     await this.calculateUserDaiBondDetails();
-      //   }
-      // },
+
+
+      toggleAdvancedMenu () {
+        this.showAdvancedMenu = !this.showAdvancedMenu
+      },
+
+      onSlippageChange(value) {
+        this.slippage = value;
+      },
+
+      onRecipientChange(value) {
+        if (value !== this.$store.state.address) {
+          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
+          if (!confirm) {
+            this.recipientAddress = this.$store.state.address;
+          } else {
+            this.recipientAddress = value;
+          }
+        }
+      },
 
       async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
@@ -270,10 +283,10 @@
         } else if ( bondInterest > 0 || bondRewardDue > 0 ) {
           const shouldProceed = confirm('You have an existing DAI bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?')
           if (shouldProceed) {
-            await this.bondDAI(this.quantity);
+            await this.bondDAI({ value: this.quantity, slippage: this.slippage, recipientAddress: this.recipientAddress });
           }
         } else {
-          await this.bondDAI(this.quantity);
+          await this.bondDAI({ value: this.quantity, slippage: this.slippage, recipientAddress: this.recipientAddress });
         }
       },
 
