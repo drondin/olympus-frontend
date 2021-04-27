@@ -82,7 +82,7 @@ const actions = {
         const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
 
         let ohmContract, ohmBalance=0, allowance=0;
-        let sohmContract, sohmMainContract, sohmBalance=0, stakeAllowance=0, unstakeAllowance=0, circSupply=0;
+        let sohmBalance=0, stakeAllowance=0, unstakeAllowance=0;
         let stakingContract, profit=0;
         let lpStakingContract, totalLPStaked=0, lpStaked=0, pendingRewards=0, lpStakingAPY;
         let lpContract, lpBalance=0, lpStakeAllowance;
@@ -100,6 +100,9 @@ const actions = {
         const balance = await daiContract.balanceOf(address);
         allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
 
+        const sohmContract     = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
+        const sohmMainContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, sOHM, provider);
+        const circSupply       = await sohmMainContract.circulatingSupply();
 
         if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
           bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
@@ -151,12 +154,8 @@ const actions = {
           stakeAllowance = await ohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
         }
         if(addresses[network.chainId].SOHM_ADDRESS) {
-          sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-          sohmMainContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, sOHM, provider);
-
           sohmBalance = await sohmContract.balanceOf(address);
           unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
-          circSupply = await sohmMainContract.circulatingSupply();
         }
         if(addresses[network.chainId].STAKING_ADDRESS) {
           stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
@@ -165,10 +164,7 @@ const actions = {
 
         if(addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
           distributorContract = new ethers.Contract(addresses[network.chainId].DISTRIBUTOR_ADDRESS, DistributorContract, provider);
-          sohmContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
           stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
-
-          circSupply = await sohmMainContract.circulatingSupply();
 
           stakingReward = await stakingContract.ohmToDistributeNextEpoch();
 
@@ -367,7 +363,6 @@ const actions = {
       alert("Please connect your wallet!");
       return;
     }
-
 
     const signer = provider.getSigner();
     const sohmContract = await new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, signer);

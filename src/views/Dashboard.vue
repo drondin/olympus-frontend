@@ -7,7 +7,7 @@
             <h4 class="card-title">Price</h4>
             <div class="my-auto">
               <h1 class="text-center">
-                {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format($store.state.analytics.currentPrice) }}
+                {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format($store.state.analytics.marketPrice) }}
               </h1>
             </div>
           </div>
