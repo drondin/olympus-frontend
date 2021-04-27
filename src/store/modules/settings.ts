@@ -78,9 +78,7 @@ const actions = {
         const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf(address);
         const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
 
-        let ohmContract,
-          ohmBalance = 0,
-          allowance = 0;
+        let ohmContract, ohmBalance = 0;
         let sohmBalance = 0,
           stakeAllowance = 0,
           unstakeAllowance = 0;
@@ -90,9 +88,7 @@ const actions = {
           lpStaked = 0,
           pendingRewards = 0,
           lpStakingAPY;
-        let lpContract,
-          lpBalance = 0,
-          lpStakeAllowance;
+        let lpStakeAllowance;
         let distributorContract,
           fiveDayRate = 0,
           stakingAPY = 0,
@@ -111,11 +107,17 @@ const actions = {
           ierc20Abi,
           provider
         );
-        const balance = await daiContract.balanceOf(address);
-        allowance = await daiContract.allowance(
-          address,
-          addresses[network.chainId].PRESALE_ADDRESS
-        )!;
+
+        const lpContract = new ethers.Contract(
+          addresses[network.chainId].LP_ADDRESS,
+          ierc20Abi,
+          provider
+        );
+
+        const balance   = await daiContract.balanceOf(address);
+        const allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
+        const lpBalance = await lpContract.balanceOf(address);
+
 
         const sohmContract = new ethers.Contract(
           addresses[network.chainId].SOHM_ADDRESS,
@@ -156,24 +158,10 @@ const actions = {
           aOHMAbleToClaim = await migrateContract.senderInfo(address);
         }
 
-        if (addresses[network.chainId].LP_ADDRESS) {
-          lpContract = new ethers.Contract(
-            addresses[network.chainId].LP_ADDRESS,
-            ierc20Abi,
-            provider
-          );
-          lpBalance = await lpContract.balanceOf(address);
-        }
-
         if (addresses[network.chainId].LPSTAKING_ADDRESS) {
           lpStakingContract = new ethers.Contract(
             addresses[network.chainId].LPSTAKING_ADDRESS,
             LPStaking,
-            provider
-          );
-          lpContract = new ethers.Contract(
-            addresses[network.chainId].LP_ADDRESS,
-            ierc20Abi,
             provider
           );
           ohmContract = new ethers.Contract(
