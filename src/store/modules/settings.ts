@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import { ethers } from 'ethers';
-import store from '@/store';
-//import provider from '@/helpers/provider';
 import addresses from '@/helpers/addresses';
-import assets from '@/helpers/assets.json';
-import analytics from '@/store/modules/analytics';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as OHMPreSale } from '@/helpers/abi/OHMPreSale.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
@@ -15,7 +11,6 @@ import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.js
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
-import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 
 import { whitelist } from '@/helpers/whitelist.json';
 const parseEther = ethers.utils.parseEther;
@@ -122,15 +117,34 @@ const actions = {
           provider
         );
         const balance = await daiContract.balanceOf(address);
-        allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
+        allowance = await daiContract.allowance(
+          address,
+          addresses[network.chainId].PRESALE_ADDRESS
+        )!;
 
-        const sohmContract     = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, ierc20Abi, provider);
-        const sohmMainContract = new ethers.Contract(addresses[network.chainId].SOHM_ADDRESS, sOHM, provider);
-        const circSupply       = await sohmMainContract.circulatingSupply();
+        const sohmContract = new ethers.Contract(
+          addresses[network.chainId].SOHM_ADDRESS,
+          ierc20Abi,
+          provider
+        );
+        const sohmMainContract = new ethers.Contract(
+          addresses[network.chainId].SOHM_ADDRESS,
+          sOHM,
+          provider
+        );
+        const circSupply = await sohmMainContract.circulatingSupply();
 
-        if(addresses[network.chainId].BONDINGCALC_ADDRESS) {
-          bondingCalcContract = new ethers.Contract(addresses[network.chainId].BONDINGCALC_ADDRESS, BondCalcContract, provider);
-          lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
+        if (addresses[network.chainId].BONDINGCALC_ADDRESS) {
+          bondingCalcContract = new ethers.Contract(
+            addresses[network.chainId].BONDINGCALC_ADDRESS,
+            BondCalcContract,
+            provider
+          );
+          lpContract = new ethers.Contract(
+            addresses[network.chainId].LP_ADDRESS,
+            ierc20Abi,
+            provider
+          );
         }
 
         if (addresses[network.chainId].BOND_ADDRESS) {
@@ -214,9 +228,12 @@ const actions = {
             addresses[network.chainId].STAKING_ADDRESS
           )!;
         }
-        if(addresses[network.chainId].SOHM_ADDRESS) {
+        if (addresses[network.chainId].SOHM_ADDRESS) {
           sohmBalance = await sohmContract.balanceOf(address);
-          unstakeAllowance = await sohmContract.allowance(address, addresses[network.chainId].STAKING_ADDRESS)!;
+          unstakeAllowance = await sohmContract.allowance(
+            address,
+            addresses[network.chainId].STAKING_ADDRESS
+          )!;
         }
         if (addresses[network.chainId].STAKING_ADDRESS) {
           stakingContract = new ethers.Contract(
@@ -227,9 +244,17 @@ const actions = {
           profit = await stakingContract.ohmToDistributeNextEpoch();
         }
 
-        if(addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
-          distributorContract = new ethers.Contract(addresses[network.chainId].DISTRIBUTOR_ADDRESS, DistributorContract, provider);
-          stakingContract = new ethers.Contract(addresses[network.chainId].STAKING_ADDRESS, OlympusStaking, provider);
+        if (addresses[network.chainId].DISTRIBUTOR_ADDRESS) {
+          distributorContract = new ethers.Contract(
+            addresses[network.chainId].DISTRIBUTOR_ADDRESS,
+            DistributorContract,
+            provider
+          );
+          stakingContract = new ethers.Contract(
+            addresses[network.chainId].STAKING_ADDRESS,
+            OlympusStaking,
+            provider
+          );
 
           stakingReward = await stakingContract.ohmToDistributeNextEpoch();
 
@@ -350,7 +375,7 @@ const actions = {
     }
   },
 
-  async getStakeApproval({ commit, dispatch }, value) {
+  async getStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -383,7 +408,7 @@ const actions = {
     await dispatch('getStakeAllowances');
   },
 
-  async getLPStakeApproval({ commit, dispatch }, value) {
+  async getLPStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -408,7 +433,7 @@ const actions = {
     await dispatch('getLPStakeAllowance');
   },
 
-  async getLPBondApproval({ commit, dispatch }, value) {
+  async getLPBondApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -478,7 +503,7 @@ const actions = {
     }
   },
 
-  async getunStakeApproval({ commit, dispatch }, value) {
+  async getunStakeApproval({ dispatch }, value) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -542,7 +567,7 @@ const actions = {
     commit('set', { allotment: ethers.utils.formatUnits(allotment, 'gwei') });
   },
 
-  async getMaxPurchase({ commit, dispatch }) {
+  async getMaxPurchase({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -684,7 +709,7 @@ const actions = {
     });
   },
 
-  async unstakeLP({ commit }, value) {
+  async unstakeLP({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -823,7 +848,7 @@ const actions = {
     await forfeitTx.wait();
   },
 
-  async getMaxSwap({ commit, dispatch }) {
+  async getMaxSwap({ commit }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;
@@ -896,7 +921,7 @@ const actions = {
   },
 
   // Dai Bonds
-  async getDaiBondApproval({ commit, dispatch }) {
+  async getDaiBondApproval({ dispatch }) {
     if (!provider) {
       alert('Please connect your wallet!');
       return;

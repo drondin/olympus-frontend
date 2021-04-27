@@ -7,7 +7,13 @@
             <h4 class="card-title">Price (SushiSwap OHM-DAI Pool)</h4>
             <div class="my-auto">
               <h1 class="text-center">
-                {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format($store.state.analytics.marketPrice) }}
+                {{
+                  new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    maximumFractionDigits: 2
+                  }).format($store.state.analytics.marketPrice)
+                }}
               </h1>
             </div>
           </div>
@@ -19,7 +25,13 @@
           <div class="card-body">
             <h4 class="card-title">Market Cap</h4>
             <h1 class="text-center">
-              {{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(getMarketCap()) }}
+              {{
+                new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  maximumFractionDigits: 0
+                }).format(getMarketCap())
+              }}
             </h1>
           </div>
         </div>
@@ -118,7 +130,9 @@ export default {
     ...mapActions(['getCoingeckoData']),
 
     getMarketCap() {
-      return this.$store.state.analytics.marketPrice * this.$store.state.analytics.circulatingSupply
+      return (
+        this.$store.state.analytics.marketPrice * this.$store.state.analytics.circulatingSupply
+      );
     },
 
     formatCurrency(value) {
