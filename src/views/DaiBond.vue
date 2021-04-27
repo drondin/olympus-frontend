@@ -98,7 +98,7 @@
             <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
 
-          <div v-else-if="hasAllowance==true && !isRedeem" class="d-flex align-self-center mb-4">
+          <div v-else-if="hasAllowance==true && !isRedeem" class="d-flex align-self-center">
             <div id="bond-button-id" class="redeem-button" @click='bond' >Bond DAI</div>
           </div>
 
@@ -219,7 +219,7 @@
 
       // Temporary feature flag
       shouldShowHades() {
-        return true;
+        return (this.$route.query.hades === "1");
       }
     },
 
