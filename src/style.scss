@@ -1208,13 +1208,12 @@ input.input:read-only {
 
 // For formatting main OHM card
 .ohm-popover-card {
-  min-height:425px;
   border-radius:2rem;
+  border:2px solid #6c757d;
   z-index: 10;
   background-color: #424242;
-  width: 350px;
+  width: 425px;
   position:absolute;
-  top:10;
   right: 0;
 }
 
@@ -1241,7 +1240,6 @@ input.input:read-only {
 
 .ohm-input-group {
   .form-control {
-
     background-color: #282828 !important;
     border-radius: 2rem;
     padding: 0.5rem 1rem;
@@ -1252,7 +1250,10 @@ input.input:read-only {
     &:focus {
       color:#aaa;
     }
+  }
 
+  .input-group-text {
+    border-radius: 20px;
   }
 
 
