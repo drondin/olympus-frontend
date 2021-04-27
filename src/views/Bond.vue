@@ -25,21 +25,6 @@
           </div>
         </div>
 
-
-        <div style="position:relative;">
-          <a role="button" @click='toggleAdvancedMenu' v-if='!isRedeem'>
-            <i class="fa fa-cog fa-2x" />
-          </a>
-
-          <AdvancedSettings
-            v-bind:slippage="slippage"
-            v-bind:recipientAddress="recipientAddress"
-            v-bind:showAdvancedMenu="showAdvancedMenu"
-            @onSlippageChange="onSlippageChange"
-            @onRecipientChange="onRecipientChange"
-          />
-        </div>
-
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
@@ -108,21 +93,6 @@
           <div v-else class="d-flex align-self-center mb-4" >
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
           </div>
-
-          <!-- <div v-if="!isRedeem" class="stake-price-data-column">
-            <div class="stake-price-data-row">
-              <p class="price-label">Slippage Tolerance</p>
-              <p id="bond-value-id" class="price-data">
-                {{ slippage }}%
-              </p>
-            </div>
-
-            <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
-              <p class="price-label">Recipient</p>
-              <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
-            </div>
-          </div> -->
-
         </div>
 
       </div>
@@ -163,11 +133,6 @@
 
     data() {
       return {
-        showAdvancedMenu: false,
-        slippage: 2,
-        recipientAddress: this.$store.state.address,
-
-
         myOptions: {
           layout: {
             color: 'white',
@@ -223,26 +188,6 @@
     methods: {
 
       ...mapActions(['redeemBond', 'bondLP', 'getLPBondApproval', 'getLPBondAllowance', 'calcBondDetails', 'calculateUserBondDetails']),
-
-      toggleAdvancedMenu () {
-        this.showAdvancedMenu = !this.showAdvancedMenu
-      },
-
-      onSlippageChange(value) {
-        this.slippage = value;
-      },
-
-      onRecipientChange(value) {
-        if (value !== this.$store.state.address) {
-          const confirm = window.confirm("You're changing the recipient address of this bond. Make sure you understand what you're doing!");
-          if (!confirm) {
-            this.recipientAddress = this.$store.state.address;
-          } else {
-            this.recipientAddress = value;
-          }
-        }
-      },
-
 
       async setMax() {
         // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
