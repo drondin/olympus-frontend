@@ -700,11 +700,13 @@ const actions = {
     }
   },
 
-  async bondDAI({commit}, value) {
-    // NOTE: These should become dynamic
-    const depositorAddress = address; // TODO: Change to BZBG
-    const acceptedSlippage = 0.02; // 2%
-    const valueInWei = ethers.utils.parseUnits( value.toString(), 'ether' );
+  async bondDAI({commit}, { value, slippage, recipientAddress }) {
+    const depositorAddress = recipientAddress || address;
+    const acceptedSlippage = (slippage / 100) || 0.02; // 2%
+    const valueInWei       = ethers.utils.parseUnits( value.toString(), 'ether' );
+
+    console.log("depositorAddress = ", depositorAddress);
+    console.log("acceptedSlippage = ", acceptedSlippage);
 
     // Get the bonding contract
     const signer  = provider.getSigner();
@@ -713,12 +715,6 @@ const actions = {
     // Calculate maxPremium based on premium and slippage.
     const calculatePremium = await daiBondContract.calculatePremium();
     const maxPremium       = Math.round(calculatePremium * (1 + acceptedSlippage));
-
-    console.log("value = ", value);
-    console.log("calculatePremium = ", calculatePremium)
-    console.log('valueInWei = ', valueInWei.toString());
-    console.log("depositorAddress = ", depositorAddress)
-    console.log("maxPremium = ", maxPremium.toString());
 
     // Deposit the bond
     let bondTx;
