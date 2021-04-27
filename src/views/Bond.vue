@@ -101,7 +101,7 @@
             <div class="redeem-button" @click='redeem' >Claim Rewards</div>
           </div>
 
-          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center">
+          <div v-else-if="hasAllowance==true && isRedeem==false" class="d-flex align-self-center mb-4">
             <div id="bond-button-id" class="redeem-button" @click='bond'>Bond</div>
           </div>
 
@@ -109,7 +109,7 @@
             <div id="bond-button-id" class="redeem-button" @click='seekApproval' >Approve</div>
           </div>
 
-          <div v-if="!isRedeem" class="stake-price-data-column">
+          <!-- <div v-if="!isRedeem" class="stake-price-data-column">
             <div class="stake-price-data-row">
               <p class="price-label">Slippage Tolerance</p>
               <p id="bond-value-id" class="price-data">
@@ -121,7 +121,7 @@
               <p class="price-label">Recipient</p>
               <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
             </div>
-          </div>
+          </div> -->
 
         </div>
 
