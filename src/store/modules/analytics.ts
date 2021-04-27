@@ -52,6 +52,7 @@ const actions = {
     return secondsAway;
   },
 
+  // Uses PairContract
   async getMarketPrice({ commit, rootState }) {
     const pairContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_ADDRESS,
@@ -60,8 +61,8 @@ const actions = {
     );
     const reserves = await pairContract.getReserves();
     const marketPrice = reserves[1] / reserves[0];
-    commit('set', { marketPrice: marketPrice / Math.pow(10, 9) });
 
+    commit('set', { marketPrice: marketPrice / Math.pow(10, 9) });
     return marketPrice;
   },
 
@@ -111,16 +112,15 @@ const actions = {
     } else {
       amountInWei = ethers.utils.parseEther(amount);
     }
-
+    const pairContract = new ethers.Contract(
+      addresses[rootState.network.chainId].LP_ADDRESS,
+      PairContract,
+      rootState.provider
+    );
     // If the user hasn't entered anything, let's calculate a fraction of SLP
     const bondingContract = new ethers.Contract(
       addresses[rootState.network.chainId].BOND_ADDRESS,
       BondContract,
-      rootState.provider
-    );
-    const pairContract = new ethers.Contract(
-      addresses[rootState.network.chainId].LP_ADDRESS,
-      PairContract,
       rootState.provider
     );
     const lpContract = new ethers.Contract(
@@ -141,20 +141,12 @@ const actions = {
 
     const totalDebtDo = await bondingContract.totalDebt();
     const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
-    const reserves = await pairContract.getReserves();
-    const marketPrice = reserves[1] / reserves[0];
+    const marketPrice = await dispatch('getMarketPrice');
 
+    const reserves = await pairContract.getReserves();
     const bondValue = await bondingContract.calculateBondInterest(amountInWei.toString());
     const bondPrice = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
     const bondDiscount = 1 - bondPrice / marketPrice;
-
-    console.log('Calculated LP Bond data: ', {
-      amountInWei: amountInWei.toString(),
-      marketPrice,
-      bondPrice,
-      bondDiscount,
-      bondValue: bondValue.toString()
-    });
 
     commit('set', {
       amount,
@@ -175,11 +167,6 @@ const actions = {
       DaiBondContract,
       rootState.provider
     );
-    const pairContract = new ethers.Contract(
-      addresses[rootState.network.chainId].LP_ADDRESS,
-      PairContract,
-      rootState.provider
-    );
     const daiContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_ADDRESS,
       ierc20Abi,
@@ -188,11 +175,6 @@ const actions = {
     const bondingCalcContract = new ethers.Contract(
       addresses[rootState.network.chainId].BONDINGCALC_ADDRESS,
       BondCalcContract,
-      rootState.provider
-    );
-    const ohmContract = new ethers.Contract(
-      addresses[rootState.network.chainId].OHM_ADDRESS,
-      ierc20Abi,
       rootState.provider
     );
 
@@ -232,11 +214,6 @@ const actions = {
       DaiBondContract,
       rootState.provider
     );
-    const pairContract = new ethers.Contract(
-      addresses[rootState.network.chainId].LP_ADDRESS,
-      PairContract,
-      rootState.provider
-    );
     const daiContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_ADDRESS,
       ierc20Abi,
@@ -247,14 +224,8 @@ const actions = {
       BondCalcContract,
       rootState.provider
     );
-    const ohmContract = new ethers.Contract(
-      addresses[rootState.network.chainId].OHM_ADDRESS,
-      ierc20Abi,
-      rootState.provider
-    );
 
-    const reserves = await pairContract.getReserves();
-    const marketPrice = reserves[1] / reserves[0];
+    const marketPrice = await dispatch('getMarketPrice');
     const bondValue = await daiBondContract.calculateBondInterest(amountInWei.toString());
     const bondPrice = amountInWei / bondValue;
     const discount = 1 - bondPrice / (marketPrice / 1000000000);

@@ -95,7 +95,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import mixin from '@/helpers/mixins';
-import { roundBalance } from '@/helpers/utils';
 
 export default {
   mixins: [mixin],
@@ -196,17 +195,6 @@ export default {
 
       this.quantity = suppliedQuantity;
     },
-
-    // setStake(value) {
-    //   let suppliedQuantity;
-    //   if (this.selectedMapOption === 'Stake') {
-    //     suppliedQuantity = this.$store.state.settings.ohmBalance * value / 100;
-    //   } else {
-    //     suppliedQuantity = this.$store.state.settings.sohmBalance * value / 100;
-    //   }
-    //
-    //   this.quantity = roundBalance(suppliedQuantity);
-    // },
 
     async seekApproval() {
       switch (this.selectedMapOption) {
