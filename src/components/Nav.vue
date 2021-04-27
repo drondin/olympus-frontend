@@ -3,7 +3,8 @@
     <div class="bg-topnav">
       <div class="container-lg p-responsive d-flex mt-2">
         <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
-          <img src="~/@/assets/logo.svg" class="logo" /><h4 class="ticker-name">Olympus</h4>
+          <img src="~/@/assets/logo.svg" class="logo" />
+          <h4 class="ticker-name">Olympus</h4>
           <h1 class="py-4"></h1>
         </router-link>
 
@@ -20,13 +21,13 @@
             <h4>Learn</h4>
             <div class="drop-menu-hidden">
               <a href="#what">
-              <p>What is Olympus?</p>
+                <p>What is Olympus?</p>
               </a>
               <a href="#how">
-               <p>How it works</p>
+                <p>How it works</p>
               </a>
               <a href="https://olympusdao.medium.com/">
-               <p>Blog</p>
+                <p>Blog</p>
               </a>
             </div>
           </div>
@@ -35,15 +36,19 @@
             <h4>Governance</h4>
             <div class="drop-menu-hidden">
               <a href="http://vote.olympusdao.finance/">
-               <p>Vote</p>
+                <p>Vote</p>
               </a>
               <a href="https://forum.olympusdao.finance">
-               <p>Forum</p>
+                <p>Forum</p>
               </a>
             </div>
           </div>
 
-          <router-link :to="{ name: 'stake' }" class="button button-primary d-none d-sm-block mx-4" style="color: black !important;">
+          <router-link
+            :to="{ name: 'stake' }"
+            class="button button-primary d-none d-sm-block mx-4"
+            style="color: black !important;"
+          >
             Enter App
           </router-link>
 
@@ -55,7 +60,6 @@
               <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
             </div>
           </div> -->
-
         </div>
       </div>
     </div>
@@ -65,22 +69,22 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import { shorten } from '@/helpers/utils';
+import { mapState } from 'vuex';
+import { shorten } from '@/helpers/utils';
 
-  export default {
-    data() {
-      return {
-        modalLoginOpen: false
-      };
-    },
+export default {
+  data() {
+    return {
+      modalLoginOpen: false
+    };
+  },
 
-    computed: mapState({
-      name: state => state.settings.name,
-      address: state => state.settings.address
-    }),
-    methods: {
-      shorten
-    }
-  };
+  computed: mapState({
+    name: state => state.settings.name,
+    address: state => state.settings.address
+  }),
+  methods: {
+    shorten
+  }
+};
 </script>
