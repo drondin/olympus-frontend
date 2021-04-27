@@ -701,10 +701,12 @@ const actions = {
   },
 
   async bondDAI({commit}, { value, slippage, recipientAddress }) {
-    // NOTE: These should become dynamic
     const depositorAddress = recipientAddress || address;
     const acceptedSlippage = (slippage / 100) || 0.02; // 2%
     const valueInWei       = ethers.utils.parseUnits( value.toString(), 'ether' );
+
+    console.log("depositorAddress = ", depositorAddress);
+    console.log("acceptedSlippage = ", acceptedSlippage);
 
     // Get the bonding contract
     const signer  = provider.getSigner();
