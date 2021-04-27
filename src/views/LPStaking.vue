@@ -96,6 +96,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import mixin from '@/helpers/mixins';
+import { roundBalance } from '@/helpers/utils';
 
 export default {
   mixins: [mixin],
