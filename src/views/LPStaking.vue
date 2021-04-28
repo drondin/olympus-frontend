@@ -96,7 +96,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import mixin from '@/helpers/mixins';
-import { roundBalance } from '@/helpers/utils';
 
 export default {
   mixins: [mixin],
@@ -169,10 +168,6 @@ export default {
     async claimLPRewards() {
       await this.claimRewards();
     },
-
-    // setStake(value) {
-    //   this.quantity = roundBalance(this.$store.state.settings.lpBalance * value / 100);
-    // },
 
     setMax() {
       this.quantity = this.$store.state.settings.lpBalance;
