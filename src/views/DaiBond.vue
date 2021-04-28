@@ -27,7 +27,7 @@
           </div>
         </div>
 
-        <div style="position:relative;" v-if="shouldShowHades">
+        <div style="position:relative;">
           <a role="button" @click="toggleAdvancedMenu" v-if="!isRedeem">
             <i class="fa fa-cog fa-2x" />
           </a>
@@ -232,11 +232,6 @@ export default {
     hasAllowance() {
       return this.$store.state.settings.daiBondAllowance > 0;
     },
-
-    // Temporary feature flag
-    shouldShowHades() {
-      return this.$route.query.hades === '1';
-    }
   },
 
   methods: {
