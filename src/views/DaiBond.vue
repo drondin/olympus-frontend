@@ -139,7 +139,7 @@
 
             <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
               <p class="price-label">Recipient</p>
-              <p style="font-size:8px;" class="price-data">{{ recipientAddress }}</p>
+              <p class="price-data">{{ shortenAddress(recipientAddress) }}</p>
             </div>
           </div>
         </div>
