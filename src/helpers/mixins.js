@@ -1,4 +1,4 @@
-import { trim, trimNumber } from '@/helpers/utils';
+import { trim, trimNumber, shorten } from '@/helpers/utils';
 
 export default {
   methods: {
@@ -8,6 +8,11 @@ export default {
     trimNumber: function(number, precision) {
       return trimNumber(number, precision);
     },
+
+    shortenAddress: function(address) {
+      return shorten(address);
+    },
+
     prettifySeconds: function(seconds) {
       if (seconds !== 0 && !seconds) {
         return '';
