@@ -125,12 +125,14 @@ export default {
     ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
     async executeStake() {
       if (this.selectedMapOption === 'Stake') {
-        if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
-          alert('Please enter a value!');
-          return;
-        } else {
-          await this.stakeLP(this.quantity.toString());
-        }
+        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
+
+        // if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
+        //   alert('Please enter a value!');
+        //   return;
+        // }
+        //
+        // await this.stakeLP(this.quantity.toString());
       } else {
         await this.unstakeLP();
       }
