@@ -24,32 +24,6 @@
             <button class="btn" type="button" @click="setMax">Max</button>
           </div>
 
-          <!-- <div v-if="isUnstake==false" class="swap-input-row">
-          <div class="stake-input-container">
-            <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
-          </div>
-
-          <div v-if="isUnstake==true">
-          </div>
-
-        </div>
-
-
-        <div v-if="isUnstake==false" class="stake-amount-preset-row">
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-            25%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-            50%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-            75%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-            100%
-          </div>
-        </div> -->
-
           <div class="stake-price-data-column">
             <div class="stake-price-data-row">
               <p class="price-label">Balance</p>
@@ -150,18 +124,17 @@ export default {
   methods: {
     ...mapActions(['getLPStakeApproval', 'stakeLP', 'unstakeLP', 'claimRewards']),
     async executeStake() {
-      switch (this.selectedMapOption) {
-        case 'Stake':
-          if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
-            alert('Please enter a value!');
-            return;
-          } else {
-            await this.stakeLP(this.quantity.toString());
-          }
+      if (this.selectedMapOption === 'Stake') {
+        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
 
-          break;
-        case 'Unstake':
-          await this.unstakeLP();
+        // if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
+        //   alert('Please enter a value!');
+        //   return;
+        // }
+        //
+        // await this.stakeLP(this.quantity.toString());
+      } else {
+        await this.unstakeLP();
       }
     },
 
