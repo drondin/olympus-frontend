@@ -257,20 +257,22 @@ export default {
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
       if (this.selectedMapOption === 'Bond') {
-        if (value === '') {
-          alert('Please enter a value!');
-        } else if (isNaN(value)) {
-          alert('Please enter a valid value!');
-        } else if (bondInterest > 0 || bondRewardDue > 0) {
-          const shouldProceed = confirm(
-            'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
-          );
-          if (shouldProceed) {
-            await this.bondLP(value);
-          }
-        } else {
-          await this.bondLP(value);
-        }
+        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
+
+        // if (value === '') {
+        //   alert('Please enter a value!');
+        // } else if (isNaN(value)) {
+        //   alert('Please enter a valid value!');
+        // } else if (bondInterest > 0 || bondRewardDue > 0) {
+        //   const shouldProceed = confirm(
+        //     'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
+        //   );
+        //   if (shouldProceed) {
+        //     await this.bondLP(value);
+        //   }
+        // } else {
+        //   await this.bondLP(value);
+        // }
       }
     },
 
