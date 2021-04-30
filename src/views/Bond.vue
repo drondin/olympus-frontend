@@ -240,42 +240,39 @@ export default {
     },
 
     async seekApproval() {
-      switch (this.selectedMapOption) {
-        case 'Bond':
-          if (isNaN(this.$store.state.settings.amount)) {
-            alert('The value entered is not a number. Please try again!');
-            return;
-          } else {
-            await this.getLPBondApproval(this.$store.state.settings.amount);
-          }
-
-          break;
+      if (this.selectedMapOption === 'Bond') {
+        if (isNaN(this.$store.state.settings.amount)) {
+          alert('The value entered is not a number. Please try again!');
+          return;
+        } else {
+          await this.getLPBondApproval(this.$store.state.settings.amount);
+        }
       }
     },
+
 
     async bond() {
       const value = this.$store.state.settings.amount;
       const bondInterest = this.$store.state.settings.interestDue;
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
-      switch (this.selectedMapOption) {
-        case 'Bond':
-          if (value === '') {
-            alert('Please enter a value!');
-          } else if (isNaN(value)) {
-            alert('Please enter a valid value!');
-          } else if (bondInterest > 0 || bondRewardDue > 0) {
-            const shouldProceed = confirm(
-              'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
-            );
-            if (shouldProceed) {
-              await this.bondLP(value);
-            }
-          } else {
-            await this.bondLP(value);
-          }
+      if (this.selectedMapOption === 'Bond') {
+        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
 
-          break;
+        // if (value === '') {
+        //   alert('Please enter a value!');
+        // } else if (isNaN(value)) {
+        //   alert('Please enter a valid value!');
+        // } else if (bondInterest > 0 || bondRewardDue > 0) {
+        //   const shouldProceed = confirm(
+        //     'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
+        //   );
+        //   if (shouldProceed) {
+        //     await this.bondLP(value);
+        //   }
+        // } else {
+        //   await this.bondLP(value);
+        // }
       }
     },
 
