@@ -135,7 +135,7 @@
           </div>
           <div class="col-4 text-center">
             <p>Vesting Term</p>
-            <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
+            <p>{{ timeUntilVest() }}</p>
           </div>
           <div class="col-4 text-center">
             <p>Discount</p>
@@ -220,6 +220,13 @@ export default {
       'calcBondDetails',
       'calculateUserBondDetails'
     ]),
+
+    timeUntilVest() {
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
+      return this.prettifySeconds(seconds, 'day');
+    },
 
     async setMax() {
       // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
