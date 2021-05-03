@@ -31,6 +31,11 @@ const router = new VueRouter({
 
 router.afterEach((to, from) => {
   store.commit('toggleSidebar', false);
+
+  (window as any).analytics.page({
+    path: to.fullPath,
+    referrer: from.fullPath
+  })
 });
 
 export default router;
