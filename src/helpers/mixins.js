@@ -29,6 +29,19 @@ export default {
       return secondsAway;
     },
 
+    prettyVestingPeriod: function(currentBlock, vestingBlock) {
+      if (vestingBlock === 0) {
+        return '';
+      }
+
+      const seconds = this.secondsUntilBlock(currentBlock, vestingBlock);
+      if (seconds < 0) {
+        return 'Fully Vested';
+      } else {
+        return this.prettifySeconds(seconds);
+      }
+    },
+
     prettifySeconds: function(seconds, resolution) {
       if (seconds !== 0 && !seconds) {
         return '';
@@ -39,10 +52,9 @@ export default {
       const m = Math.floor(seconds % 3600 / 60);
       const s = Math.floor(seconds % 60);
 
-      if (resolution === 'day') {
-        const dDisplay = d > 0 ? d + (d == 1 ? " day" : " days") : "";
 
-        return dDisplay
+      if (resolution === 'day') {
+        return d + (d == 1 ? " day" : " days");
       } else {
         const dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
         const hDisplay = h > 0 ? h + (h == 1 ? " hr, " : " hrs, ") : "";
