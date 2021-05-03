@@ -151,6 +151,38 @@
         </div>
       </div>
     </div>
+
+
+
+    <div class="row mt-4 mb-4">
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
+          <div class="card-body">
+            <iframe
+              frameborder="0"
+              src="https://duneanalytics.com/embeds/28756/58813/c7893c75-d8f1-421e-85c3-556a22cd7885"
+              title="OHM Stakers"
+              style="height:400px;"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 mb-2 mb-sm-0">
+        <div class="card olympus-card">
+          <div class="card-body">
+            <iframe
+              frameborder="0"
+              src="https://duneanalytics.com/embeds/37326/74014/f0ad674a-2787-4314-b534-86dc1b910922"
+              title="Runway Available"
+              style="height:400px;"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
   </div>
 </template>
 
