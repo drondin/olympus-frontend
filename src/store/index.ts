@@ -53,8 +53,8 @@ const store = new Vuex.Store({
 
         if (addresses[network.chainId]) {
           // Calculate bond-level data.
-          await dispatch('calcBondDetails', '');
-          await dispatch('calcDaiBondDetails', '');
+          dispatch('calcBondDetails', '');
+          dispatch('calcDaiBondDetails', '');
         }
 
         if (address) await dispatch('loadAccountDetails');
