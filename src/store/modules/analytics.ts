@@ -48,7 +48,10 @@ const actions = {
     const ohmTotalSupply = await ohmContract.totalSupply();
     commit('set', { ohmCircSupply, ohmTotalSupply });
 
-    return ohmTotalSupply;
+    return {
+      circulating: ohmCircSupply,
+      total: ohmTotalSupply,
+    }
   },
 
   async calculateUserBondDetails({ commit, rootState }) {
@@ -108,12 +111,11 @@ const actions = {
     );
 
     const totalLP = await lpContract.totalSupply();
-    const ohmTotalSupply = await dispatch('getTokenSupply', null, { root: true });
-
+    const ohmSupply = await dispatch('getTokenSupply', null, { root: true });
     const vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
 
     const totalDebtDo = await bondingContract.totalDebt();
-    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
+    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
     const marketPrice = await dispatch('getMarketPrice');
 
     const reserves = await pairContract.getReserves();
@@ -204,9 +206,9 @@ const actions = {
     const discount = 1 - bondPrice / (marketPrice / 1000000000);
 
     const vestingPeriodInBlocks = await daiBondContract.vestingPeriodInBlocks();
-    const ohmTotalSupply = await dispatch('getTokenSupply', null, { root: true });
+    const ohmSupply = await dispatch('getTokenSupply', null, { root: true });
     const totalDebtDo = await daiBondContract.totalDebt();
-    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
+    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
 
     console.log('Calculated DAI Bond data: ', {
       amountInWei: amountInWei.toString(),
