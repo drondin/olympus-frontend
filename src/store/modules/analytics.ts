@@ -7,6 +7,7 @@ import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
+import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSupplyContract.json';
 
 const state = {
   circulatingSupply: null,
@@ -56,8 +57,16 @@ const actions = {
       ierc20Abi,
       rootState.provider
     );
+
+    const circulatingSupplyContract = new ethers.Contract(
+      addresses[rootState.network.chainId].CIRCULATING_SUPPLY_ADDRESS,
+      CirculatingSupplyContract,
+      rootState.provider
+    );
+
+    const ohmCircSupply  = await circulatingSupplyContract.OHMCirculatingSupply();
     const ohmTotalSupply = await ohmContract.totalSupply();
-    commit('set', { ohmTotalSupply });
+    commit('set', { ohmCircSupply, ohmTotalSupply });
 
     return ohmTotalSupply;
   },
