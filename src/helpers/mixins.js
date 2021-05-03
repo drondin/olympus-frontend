@@ -1,4 +1,5 @@
 import { trim, trimNumber, shorten } from '@/helpers/utils';
+import { EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
 
 export default {
   methods: {
@@ -11,6 +12,21 @@ export default {
 
     shortenAddress: function(address) {
       return shorten(address);
+    },
+
+    getRebaseBlock: function(currentBlock) {
+      return currentBlock + EPOCH_INTERVAL - (currentBlock % EPOCH_INTERVAL);
+    },
+
+    secondsUntilBlock: function(startBlock, endBlock) {
+      if (startBlock % EPOCH_INTERVAL === 0) {
+        return 0;
+      }
+
+      const blocksAway = endBlock - startBlock;
+      const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
+
+      return secondsAway;
     },
 
     prettifySeconds: function(seconds) {

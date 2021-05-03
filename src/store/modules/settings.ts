@@ -78,7 +78,8 @@ const actions = {
         const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf(address);
         const aOHMBalance = aOHMBalanceBeforeDecimals / 1000000000;
 
-        let ohmContract, ohmBalance = 0;
+        let ohmContract,
+          ohmBalance = 0;
         let sohmBalance = 0,
           stakeAllowance = 0,
           unstakeAllowance = 0;
@@ -114,10 +115,12 @@ const actions = {
           provider
         );
 
-        const balance   = await daiContract.balanceOf(address);
-        const allowance = await daiContract.allowance(address, addresses[network.chainId].PRESALE_ADDRESS)!;
+        const balance = await daiContract.balanceOf(address);
+        const allowance = await daiContract.allowance(
+          address,
+          addresses[network.chainId].PRESALE_ADDRESS
+        )!;
         const lpBalance = await lpContract.balanceOf(address);
-
 
         const sohmContract = new ethers.Contract(
           addresses[network.chainId].SOHM_ADDRESS,
@@ -228,8 +231,9 @@ const actions = {
           currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
         }
 
-        // Calculate rebase time.
-        const secondsUntilRebase = await dispatch('secondsUntilRebase', null, { root: true });
+        // NOTE: This will modify provider which is part of Vuex store. You'll
+        // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
+        const currentBlock = await rootState.provider.getBlockNumber();
 
         commit('set', {
           balance: ethers.utils.formatEther(balance),
@@ -243,12 +247,12 @@ const actions = {
           pendingRewards: ethers.utils.formatUnits(pendingRewards, 'gwei'),
           lpStakingAPY,
           stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
+          currentBlock,
           fiveDayRate,
           stakingAPY,
           stakingRebase,
           currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
           aOHMAbleToClaim: ethers.utils.formatUnits(aOHMAbleToClaim, 'gwei'),
-          secondsUntilRebase,
           allowance,
           stakeAllowance,
           unstakeAllowance,

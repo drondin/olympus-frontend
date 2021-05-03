@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { COINGECKO_URL, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
+import { COINGECKO_URL } from '@/helpers/constants';
 import { ethers } from 'ethers';
 import addresses from '@/helpers/addresses';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
@@ -34,22 +34,6 @@ const actions = {
       Vue.set(state, 'marketCap', null);
       Vue.set(state, 'currentPrice', null);
     }
-  },
-
-  async secondsUntilRebase({ rootState }) {
-    // NOTE: This will modify provider which is part of Vuex store. You'll
-    // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
-    const height = await rootState.provider.getBlockNumber();
-
-    if (height % EPOCH_INTERVAL === 0) {
-      return 0;
-    }
-
-    const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
-    const blocksAway = next - height;
-    const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
-
-    return secondsAway;
   },
 
   // Uses PairContract

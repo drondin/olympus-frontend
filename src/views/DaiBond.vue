@@ -231,7 +231,7 @@ export default {
 
     hasAllowance() {
       return this.$store.state.settings.daiBondAllowance > 0;
-    },
+    }
   },
 
   methods: {

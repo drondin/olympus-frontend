@@ -250,14 +250,15 @@ export default {
       }
     },
 
-
     async bond() {
       const value = this.$store.state.settings.amount;
       const bondInterest = this.$store.state.settings.interestDue;
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
       if (this.selectedMapOption === 'Bond') {
-        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
+        alert(
+          'SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.'
+        );
 
         // if (value === '') {
         //   alert('Please enter a value!');
