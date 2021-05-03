@@ -10,33 +10,13 @@ import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSupplyContract.json';
 
 const state = {
-  circulatingSupply: null,
-  maxSupply: null,
-  marketCap: null,
+  ohmCircSupply: null,
   marketPrice: null,
   ohmTotalSupply: null,
-  currentPrice: null,
   daiBond: {}
 };
 
 const actions = {
-  async getCoingeckoData({ commit }) {
-    try {
-      const result = await fetch(COINGECKO_URL);
-      const json = await result.json();
-
-      Vue.set(state, 'circulatingSupply', json.market_data.circulating_supply);
-      Vue.set(state, 'maxSupply', json.market_data.max_supply);
-      Vue.set(state, 'marketCap', json.market_data.market_cap.usd);
-      Vue.set(state, 'currentPrice', json.market_data.current_price.usd);
-    } catch {
-      Vue.set(state, 'circulatingSupply', null);
-      Vue.set(state, 'maxSupply', null);
-      Vue.set(state, 'marketCap', null);
-      Vue.set(state, 'currentPrice', null);
-    }
-  },
-
   // Uses PairContract
   async getMarketPrice({ commit, rootState }) {
     const pairContract = new ethers.Contract(
