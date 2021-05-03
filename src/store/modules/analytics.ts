@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { COINGECKO_URL, EPOCH_INTERVAL, BLOCK_RATE_SECONDS } from '@/helpers/constants';
+import { COINGECKO_URL } from '@/helpers/constants';
 import { ethers } from 'ethers';
 import addresses from '@/helpers/addresses';
 import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
@@ -7,51 +7,16 @@ import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
+import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSupplyContract.json';
 
 const state = {
-  circulatingSupply: null,
-  maxSupply: null,
-  marketCap: null,
+  ohmCircSupply: null,
   marketPrice: null,
   ohmTotalSupply: null,
-  currentPrice: null,
   daiBond: {}
 };
 
 const actions = {
-  async getCoingeckoData({ commit }) {
-    try {
-      const result = await fetch(COINGECKO_URL);
-      const json = await result.json();
-
-      Vue.set(state, 'circulatingSupply', json.market_data.circulating_supply);
-      Vue.set(state, 'maxSupply', json.market_data.max_supply);
-      Vue.set(state, 'marketCap', json.market_data.market_cap.usd);
-      Vue.set(state, 'currentPrice', json.market_data.current_price.usd);
-    } catch {
-      Vue.set(state, 'circulatingSupply', null);
-      Vue.set(state, 'maxSupply', null);
-      Vue.set(state, 'marketCap', null);
-      Vue.set(state, 'currentPrice', null);
-    }
-  },
-
-  async secondsUntilRebase({ rootState }) {
-    // NOTE: This will modify provider which is part of Vuex store. You'll
-    // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
-    const height = await rootState.provider.getBlockNumber();
-
-    if (height % EPOCH_INTERVAL === 0) {
-      return 0;
-    }
-
-    const next = height + EPOCH_INTERVAL - (height % EPOCH_INTERVAL);
-    const blocksAway = next - height;
-    const secondsAway = blocksAway * BLOCK_RATE_SECONDS;
-
-    return secondsAway;
-  },
-
   // Uses PairContract
   async getMarketPrice({ commit, rootState }) {
     const pairContract = new ethers.Contract(
@@ -72,10 +37,21 @@ const actions = {
       ierc20Abi,
       rootState.provider
     );
-    const ohmTotalSupply = await ohmContract.totalSupply();
-    commit('set', { ohmTotalSupply });
 
-    return ohmTotalSupply;
+    const circulatingSupplyContract = new ethers.Contract(
+      addresses[rootState.network.chainId].CIRCULATING_SUPPLY_ADDRESS,
+      CirculatingSupplyContract,
+      rootState.provider
+    );
+
+    const ohmCircSupply  = await circulatingSupplyContract.OHMCirculatingSupply();
+    const ohmTotalSupply = await ohmContract.totalSupply();
+    commit('set', { ohmCircSupply, ohmTotalSupply });
+
+    return {
+      circulating: ohmCircSupply,
+      total: ohmTotalSupply,
+    }
   },
 
   async calculateUserBondDetails({ commit, rootState }) {
@@ -135,12 +111,11 @@ const actions = {
     );
 
     const totalLP = await lpContract.totalSupply();
-    const ohmTotalSupply = await dispatch('getTokenSupply', null, { root: true });
-
+    const ohmSupply = await dispatch('getTokenSupply', null, { root: true });
     const vestingPeriodInBlocks = await bondingContract.vestingPeriodInBlocks();
 
     const totalDebtDo = await bondingContract.totalDebt();
-    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
+    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
     const marketPrice = await dispatch('getMarketPrice');
 
     const reserves = await pairContract.getReserves();
@@ -231,9 +206,9 @@ const actions = {
     const discount = 1 - bondPrice / (marketPrice / 1000000000);
 
     const vestingPeriodInBlocks = await daiBondContract.vestingPeriodInBlocks();
-    const ohmTotalSupply = await dispatch('getTokenSupply', null, { root: true });
+    const ohmSupply = await dispatch('getTokenSupply', null, { root: true });
     const totalDebtDo = await daiBondContract.totalDebt();
-    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmTotalSupply);
+    const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
 
     console.log('Calculated DAI Bond data: ', {
       amountInWei: amountInWei.toString(),

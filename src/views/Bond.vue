@@ -103,9 +103,9 @@
               </p>
             </div>
             <div class="stake-price-data-row">
-              <p class="price-label">Full Bond Maturation</p>
+              <p class="price-label">Time until fully vested</p>
               <p id="bond-market-price-id" class="price-data">
-                Block {{ $store.state.settings.bondMaturationBlock }}
+                {{ vestingTime() }}
               </p>
             </div>
           </div>
@@ -135,7 +135,7 @@
           </div>
           <div class="col-4 text-center">
             <p>Vesting Term</p>
-            <p>{{ $store.state.settings.vestingPeriodInBlocks }}</p>
+            <p>{{ vestingPeriod() }}</p>
           </div>
           <div class="col-4 text-center">
             <p>Discount</p>
@@ -221,6 +221,19 @@ export default {
       'calculateUserBondDetails'
     ]),
 
+    vestingPeriod() {
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
+      return this.prettifySeconds(seconds, 'day');
+    },
+
+    vestingTime() {
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const vestingBlock = this.$store.state.settings.bondMaturationBlock;
+      return this.prettyVestingPeriod(currentBlock, vestingBlock);
+    },
+
     async setMax() {
       // Calculate suppliedQuantity and round it to down to avoid conflicts with uint.
       const suppliedQuantity = this.$store.state.settings.lpBalance;
@@ -250,14 +263,15 @@ export default {
       }
     },
 
-
     async bond() {
       const value = this.$store.state.settings.amount;
       const bondInterest = this.$store.state.settings.interestDue;
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
       if (this.selectedMapOption === 'Bond') {
-        alert("SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.");
+        alert(
+          'SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.'
+        );
 
         // if (value === '') {
         //   alert('Please enter a value!');

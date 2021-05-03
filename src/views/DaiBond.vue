@@ -112,9 +112,9 @@
               </p>
             </div>
             <div class="stake-price-data-row">
-              <p class="price-label">Full Bond Maturation</p>
+              <p class="price-label">Time until fully vested</p>
               <p id="bond-market-price-id" class="price-data">
-                Block {{ $store.state.settings.daiBond.bondMaturationBlock }}
+                {{ vestingTime() }}
               </p>
             </div>
           </div>
@@ -153,7 +153,7 @@
           </div>
           <div class="col-4 text-center">
             <p>Vesting Term</p>
-            <p>{{ $store.state.settings.daiBond.vestingPeriodInBlocks }}</p>
+            <p>{{ vestingPeriod() }}</p>
           </div>
           <div class="col-4 text-center">
             <p>Discount</p>
@@ -176,6 +176,7 @@ export default {
     await this.calcDaiBondDetails('');
     await this.calculateUserDaiBondDetails();
   },
+
   data() {
     return {
       quantity: null,
@@ -231,7 +232,7 @@ export default {
 
     hasAllowance() {
       return this.$store.state.settings.daiBondAllowance > 0;
-    },
+    }
   },
 
   methods: {
@@ -242,6 +243,19 @@ export default {
       'calcDaiBondDetails',
       'calculateUserDaiBondDetails'
     ]),
+
+    vestingPeriod() {
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
+      return this.prettifySeconds(seconds, 'day');
+    },
+
+    vestingTime() {
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const vestingBlock = this.$store.state.settings.daiBond.bondMaturationBlock;
+      return this.prettyVestingPeriod(currentBlock, vestingBlock);
+    },
 
     toggleAdvancedMenu() {
       this.showAdvancedMenu = !this.showAdvancedMenu;

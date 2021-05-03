@@ -154,13 +154,14 @@ export default {
       'stakeOHM',
       'unstakeOHM',
       'getunStakeApproval',
-      'getStakingAPY',
-      'getCurrentBlockNumber',
-      'secondsUntilRebase'
+      'getStakingAPY'
     ]),
 
     timeUntilRebase() {
-      return this.prettifySeconds(this.$store.state.settings.secondsUntilRebase);
+      const currentBlock = this.$store.state.settings.currentBlock;
+      const rebaseBlock = this.getRebaseBlock(currentBlock);
+      const seconds = this.secondsUntilBlock(currentBlock, rebaseBlock);
+      return this.prettifySeconds(seconds);
     },
 
     async executeStake() {
@@ -170,7 +171,6 @@ export default {
             alert('Please enter a value!');
             return;
           } else {
-            await this.getCurrentBlockNumber();
             await this.stakeOHM(this.quantity.toString());
           }
 
