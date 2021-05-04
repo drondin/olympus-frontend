@@ -59,6 +59,8 @@ const mutations = {
 const actions = {
   loadAccountDetails: async ({ commit, dispatch, rootState }) => {
     console.log('Logging in...');
+    commit('set', { userDataLoading: true });
+
     provider = rootState.provider;
     network = rootState.network;
     address = rootState.address;
@@ -158,6 +160,7 @@ const actions = {
 
         commit('set', {
           aOHMBalance,
+          userDataLoading: false,
           loading: false,
           ohmBalance: ethers.utils.formatUnits(ohmBalance, 'gwei'),
           sohmBalance: ethers.utils.formatUnits(sohmBalance, 'gwei'),

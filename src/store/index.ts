@@ -57,7 +57,8 @@ const store = new Vuex.Store({
           dispatch('calcStakeDetails');
         }
 
-        if (address) await dispatch('loadAccountDetails');
+        if (address)
+          dispatch('loadAccountDetails');
       }
 
       commit('set', { appLoading: false });
