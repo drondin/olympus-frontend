@@ -7,7 +7,8 @@
           <p>
             Bonds give you the opportunity to buy OHM from the protocol at a discount. All bonds
             have a 5-day vesting term. Current market price of OHM is
-            {{ trim($store.state.settings.marketPrice, 2) }} DAI.
+            {{ trim($store.state.settings.marketPrice, 2) }} DAI. If you stake instead, your ROI will
+            {{ trim($store.state.settings.fiveDayRate * 100, 2) }}%.
           </p>
         </div>
 
