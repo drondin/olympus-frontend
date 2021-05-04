@@ -98,10 +98,8 @@ const actions = {
         }
 
         if (addresses[network.chainId].DAI_BOND_ADDRESS) {
-          daiBondAllowance = await daiContract.allowance(
-            address,
-            addresses[network.chainId].DAI_BOND_ADDRESS
-          );
+          daiBondAllowance = await daiContract.allowance(address, addresses[network.chainId].DAI_BOND_ADDRESS);
+
           await dispatch('calculateUserDaiBondDetails');
         }
 
@@ -638,14 +636,17 @@ const actions = {
 
     // Calculate maxPremium based on premium and slippage.
     // const calculatePremium = await bonding.calculatePremium();
-    const calculatePremium = bonding.bondPrice();
+    const calculatePremium = await bonding.bondPrice();
     const maxPremium       = Math.round(calculatePremium * (1 + acceptedSlippage));
 
-
     // Deposit the bond
-    let bondTx;
     try {
-      bondTx = await bonding.deposit(valueInWei, maxPremium, depositorAddress);
+      const bondTx = await bonding.deposit(valueInWei, maxPremium, depositorAddress);
+      await bondTx.wait();
+      const lpContract = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi, provider);
+      const lpBalance  = await lpContract.balanceOf(address);
+      commit('set', { lpBalance: ethers.utils.formatUnits(lpBalance, 'ether') });
+
     } catch (error) {
       if (error.code === -32603 && error.message.indexOf('ds-math-sub-underflow') >= 0) {
         alert(
@@ -656,18 +657,6 @@ const actions = {
       }
       return;
     }
-
-    // Wait for tx to be minted
-    await bondTx.wait();
-    const lpContract = new ethers.Contract(
-      addresses[network.chainId].LP_ADDRESS,
-      ierc20Abi,
-      provider
-    );
-    const lpBalance = await lpContract.balanceOf(address);
-    commit('set', {
-      lpBalance: ethers.utils.formatUnits(lpBalance, 'ether')
-    });
   },
 
   async redeemBond() {
