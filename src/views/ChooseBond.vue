@@ -40,7 +40,7 @@
               <p class="fs-6 mb-0">
                 Bond Price: {{ trim($store.state.settings.bondPrice, 2) }} DAI
               </p>
-              <p class="fs-6">Return: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
+              <p class="fs-6">ROI: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
             </div>
 
             <div class="col">
@@ -67,7 +67,7 @@
                 Bond Price: {{ trim($store.state.settings.daiBond.price, 2) }} DAI
               </p>
               <p class="fs-6">
-                Return: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%
+                ROI: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%
               </p>
             </div>
 
