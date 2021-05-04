@@ -172,7 +172,7 @@ const actions = {
     // const bondValue = await bondingContract.calculateBondInterest(amountInWei.toString());
     // const bondPrice = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
     const bondPrice    = await bondingContract.bondPriceInDAI();
-    const bondDiscount = 1 - bondPrice / (marketPrice * Math.pow(10, 9));
+    const bondDiscount = (marketPrice * Math.pow(10, 9) - bondPrice) / bondPrice; // 1 - bondPrice / (marketPrice * Math.pow(10, 9));
 
     commit('set', {
       amount,
@@ -253,7 +253,7 @@ const actions = {
     const marketPrice = await dispatch('getMarketPrice');
     const bondValue = await daiBondContract.calculateBondInterest(amountInWei.toString());
     const bondPrice = amountInWei / bondValue;
-    const discount = 1 - bondPrice / (marketPrice / 1000000000);
+    const discount = ( (marketPrice / 1000000000) - bondPrice ) / bondPrice; //1 - bondPrice / (marketPrice / 1000000000);
 
     const vestingPeriodInBlocks = await daiBondContract.vestingPeriodInBlocks();
     const ohmSupply = await dispatch('getTokenSupply', null, { root: true });

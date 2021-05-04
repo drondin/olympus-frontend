@@ -165,7 +165,7 @@
             <p>{{ vestingPeriod() }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Discount</p>
+            <p>Return</p>
             <p>{{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
           </div>
         </div>
