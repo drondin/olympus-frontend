@@ -172,13 +172,13 @@ const actions = {
     // const bondValue = await bondingContract.calculateBondInterest(amountInWei.toString());
     // const bondPrice = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
     const bondPrice    = await bondingContract.bondPriceInDAI();
-    const bondDiscount = 1 - bondPrice / marketPrice;
+    const bondDiscount = 1 - bondPrice / (marketPrice * Math.pow(10, 9));
 
     commit('set', {
       amount,
       bondDiscount,
       debtRatio,
-      bondPrice: bondPrice / Math.pow(10, 9),
+      bondPrice: bondPrice / Math.pow(10, 18),
       vestingTerm,
       marketPrice: marketPrice / Math.pow(10, 9)
     });
