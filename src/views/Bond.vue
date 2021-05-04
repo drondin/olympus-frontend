@@ -32,6 +32,21 @@
             </h3>
           </div>
         </div>
+
+        <div style="position:relative;">
+          <a role="button" @click="toggleAdvancedMenu" v-if="!isRedeem">
+            <i class="fa fa-cog fa-2x" />
+          </a>
+
+          <AdvancedSettings
+            v-bind:slippage="slippage"
+            v-bind:recipientAddress="recipientAddress"
+            v-bind:showAdvancedMenu="showAdvancedMenu"
+            @onSlippageChange="onSlippageChange"
+            @onRecipientChange="onRecipientChange"
+          />
+        </div>
+
       </div>
 
       <div class="dapp-modal-wrapper py-2 px-2 py-md-4 px-md-2 m-auto">
@@ -80,7 +95,7 @@
             >
               <p class="price-label">You Will Get</p>
               <p id="bond-value-id" class="price-data">
-                {{ trim($store.state.settings.bondValue / Math.pow(10, 9), 4) }} OHM
+                {{ trim($store.state.settings.bondPrice, 4) }} OHM
               </p>
             </div>
           </div>
@@ -124,6 +139,18 @@
           <div v-else class="d-flex align-self-center mb-4">
             <div id="bond-button-id" class="redeem-button" @click="seekApproval">Approve</div>
           </div>
+
+          <div v-if="!isRedeem" class="stake-price-data-column">
+            <div class="stake-price-data-row">
+              <p class="price-label">Slippage Tolerance</p>
+              <p id="bond-value-id" class="price-data">{{ slippage }}%</p>
+            </div>
+
+            <div class="stake-price-data-row" v-if="recipientAddress !== $store.state.address">
+              <p class="price-label">Recipient</p>
+              <p class="price-data">{{ shortenAddress(recipientAddress) }}</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -138,7 +165,7 @@
             <p>{{ vestingPeriod() }}</p>
           </div>
           <div class="col-4 text-center">
-            <p>Discount</p>
+            <p>Return</p>
             <p>{{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
           </div>
         </div>
@@ -162,6 +189,10 @@ export default {
 
   data() {
     return {
+      showAdvancedMenu: false,
+      slippage: 2,
+      recipientAddress: this.$store.state.address,
+
       myOptions: {
         layout: {
           color: 'white',
@@ -223,7 +254,7 @@ export default {
 
     vestingPeriod() {
       const currentBlock = this.$store.state.settings.currentBlock;
-      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingTerm);
       const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
       return this.prettifySeconds(seconds, 'day');
     },
@@ -232,6 +263,27 @@ export default {
       const currentBlock = this.$store.state.settings.currentBlock;
       const vestingBlock = this.$store.state.settings.bondMaturationBlock;
       return this.prettyVestingPeriod(currentBlock, vestingBlock);
+    },
+
+    toggleAdvancedMenu() {
+      this.showAdvancedMenu = !this.showAdvancedMenu;
+    },
+
+    onSlippageChange(value) {
+      this.slippage = value;
+    },
+
+    onRecipientChange(value) {
+      if (value !== this.$store.state.address) {
+        const confirm = window.confirm(
+          "You're changing the recipient address of this bond. Make sure you understand what you're doing!"
+        );
+        if (!confirm) {
+          this.recipientAddress = this.$store.state.address;
+        } else {
+          this.recipientAddress = value;
+        }
+      }
     },
 
     async setMax() {
@@ -273,20 +325,28 @@ export default {
           'SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.'
         );
 
-        // if (value === '') {
-        //   alert('Please enter a value!');
-        // } else if (isNaN(value)) {
-        //   alert('Please enter a valid value!');
-        // } else if (bondInterest > 0 || bondRewardDue > 0) {
-        //   const shouldProceed = confirm(
-        //     'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
-        //   );
-        //   if (shouldProceed) {
-        //     await this.bondLP(value);
-        //   }
-        // } else {
-        //   await this.bondLP(value);
-        // }
+        if (value === '') {
+          alert('Please enter a value!');
+        } else if (isNaN(value)) {
+          alert('Please enter a valid value!');
+        } else if (bondInterest > 0 || bondRewardDue > 0) {
+          const shouldProceed = confirm(
+            'You have an existing bond. Bonding will reset your vesting period and forfeit rewards. We recommend claiming rewards first or using a fresh wallet. Do you still want to proceed?'
+          );
+          if (shouldProceed) {
+            await this.bondLP({
+              value,
+              slippage: this.slippage,
+              recipientAddress: this.recipientAddress
+            });
+          }
+        } else {
+          await this.bondLP({
+            value,
+            slippage: this.slippage,
+            recipientAddress: this.recipientAddress
+          });
+        }
       }
     },
 

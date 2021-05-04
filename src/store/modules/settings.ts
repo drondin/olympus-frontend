@@ -625,23 +625,27 @@ const actions = {
     }
   },
 
-  async bondLP({ commit }, value) {
-    if (!provider) {
-      alert('Please connect your wallet!');
-      return;
-    }
+  async bondLP({ commit }, { value, slippage, recipientAddress }) {
+    const depositorAddress = recipientAddress || address;
+    const acceptedSlippage = slippage / 100 || 0.02; // 2%
+    const valueInWei = ethers.utils.parseUnits(value.toString(), 'ether');
+
+    console.log("depositorAddress = ", depositorAddress);
+    console.log("acceptedSlippage = ", acceptedSlippage);
 
     const signer = provider.getSigner();
-    const bonding = await new ethers.Contract(
-      addresses[network.chainId].BOND_ADDRESS,
-      BondContract,
-      signer
-    );
+    const bonding = await new ethers.Contract(addresses[network.chainId].BOND_ADDRESS, BondContract, signer);
+
+    // Calculate maxPremium based on premium and slippage.
+    // const calculatePremium = await bonding.calculatePremium();
+    const calculatePremium = bonding.bondPrice();
+    const maxPremium       = Math.round(calculatePremium * (1 + acceptedSlippage));
+
 
     // Deposit the bond
     let bondTx;
     try {
-      bondTx = await bonding.depositBondPrinciple(ethers.utils.parseUnits(value, 'ether'));
+      bondTx = await bonding.deposit(valueInWei, maxPremium, depositorAddress);
     } catch (error) {
       if (error.code === -32603 && error.message.indexOf('ds-math-sub-underflow') >= 0) {
         alert(
