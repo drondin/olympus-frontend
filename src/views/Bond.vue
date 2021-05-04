@@ -80,7 +80,7 @@
             >
               <p class="price-label">You Will Get</p>
               <p id="bond-value-id" class="price-data">
-                {{ trim($store.state.settings.bondValue / Math.pow(10, 9), 4) }} OHM
+                {{ trim($store.state.settings.bondPrice, 4) }} OHM
               </p>
             </div>
           </div>
@@ -223,7 +223,7 @@ export default {
 
     vestingPeriod() {
       const currentBlock = this.$store.state.settings.currentBlock;
-      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingTerm);
       const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
       return this.prettifySeconds(seconds, 'day');
     },
