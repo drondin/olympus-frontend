@@ -70,52 +70,22 @@ const actions = {
 
     if (provider) {
       try {
-        const aOHMContract = await new ethers.Contract(
-          addresses[network.chainId].AOHM_ADDRESS,
-          ierc20Abi,
-          provider
-        );
+        const aOHMContract = await new ethers.Contract(addresses[network.chainId].AOHM_ADDRESS, ierc20Abi, provider);
         const aOHMBalanceBeforeDecimals = await aOHMContract.balanceOf(address);
         const aOHMBalance = aOHMBalanceBeforeDecimals / Math.pow(10, 9);
 
         let ohmContract, ohmBalance = 0;
         let sohmBalance = 0, stakeAllowance = 0, unstakeAllowance = 0;
         let lpStakingContract, lpStaked = 0, pendingRewards = 0;
-        let lpStakeAllowance;
-        let distributorContract;
-        let lpBondAllowance = 0, daiBondAllowance = 0;
+        let lpStakeAllowance, distributorContract, lpBondAllowance = 0, daiBondAllowance = 0;
         let migrateContract, aOHMAbleToClaim = 0;
 
         if (whitelist.includes(address)) commit('set', { whitelisted: true });
 
-        const daiContract = new ethers.Contract(
-          addresses[network.chainId].DAI_ADDRESS,
-          ierc20Abi,
-          provider
-        );
-
-        const lpContract = new ethers.Contract(
-          addresses[network.chainId].LP_ADDRESS,
-          ierc20Abi,
-          provider
-        );
-
-        const allowance = await daiContract.allowance(
-          address,
-          addresses[network.chainId].PRESALE_ADDRESS
-        )!;
-        const lpBalance = await lpContract.balanceOf(address);
-
-        const sohmContract = new ethers.Contract(
-          addresses[network.chainId].SOHM_ADDRESS,
-          ierc20Abi,
-          provider
-        );
-        const sohmMainContract = new ethers.Contract(
-          addresses[network.chainId].SOHM_ADDRESS,
-          sOHM,
-          provider
-        );
+        const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+        const lpContract  = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi,provider);
+        const allowance   = await daiContract.allowance(address,addresses[network.chainId].PRESALE_ADDRESS)!;
+        const lpBalance   = await lpContract.balanceOf(address);
 
         if (addresses[network.chainId].BOND_ADDRESS) {
           lpBondAllowance = await lpContract.allowance(
@@ -166,6 +136,11 @@ const actions = {
         }
 
         if (addresses[network.chainId].SOHM_ADDRESS) {
+          const sohmContract = await new ethers.Contract(
+            addresses[network.chainId].SOHM_ADDRESS,
+            ierc20Abi,
+            provider
+          );
           sohmBalance = await sohmContract.balanceOf(address);
           unstakeAllowance = await sohmContract.allowance(
             address,
@@ -208,33 +183,6 @@ const actions = {
   },
   loading: ({ commit }, payload) => {
     commit('set', { loading: payload });
-  },
-
-  async getOHM({ commit }, value) {
-    if (!provider) {
-      alert('Please connect your wallet!');
-      return;
-    }
-
-    const signer = provider.getSigner();
-    const presale = await new ethers.Contract(
-      addresses[network.chainId].PRESALE_ADDRESS,
-      OHMPreSale,
-      signer
-    );
-    const daiContract = new ethers.Contract(
-      addresses[network.chainId].DAI_ADDRESS,
-      ierc20Abi,
-      signer
-    );
-
-    const presaleTX = await presale.purchaseaOHM(ethers.utils.parseEther(value).toString());
-    await presaleTX.wait(console.log('Success'));
-    const balance = await daiContract.balanceOf(address);
-    commit('set', {
-      // name,
-      balance: ethers.utils.formatEther(balance)
-    });
   },
 
   async getApproval({ commit, dispatch }, value) {

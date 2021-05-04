@@ -52,7 +52,6 @@ const store = new Vuex.Store({
         commit('set', { address, network });
 
         if (addresses[network.chainId]) {
-          // Calculate bond-level data.
           dispatch('calcBondDetails', '');
           dispatch('calcDaiBondDetails', '');
           dispatch('calcStakeDetails');
