@@ -52,12 +52,13 @@ const store = new Vuex.Store({
         commit('set', { address, network });
 
         if (addresses[network.chainId]) {
-          // Calculate bond-level data.
-          await dispatch('calcBondDetails', '');
-          await dispatch('calcDaiBondDetails', '');
+          dispatch('calcBondDetails', '');
+          dispatch('calcDaiBondDetails', '');
+          dispatch('calcStakeDetails');
         }
 
-        if (address) await dispatch('loadAccountDetails');
+        if (address)
+          dispatch('loadAccountDetails');
       }
 
       commit('set', { appLoading: false });

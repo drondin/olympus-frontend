@@ -8,6 +8,9 @@ import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSupplyContract.json';
+import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
+import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
+import { abi as sOHM } from '@/helpers/abi/sOHM.json';
 
 const state = {
   ohmCircSupply: null,
@@ -79,6 +82,52 @@ const actions = {
       bondMaturationBlock,
       pendingPayout: ethers.utils.formatUnits(pendingPayout, 'gwei')
     });
+  },
+
+  async calcStakeDetails({ commit, dispatch, rootState }) {
+    const lpContract        = new ethers.Contract(addresses[rootState.network.chainId].LP_ADDRESS, ierc20Abi, rootState.provider);
+    const lpStakingContract = new ethers.Contract(addresses[rootState.network.chainId].LPSTAKING_ADDRESS, LPStaking, rootState.provider);
+    const ohmContract       = new ethers.Contract(addresses[rootState.network.chainId].OHM_ADDRESS, ierc20Abi, rootState.provider);
+    const stakingContract   = new ethers.Contract(addresses[rootState.network.chainId].STAKING_ADDRESS, OlympusStaking, rootState.provider);
+    const sohmContract      = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, ierc20Abi, rootState.provider);
+    const sohmMainContract  = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, sOHM, rootState.provider);
+
+
+    // Calculate LP stake
+    const totalLPStaked = await lpStakingContract.totalStaked();
+    const totalLP       = await lpContract.totalSupply();
+    const OHMInLP       = await ohmContract.balanceOf(addresses[rootState.network.chainId].LP_ADDRESS);
+
+    const rewardPerBlock = await lpStakingContract.rewardPerBlock();
+    const lpStakingAPY   = (rewardPerBlock * 6650 * 366 * 100) / (((totalLPStaked * OHMInLP) / totalLP) * 2);
+
+    // Calculating staking
+    const stakingReward = await stakingContract.ohmToDistributeNextEpoch();
+    const circSupply    = await sohmMainContract.circulatingSupply();
+
+
+    const stakingRebase = stakingReward / circSupply;
+    const fiveDayRate   = Math.pow(1 + stakingRebase, 5 * 3) - 1;
+    const stakingAPY    = Math.pow(1 + stakingRebase, 365 * 3);
+
+    // Calculate index
+    const currentIndex = await sohmContract.balanceOf('0xA62Bee23497C920B94305FF68FA7b1Cd1e9FAdb2');
+
+    // NOTE: This will modify provider which is part of Vuex store. You'll
+    // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
+    const currentBlock = await rootState.provider.getBlockNumber();
+
+    commit('set', {
+      totalLPStaked: ethers.utils.formatUnits(totalLPStaked, 'ether'),
+      stakingReward: ethers.utils.formatUnits(stakingReward, 'gwei'),
+      currentIndex: ethers.utils.formatUnits(currentIndex, 'gwei'),
+      lpStakingAPY,
+      fiveDayRate,
+      stakingAPY,
+      stakingRebase,
+      currentBlock,
+    });
+
   },
 
   async calcBondDetails({ commit, dispatch, rootState }, amount) {

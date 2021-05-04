@@ -1,8 +1,10 @@
 <template>
   <div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="dapp-center-modal py-2 px-4 py-md-4 px-md-2">
-      <div class="dapp-modal-wrapper">
-        <div class="swap-input-column">
+      <div class="dapp-modal-wrapper d-flex align-items-center">
+        <LoadingScreen v-if="!!$store.state.settings.userDataLoading" />
+
+        <div class="swap-input-column" v-else>
           <div class="stake-toggle-row">
             <toggle-switch
               :options="myOptions"
@@ -20,30 +22,6 @@
             />
             <button class="btn" type="button" @click="setMax">Max</button>
           </div>
-
-          <!-- <div class="swap-input-row">
-          <div class="stake-input-container">
-            <input v-model='quantity' placeholder="Type an amount" class="stake-input" type="number">
-          </div>
-        </div>
-
-        <div class="input-group ohm-input-group mb-3 flex-nowrap d-flex">
-          <input v-model='quantity' type="text" class="form-control" placeholder="Type an amount">
-          <button class="btn" type="button" @click='setMax'>Max</button>
-        </div><div class="stake-amount-preset-row">
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(25)'>
-            25%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(50)'>
-            50%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(75)'>
-            75%
-          </div>
-          <div class="stake-amount-preset-button hasEffect" @click='setStake(100)'>
-            100%
-          </div>
-        </div> -->
 
           <div class="stake-price-data-column">
             <div class="stake-price-data-row">
