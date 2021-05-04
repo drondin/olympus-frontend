@@ -83,6 +83,10 @@
   import { mapState, mapActions } from 'vuex';
 
   export default {
+    async created() {
+      this.init();
+    },
+
     data() {
       return {
         isLoading: false
@@ -112,10 +116,6 @@
         this.isLoading = true;
         this.login();
       }
-    },
-
-    async created() {
-      this.init();
     }
   };
 

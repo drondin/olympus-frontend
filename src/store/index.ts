@@ -55,6 +55,7 @@ const store = new Vuex.Store({
           // Calculate bond-level data.
           dispatch('calcBondDetails', '');
           dispatch('calcDaiBondDetails', '');
+          dispatch('calcStakeDetails');
         }
 
         if (address) await dispatch('loadAccountDetails');
