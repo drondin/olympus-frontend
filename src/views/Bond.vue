@@ -321,10 +321,6 @@ export default {
       const bondRewardDue = this.$store.state.settings.pendingPayout;
 
       if (this.selectedMapOption === 'Bond') {
-        alert(
-          'SLP bonds are currently turned off as we migrate to a new contract. Please check #announcements in Discord for more.'
-        );
-
         if (value === '') {
           alert('Please enter a value!');
         } else if (isNaN(value)) {
