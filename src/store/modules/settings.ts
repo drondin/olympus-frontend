@@ -122,7 +122,6 @@ const actions = {
             address,
             addresses[network.chainId].BOND_ADDRESS
           );
-          await dispatch('calcBondDetails', '');
           await dispatch('calculateUserBondDetails');
         }
 
@@ -131,7 +130,6 @@ const actions = {
             address,
             addresses[network.chainId].DAI_BOND_ADDRESS
           );
-          await dispatch('calcDaiBondDetails', '');
           await dispatch('calculateUserDaiBondDetails');
         }
 
