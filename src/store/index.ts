@@ -12,6 +12,7 @@ const store = new Vuex.Store({
   modules,
   state: {
     appLoading: false,
+    toasts: [],
     isSidebarExpanded: false,
     address: null,
     network: { chainId: 1 },

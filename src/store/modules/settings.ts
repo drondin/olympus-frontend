@@ -66,7 +66,9 @@ const actions = {
     address = rootState.address;
 
     if (!addresses[network.chainId]) {
-      alert('We detected an unsupported network. Please change your network to Ethereum mainnet');
+      commit('set', {
+        toasts: [...rootState.toasts, {title: 'Unsupported network', color: 'bg-danger', body: 'We detected an unsupported network. Please change your network to Ethereum mainnet'}],
+      })
       return;
     }
 
