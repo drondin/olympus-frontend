@@ -45,7 +45,7 @@
               <p class="price-data">{{ trim($store.state.settings.stakingRebase * 100, 4) }}%</p>
             </div>
             <div class="stake-price-data-row">
-              <p class="price-label">5-day rate</p>
+              <p class="price-label">ROI (5-day rate)</p>
               <p class="price-data">{{ trim($store.state.settings.fiveDayRate * 100, 4) }}%</p>
             </div>
             <div class="stake-price-data-row">

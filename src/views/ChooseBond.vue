@@ -7,7 +7,8 @@
           <p>
             Bonds give you the opportunity to buy OHM from the protocol at a discount. All bonds
             have a 5-day vesting term. Current market price of OHM is
-            {{ trim($store.state.settings.marketPrice, 2) }} DAI.
+            {{ trim($store.state.settings.marketPrice, 2) }} DAI. If you stake instead, your ROI will
+            {{ trim($store.state.settings.fiveDayRate * 100, 2) }}%.
           </p>
         </div>
 
@@ -40,7 +41,7 @@
               <p class="fs-6 mb-0">
                 Bond Price: {{ trim($store.state.settings.bondPrice, 2) }} DAI
               </p>
-              <p class="fs-6">Return: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
+              <p class="fs-6">ROI: {{ trim($store.state.settings.bondDiscount * 100, 2) }}%</p>
             </div>
 
             <div class="col">
@@ -67,7 +68,7 @@
                 Bond Price: {{ trim($store.state.settings.daiBond.price, 2) }} DAI
               </p>
               <p class="fs-6">
-                Return: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%
+                ROI: {{ trim($store.state.settings.daiBond.discount * 100, 2) }}%
               </p>
             </div>
 
