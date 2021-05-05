@@ -675,7 +675,7 @@ const actions = {
     );
 
     try {
-      const redeemTx = await bonding.redeemBond();
+      const redeemTx = await bonding.redeem();
       await redeemTx.wait();
     } catch (error) {
       alert(error.message);
