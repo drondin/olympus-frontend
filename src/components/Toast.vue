@@ -16,15 +16,26 @@
 
 <script>
   export default {
-    data() {
-      return {};
-    },
-
     mounted() {
-      console.log("toast = ", this.toast)
+      setTimeout(() => this.onRemoveToast(this.toast), 3500);
     },
 
-    props: ['toast'],
+    props: ['toast', 'onRemoveToast'],
   };
 
 </script>
+<style>
+  .toast {
+    transition: transform 0.4s ease-in-out;
+    animation: toast-in-right 0.5s;
+  }
+
+  @keyframes toast-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+</style>
