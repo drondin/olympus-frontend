@@ -1,5 +1,5 @@
 <template>
-  <div class="position-fixed top-0 end-0 p-3">
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 20;">
     <div class="toast-container">
       <Toast v-for="toast in toasts" v-bind:key="toast.uuid" :toast="toast" :onRemoveToast="removeToast" />
     </div>
