@@ -10,7 +10,7 @@ import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as DistributorContract } from '@/helpers/abi/DistributorContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
-
+import mixin from '@/helpers/mixins';
 import { whitelist } from '@/helpers/whitelist.json';
 const parseEther = ethers.utils.parseEther;
 
@@ -56,6 +56,7 @@ const mutations = {
   }
 };
 
+
 const actions = {
   loadAccountDetails: async ({ commit, dispatch, rootState }) => {
     console.log('Logging in...');
@@ -65,10 +66,9 @@ const actions = {
     network = rootState.network;
     address = rootState.address;
 
+    const toast = mixin.methods.buildToast({title: 'Unsupported network', color: 'bg-danger', body: 'We detected an unsupported network. Please change your network to Ethereum mainnet'})
     if (!addresses[network.chainId]) {
-      commit('set', {
-        toasts: [...rootState.toasts, {title: 'Unsupported network', color: 'bg-danger', body: 'We detected an unsupported network. Please change your network to Ethereum mainnet'}],
-      })
+      commit('set', { toasts: [...rootState.toasts, toast] })
       return;
     }
 

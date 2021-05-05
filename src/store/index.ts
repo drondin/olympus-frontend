@@ -24,6 +24,10 @@ const store = new Vuex.Store({
       state.isSidebarExpanded = value;
     },
 
+    removeToast(state, toast) {
+      state.toasts = state.toasts.filter(t => t.uuid !== toast.uuid);
+    },
+
     // Allows us to commit state directly from actions.
     set(_state, payload) {
       Object.keys(payload).forEach(key => {
