@@ -87,6 +87,7 @@ const actions = {
         if (whitelist.includes(address)) commit('set', { whitelisted: true });
 
         const daiContract = new ethers.Contract(addresses[network.chainId].DAI_ADDRESS, ierc20Abi, provider);
+        const balance     = await daiContract.balanceOf(address);
         const lpContract  = new ethers.Contract(addresses[network.chainId].LP_ADDRESS, ierc20Abi,provider);
         const allowance   = await daiContract.allowance(address,addresses[network.chainId].PRESALE_ADDRESS)!;
         const lpBalance   = await lpContract.balanceOf(address);
@@ -159,6 +160,7 @@ const actions = {
         }
 
         commit('set', {
+          balance: ethers.utils.formatEther(balance),
           aOHMBalance,
           userDataLoading: false,
           loading: false,
