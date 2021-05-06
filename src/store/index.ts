@@ -12,6 +12,7 @@ const store = new Vuex.Store({
   modules,
   state: {
     appLoading: false,
+    toasts: [],
     isSidebarExpanded: false,
     address: null,
     network: { chainId: 1 },
@@ -21,6 +22,10 @@ const store = new Vuex.Store({
   mutations: {
     toggleSidebar(state, value) {
       state.isSidebarExpanded = value;
+    },
+
+    removeToast(state, toast) {
+      state.toasts = state.toasts.filter(t => t.uuid !== toast.uuid);
     },
 
     // Allows us to commit state directly from actions.

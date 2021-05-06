@@ -3,7 +3,6 @@
     <div class="dapp-center-modal py-2 px-4 py-md-4 px-md-2">
       <div class="dapp-modal-wrapper d-flex align-items-center">
         <LoadingScreen v-if="!!$store.state.settings.userDataLoading" />
-
         <div class="swap-input-column" v-else>
           <div class="stake-toggle-row">
             <toggle-switch

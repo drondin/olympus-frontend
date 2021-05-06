@@ -14,6 +14,8 @@
       <transition name="fade" mode="out-in">
         <div id="dapp" class="dapp min-vh-100">
           <div class="container-fluid">
+            <ToastContainer />
+
             <div class="row">
               <nav class="navbar navbar-expand-lg navbar-light justify-content-end d-md-none">
                 <button
