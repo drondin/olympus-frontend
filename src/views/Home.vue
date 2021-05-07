@@ -199,17 +199,28 @@
       </div>
 
 
-      <div class="row-responsive justify-content-center mb-9">
-        <div class="col-3 text-center">
+      <div class="row justify-content-center mb-11">
+        <div class="col-4 text-center">
+          <img src="~/@/assets/investors/defialliance.svg" alt="" style="height:96px;" />
+        </div>
+
+        <div class="col-4 col-offset-1 text-center">
+          <img src="~/@/assets/investors/maven11.svg" alt="" style="height:96px;" />
+        </div>
+
+        <div class="col-4 text-center">
+          <img src="~/@/assets/investors/zeeprime.svg" alt="" style="height:96px;" />
+        </div>
+      </div>
+
+
+      <div class="row justify-content-center mb-9">
+        <div class="col-4 text-center">
           <img src="~/@/assets/investors/nascent.svg" alt="" style="height:96px;" />
         </div>
 
-        <div class="col-3 col-offset-1 text-center">
+        <div class="col-4 text-center">
           <img src="~/@/assets/investors/d64.svg" alt="" style="height:96px;" />
-        </div>
-
-        <div class="col-3 text-center">
-          <img src="~/@/assets/investors/zeeprime.svg" alt="" style="height:96px;" />
         </div>
       </div>
     </div>
