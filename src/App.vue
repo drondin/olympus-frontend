@@ -4,11 +4,14 @@
       <VueLoadingIndicator class="overlay big" />
     </div>
 
-    <div id="app" class="overflow-hidden" v-else-if="isHome">
-      <transition name="fade" mode="out-in">
-        <router-view :key="$route.path" />
-      </transition>
-    </div>
+    <template v-else-if="isHome">
+      <Nav />
+      <div div id="app" class="overflow-hidden">
+        <transition name="fade" mode="out-in">
+          <router-view :key="$route.path" />
+        </transition>
+      </div>
+    </template>
 
     <div id="app" v-else>
       <transition name="fade" mode="out-in">

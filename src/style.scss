@@ -30,7 +30,16 @@ $border: 1px solid $bg-color;
 @font-face {font-family: 'Square';
   src: url('./assets/fonts/EuclidSquare-Regular.ttf');
 }
+
+// TODO: This formats the button unfortunately.
 @import '~@primer/css/index.scss';
+
+// This overwrites any primer additions to make it work with Bootstrap.
+.btn-overwrite-primer {
+  background-image: none !important;
+  background-color: inherit !important;
+  color: inherit !important;
+}
 
 html, body, #app {
   color: white;
@@ -45,7 +54,7 @@ html, body, #app {
   position:relative;
   background-size:cover;
   min-height: 100vh;
-  background-color: black;
+  background-color: #161616;
 }
 
 h1, h2, h3, .button {
@@ -103,9 +112,6 @@ justify-content:center;
 background-attachment: fixed;}
 
 
-.bg-topnav {
-  background-color: transparent;
-}
 
 
 .no-marg-l{margin-left:unset!important;}
@@ -114,7 +120,7 @@ background-attachment: fixed;}
 
 nav {
   z-index:1;
-  position: absolute !important;
+  // position: absolute !important;
   width: 100vw;
 }
 
@@ -130,6 +136,7 @@ nav {
   padding: 0 24px;
   display: inline-block;
   border: 0;
+
   &:hover{
     opacity:0.8;
   }
@@ -159,11 +166,12 @@ nav {
 }
 .feature-row{
   width: 100%;
-  padding: 2rem;
-  background: #333;
+  background: #CFB081; //#333;
   display: flex;
   flex-flow: row;
-  justify-content: center;}
+  justify-content: center;
+}
+
 .feature-block-desc{
   font-size:0.8rem;
   h3{  font-size:1rem;
@@ -171,7 +179,10 @@ nav {
   }
   padding:1rem;
 }
-.no-pad{padding:unset!important;}
+
+.no-pad{
+  padding:unset!important;
+}
 
 .feature-box-module{
   box-shadow:0px 5px 15px rgba(0,0,0,0.5);
@@ -189,18 +200,28 @@ nav {
 
 
 .works-module-responsive{
-  display:flex;flex-flow:row;
-  margin:2rem;
-  .works-icon{margin:auto 2rem;}
-  .works-desc{max-width:300px;h3{margin-bottom:1rem;}}
-
+  display: flex;
+  flex-flow: row;
+  margin: 2rem;
+  .works-icon {
+    margin:auto 2rem;
+  }
+  .works-desc {
+    max-width:300px;
+    h3 {
+      margin-bottom:1rem;
+    }
+  }
 }
 
 .feature-block-image{
   max-height:64px;
   display: block;position: relative;
   overflow:hidden;
-  img{width: 100%;position: relative;margin-top:-32px;
+  img {
+    width: 100%;
+    position: relative;
+    margin-top:-32px;
   }
 }
 
@@ -210,13 +231,14 @@ nav {
   flex-flow:wrap;
   justify-content:center;
   overflow:hidden;
-  width:40%;
-  height:300px;
-  img{
+  height: 350px;
+
+  img {
     min-width:100%;
     min-height:100%;
     display: block;
     position: relative;
+    object-fit: cover;
   }
 }
 
@@ -233,7 +255,7 @@ nav {
   font-family: 'Square', cursive;
   color: $primary;
   background-color: $secondary;
-  border-radius:22px;
+  border-radius: 10px;
   text-transform: capitalize;
   border:2px solid $secondary;
   transform:translateY(0px);
@@ -313,9 +335,11 @@ nav {
   }
 }
 .hero-icon img{@extend .my-4;}
-.logo{
+
+.logo {
   padding:0.5rem;
-  height:48px;filter: invert(1);
+  height:48px;
+  filter: invert(1);
   margin:auto 2px;
   img{border-radius:unset;}
   &:hover{filter:invert(1)}
@@ -331,18 +355,17 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   display: inline-block;
 }
 
-.mainnav {
-  height: auto;
-  margin:auto;
-  line-height: 0;
-  overflow:hidden;
-  text-align:center;
-  display: flex;
-  flex-flow:wrap;
-  width:max-content;
-  margin-bottom: 0.5rem;
-  margin-right:unset;
-}
+// .mainnav {
+//   height: auto;
+//   margin:auto;
+//   line-height: 0;
+//   overflow:hidden;
+//   text-align:center;
+//   display: flex;
+//   flex-flow:wrap;
+//   width:max-content;
+//   margin-right:unset;
+// }
 
 .branding-header{
   margin-top:1rem;
@@ -425,10 +448,16 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
 
 
 footer{
-  height:450px;
+  // border-top: 1px solid #ffffff70;
+  height: 300px;
   display:flex;
   flex-flow:column;
   justify-content:center;
+  background-color: #131313;
+
+  .logo {
+    height:72px;
+  }
 }
 
 .footer-row{
@@ -440,23 +469,27 @@ footer{
 }
 
 .footer-menu{
-  display:flex;
-  flex-flow:row;
-  justify-content:space-evenly;
-  width:100%;
-  max-width:600px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 800px;
 }
 
-.footer-icon{display:flex;flex-flow:column;justify-content:center;}
 .footer-menu-column{
-  display:flex;
-  flex-flow:column;
-h4{font-weight:bold;
-@extend .mb-3;}
-a{font-weight:lighter;
-  font-size: 0.8rem;}}
+  display: flex;
+  flex-flow: column;
 
-.footer-app-button{display:flex;flex-flow:column;justify-content:center;}
+  h4{
+    font-weight:bold;
+    @extend .mb-3;
+  }
+
+  a {
+    font-weight:lighter;
+    font-size: 0.8rem;
+  }
+}
 
 
 .dapp{
@@ -720,14 +753,12 @@ padding:0rem 1rem;
   font-size: 1rem;
   color: white;
 
-  &.router-link-exact-active {
-    color: $primary;
-    position:relative;
-    z-index:1;
-    background-image: linear-gradient(
-      90deg
-      ,#ffedd9 0,transparent 80%,#3d3834);
-  }
+  // &.router-link-exact-active {
+  //   color: $primary;
+  //   position:relative;
+  //   z-index:1;
+  //   background-image: linear-gradient(90deg,#ffedd9 0,transparent 80%,#3d3834);
+  // }
 }
 
 
@@ -843,7 +874,7 @@ input.input:read-only {
 }
 
 .block {
-  @extend .py-6;
+  @extend .py-11;
   @extend .px-4;
   width:100%;
   height:auto;
@@ -853,10 +884,6 @@ input.input:read-only {
   p {
     margin: 0 auto;
   }
-}
-
-.container-lg {
-  max-width: 1086px;
 }
 
 .container-sm {
@@ -988,7 +1015,9 @@ input.input:read-only {
   .footer-row{flex-flow:wrap-reverse;width:auto;}
   .footer-menu{flex-flow:wrap;}
   .footer-menu-column{padding:2rem;}
-  footer{height:auto;padding:2rem 0rem}
+  footer{
+    height:auto;padding:2rem 0rem
+  }
   .feature-image{width:100%;}
   .works-module-responsive{
     flex-flow:wrap;justify-content: center;  margin:2rem;
@@ -1225,6 +1254,10 @@ input.input:read-only {
   }
 }
 
+.bg-dark {
+  background-color: #161616 !important;
+}
+
 .ohm-input-group {
   .form-control {
     background-color: #282828 !important;
@@ -1257,5 +1290,30 @@ input.input:read-only {
       color:white;
       background:black;
     }
+  }
+}
+
+
+.btn {
+  height: 44px;
+  line-height: 38px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Square', cursive;
+  border-radius: 10px;
+  text-transform: capitalize;
+  border:2px solid $secondary;
+  padding: 0 24px;
+}
+
+
+.btn-dark {
+  border-color: #CFB081;
+
+  &:hover{
+    color: black !important;
+    background-color: white !important;
+    border-color: #212529 !important;
   }
 }

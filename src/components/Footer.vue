@@ -11,7 +11,7 @@
           <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
           <a href="https://github.com/olympusDAO"><p>Github</p></a>
         </div>
-        <div class="footer-menu-column">
+        <!-- <div class="footer-menu-column">
           <h4>Learn</h4>
           <a href="#what">
             <p>What is Olympus?</p>
@@ -22,7 +22,7 @@
           <a href="https://olympusdao.medium.com/">
             <p>Blog</p>
           </a>
-        </div>
+        </div> -->
         <div class="footer-menu-column">
           <h4>Governance</h4>
           <a href="http://vote.olympusdao.finance/">
@@ -36,7 +36,7 @@
           <h4>Community</h4>
           <a href="https://twitter.com/OlympusDAO"><p>Twitter</p></a>
           <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
-          <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
+          <a href="https://olympusdao.medium.com/"><p>Medium</p></a>
         </div>
       </div>
 
