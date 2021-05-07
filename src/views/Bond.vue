@@ -94,7 +94,7 @@
             >
               <p class="price-label">You Will Get</p>
               <p id="bond-value-id" class="price-data">
-                {{ trim($store.state.settings.bondPrice, 4) }} OHM
+                {{ trim($store.state.settings.bondQuote, 4) }} OHM
               </p>
             </div>
 
