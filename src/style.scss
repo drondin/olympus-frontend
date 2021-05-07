@@ -30,7 +30,16 @@ $border: 1px solid $bg-color;
 @font-face {font-family: 'Square';
   src: url('./assets/fonts/EuclidSquare-Regular.ttf');
 }
+
+// TODO: This formats the button unfortunately.
 @import '~@primer/css/index.scss';
+
+// This overwrites any primer additions to make it work with Bootstrap.
+.btn-overwrite-primer {
+  background-image: none !important;
+  background-color: inherit !important;
+  color: inherit !important;
+}
 
 html, body, #app {
   color: white;
@@ -127,6 +136,7 @@ nav {
   padding: 0 24px;
   display: inline-block;
   border: 0;
+
   &:hover{
     opacity:0.8;
   }
@@ -344,17 +354,17 @@ img{max-width:200px;margin:auto;filter:invert(1);}}
   display: inline-block;
 }
 
-.mainnav {
-  height: auto;
-  margin:auto;
-  line-height: 0;
-  overflow:hidden;
-  text-align:center;
-  display: flex;
-  flex-flow:wrap;
-  width:max-content;
-  margin-right:unset;
-}
+// .mainnav {
+//   height: auto;
+//   margin:auto;
+//   line-height: 0;
+//   overflow:hidden;
+//   text-align:center;
+//   display: flex;
+//   flex-flow:wrap;
+//   width:max-content;
+//   margin-right:unset;
+// }
 
 .branding-header{
   margin-top:1rem;
@@ -742,14 +752,12 @@ padding:0rem 1rem;
   font-size: 1rem;
   color: white;
 
-  &.router-link-exact-active {
-    color: $primary;
-    position:relative;
-    z-index:1;
-    background-image: linear-gradient(
-      90deg
-      ,#ffedd9 0,transparent 80%,#3d3834);
-  }
+  // &.router-link-exact-active {
+  //   color: $primary;
+  //   position:relative;
+  //   z-index:1;
+  //   background-image: linear-gradient(90deg,#ffedd9 0,transparent 80%,#3d3834);
+  // }
 }
 
 
@@ -1281,5 +1289,28 @@ input.input:read-only {
       color:white;
       background:black;
     }
+  }
+}
+
+
+.btn {
+  height: 44px;
+  line-height: 38px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Square', cursive;
+  border-radius: 10px;
+  text-transform: capitalize;
+  border:2px solid $secondary;
+  padding: 0 24px;
+}
+
+
+.btn-dark {
+  &:hover{
+    color: black !important;
+    background-color: white !important;
+    border-color: #212529 !important;
   }
 }
