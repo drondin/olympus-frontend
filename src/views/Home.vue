@@ -128,7 +128,7 @@
 
       <div class="row-responsive flex-centered">
         <div class="works-module-responsive">
-          <div class="works-icon"><img src="~/@/assets/coin.png" alt="" /></div>
+          <div class="works-icon"><img src="~/@/assets/features/reserves.svg" alt="" /></div>
           <div class="works-desc">
             <h3>Reserves</h3>
             <p>
@@ -138,7 +138,7 @@
           </div>
         </div>
         <div class="works-module-responsive">
-          <div class="works-icon"><img src="~/@/assets/graph.png" alt="" /></div>
+          <div class="works-icon"><img src="~/@/assets/features/marketops.svg" alt="" /></div>
           <div class="works-desc">
             <h3>Market Operations</h3>
             <p>
@@ -150,7 +150,7 @@
       </div>
       <div class="row-responsive flex-centered">
         <div class="works-module-responsive">
-          <div class="works-icon"><img src="~/@/assets/pillars.png" alt="" /></div>
+          <div class="works-icon"><img src="~/@/assets/features/governance.svg" alt="" /></div>
           <div class="works-desc">
             <h3>Governance</h3>
             <p>
@@ -160,7 +160,7 @@
           </div>
         </div>
         <div class="works-module-responsive">
-          <div class="works-icon"><img src="~/@/assets/hand.png" alt="" /></div>
+          <div class="works-icon"><img src="~/@/assets/features/bonding.svg" alt="" /></div>
           <div class="works-desc">
             <h3>Bonding</h3>
             <p>
