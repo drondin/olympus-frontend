@@ -84,14 +84,24 @@
             </div>
 
             <div
-              class="stake-price-data-row"
-              :style="{ visibility: hasEnteredAmount ? 'visible' : 'hidden' }"
+              v-bind:class="['stake-price-data-row', hasEnteredAmount ? '' : 'd-none']"
             >
               <p class="price-label">You Will Get</p>
               <p id="bond-value-id" class="price-data">
                 {{ trimNumber($store.state.settings.daiBond.value / Math.pow(10, 18), 4) }} OHM
               </p>
             </div>
+
+
+            <div
+              v-bind:class="['stake-price-data-row', hasEnteredAmount ? 'd-none' : '']"
+            >
+              <p class="price-label">Max You Can Buy</p>
+              <p id="bond-value-id" class="price-data">
+                {{ trim($store.state.settings.daiBond.maxBondPrice, 4) }} OHM
+              </p>
+            </div>
+
           </div>
 
           <div v-else class="stake-price-data-column">

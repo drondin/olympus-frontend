@@ -71,7 +71,7 @@ const actions = {
     const bondMaturationBlock = +bondDetails[3] + +bondDetails[2];
     const pendingPayout = await bondingContract.pendingPayoutFor(rootState.address);
 
-    console.log('Calculated user DAI bond data: ', {
+    console.log('Calculated user bond data: ', {
       bondMaturationBlock,
       pendingPayout,
       interestDue
@@ -171,6 +171,7 @@ const actions = {
     // const reserves = await pairContract.getReserves();
     // const bondValue = await bondingContract.calculateBondInterest(amountInWei.toString());
     // const bondPrice = (2 * reserves[1] * (amountInWei / totalLP)) / bondValue;
+    const maxBondPrice = await bondingContract.maxPayout();
     const bondPrice    = await bondingContract.bondPriceInDAI();
     const bondDiscount = (marketPrice * Math.pow(10, 9) - bondPrice) / bondPrice; // 1 - bondPrice / (marketPrice * Math.pow(10, 9));
 
@@ -178,6 +179,7 @@ const actions = {
       amount,
       bondDiscount,
       debtRatio,
+      maxBondPrice: maxBondPrice / Math.pow(10,18),
       bondPrice: bondPrice / Math.pow(10, 18),
       vestingTerm,
       marketPrice: marketPrice / Math.pow(10, 9)
@@ -252,6 +254,7 @@ const actions = {
 
     const marketPrice = await dispatch('getMarketPrice');
     const bondValue = await daiBondContract.calculateBondInterest(amountInWei.toString());
+    const maxBondPrice = await daiBondContract.getMaxPayoutAmount();
     const bondPrice = amountInWei / bondValue;
     const discount = ( (marketPrice / 1000000000) - bondPrice ) / bondPrice; //1 - bondPrice / (marketPrice / 1000000000);
 
@@ -273,6 +276,7 @@ const actions = {
         value: bondValue,
         price: bondPrice,
         discount,
+        maxBondPrice: maxBondPrice / Math.pow(10,9),
         marketPrice: marketPrice / Math.pow(10, 9),
         debtRatio,
         vestingPeriodInBlocks
