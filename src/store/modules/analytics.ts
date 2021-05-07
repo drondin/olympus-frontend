@@ -6,6 +6,7 @@ import { abi as ierc20Abi } from '@/helpers/abi/IERC20.json';
 import { abi as PairContract } from '@/helpers/abi/PairContract.json';
 import { abi as BondContract } from '@/helpers/abi/BondContract.json';
 import { abi as BondCalcContract } from '@/helpers/abi/BondCalcContract.json';
+import { abi as LpBondCalcContract } from '@/helpers/abi/LpBondCalcContract.json';
 import { abi as DaiBondContract } from '@/helpers/abi/DaiBondContract.json';
 import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSupplyContract.json';
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
@@ -148,6 +149,11 @@ const actions = {
       ierc20Abi,
       rootState.provider
     );
+    const bondCalcContract = new ethers.Contract(
+      addresses[rootState.network.chainId].LP_BONDINGCALC_ADDRESS,
+      LpBondCalcContract,
+      rootState.provider
+    );
 
     const totalLP = await lpContract.totalSupply();
     const ohmSupply = await dispatch('getTokenSupply', null, { root: true });
@@ -197,11 +203,6 @@ const actions = {
     const daiContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_ADDRESS,
       ierc20Abi,
-      rootState.provider
-    );
-    const bondingCalcContract = new ethers.Contract(
-      addresses[rootState.network.chainId].BONDINGCALC_ADDRESS,
-      BondCalcContract,
       rootState.provider
     );
 
