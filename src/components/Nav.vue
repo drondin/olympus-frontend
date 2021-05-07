@@ -49,7 +49,7 @@
         Enter App
       </router-link>
 
-      <a role="button" class="btn btn-dark btn-overwrite-primer" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">
+      <a role="button" class="btn btn-dark btn-overwrite-primer d-none d-sm-block" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">
         Get OHM
       </a>
     </div>
