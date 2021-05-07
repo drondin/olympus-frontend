@@ -1,7 +1,5 @@
 <template>
   <div class="column">
-    <Nav />
-
     <div class="block hero">
       <div class="d-flex flex-column" style="position:absolute">
         <a href="https://defipulse.com/" target="_blank" class="pb-4">

@@ -1,68 +1,67 @@
 <template>
-  <nav>
-    <div class="bg-topnav">
-      <div class="container-lg p-responsive d-flex mt-2">
-        <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
-          <img src="~/@/assets/logo.svg" class="logo" />
-          <h4 class="ticker-name">Olympus</h4>
-          <h1 class="py-4"></h1>
+  <nav class="navbar navbar-dark bg-dark sticky-top py-2">
+    <div class="container-fluid">
+      <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
+        <img src="~/@/assets/logo.svg" class="logo" />
+        <h4 class="ticker-name">Olympus</h4>
+        <h1 class="py-4"></h1>
+      </router-link>
+
+      <div class="mainnav align-items-center">
+        <div class="drop-menu-item">
+          <h4>Developers</h4>
+          <div class="drop-menu-hidden">
+            <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
+            <a href="https://github.com/olympusDAO"><p>Github</p></a>
+          </div>
+        </div>
+
+        <div class="drop-menu-item">
+          <h4>Learn</h4>
+          <div class="drop-menu-hidden">
+            <a href="#what">
+              <p>What is Olympus?</p>
+            </a>
+            <a href="#how">
+              <p>How it works</p>
+            </a>
+            <a href="https://olympusdao.medium.com/">
+              <p>Blog</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="drop-menu-item">
+          <h4>Governance</h4>
+          <div class="drop-menu-hidden">
+            <a href="http://vote.olympusdao.finance/">
+              <p>Vote</p>
+            </a>
+            <a href="https://forum.olympusdao.finance">
+              <p>Forum</p>
+            </a>
+          </div>
+        </div>
+
+        <router-link
+          :to="{ name: 'stake' }"
+          class="button button-primary d-none d-sm-block mx-4"
+          style="color: black !important;"
+        >
+          Enter App
         </router-link>
 
-        <div class="mainnav align-items-center">
-          <div class="drop-menu-item">
-            <h4>Developers</h4>
-            <div class="drop-menu-hidden">
-              <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
-              <a href="https://github.com/olympusDAO"><p>Github</p></a>
-            </div>
+        <!-- <div class="drop-menu-item">
+          <h4>Community</h4>
+          <div class="drop-menu-hidden">
+            <a href="https://twitter.com/OlympusDAO"><p>Twitter</p></a>
+            <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
+            <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
           </div>
-
-          <div class="drop-menu-item">
-            <h4>Learn</h4>
-            <div class="drop-menu-hidden">
-              <a href="#what">
-                <p>What is Olympus?</p>
-              </a>
-              <a href="#how">
-                <p>How it works</p>
-              </a>
-              <a href="https://olympusdao.medium.com/">
-                <p>Blog</p>
-              </a>
-            </div>
-          </div>
-
-          <div class="drop-menu-item">
-            <h4>Governance</h4>
-            <div class="drop-menu-hidden">
-              <a href="http://vote.olympusdao.finance/">
-                <p>Vote</p>
-              </a>
-              <a href="https://forum.olympusdao.finance">
-                <p>Forum</p>
-              </a>
-            </div>
-          </div>
-
-          <router-link
-            :to="{ name: 'stake' }"
-            class="button button-primary d-none d-sm-block mx-4"
-            style="color: black !important;"
-          >
-            Enter App
-          </router-link>
-
-          <!-- <div class="drop-menu-item">
-            <h4>Community</h4>
-            <div class="drop-menu-hidden">
-              <a href="https://twitter.com/OlympusDAO"><p>Twitter</p></a>
-              <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
-              <a href="https://olympusdao.medium.com/"><p>Blog</p></a>
-            </div>
-          </div> -->
-        </div>
+        </div> -->
       </div>
     </div>
+
 
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
   </nav>
