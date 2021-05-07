@@ -11,6 +11,7 @@ import { abi as CirculatingSupplyContract } from '@/helpers/abi/CirculatingSuppl
 import { abi as LPStaking } from '@/helpers/abi/LPStaking.json';
 import { abi as OlympusStaking } from '@/helpers/abi/OlympusStaking.json';
 import { abi as sOHM } from '@/helpers/abi/sOHM.json';
+import mixin from '@/helpers/mixins';
 
 const state = {
   ohmCircSupply: null,
@@ -159,16 +160,28 @@ const actions = {
     const maxBondPrice = await bondingContract.maxPayout();
     const bondPrice    = await bondingContract.bondPriceInDAI();
     const bondDiscount = (marketPrice * Math.pow(10, 9) - bondPrice) / bondPrice; // 1 - bondPrice / (marketPrice * Math.pow(10, 9));
-    const bondQuote    = await bondingContract.payoutFor(amountInWei.toString());
+
+
+    // Bond quote comes from valuing LP contract.
+    let valuation = await bondCalcContract.valuation(addresses[rootState.network.chainId].LP_ADDRESS, amountInWei);
+    let bondQuote = await bondingContract.payoutFor(valuation);
+    valuation = valuation / Math.pow(10, 18);
+    bondQuote = bondQuote / Math.pow(10, 9);
+
+    // Display error if user tries to exceed maximum.
+    if (!!amount && parseFloat(bondQuote) > parseFloat(maxBondPrice / Math.pow(10,9)) ) {
+      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + parseFloat(maxBondPrice / Math.pow(10,9)).toFixed(2) + " OHM."});
+      commit('set', { toasts: [...rootState.toasts, toast] })
+    }
 
     commit('set', {
       amount,
       bondDiscount,
       debtRatio,
-      maxBondPrice: maxBondPrice / Math.pow(10,18),
-      bondQuote: bondQuote / Math.pow(10, 18),
-      bondPrice: bondPrice / Math.pow(10, 18),
+      bondQuote,
       vestingTerm,
+      maxBondPrice: maxBondPrice / Math.pow(10,9),
+      bondPrice: bondPrice / Math.pow(10, 18),
       marketPrice: marketPrice / Math.pow(10, 9)
     });
   },
@@ -243,9 +256,15 @@ const actions = {
     const totalDebtDo = await daiBondContract.totalDebt();
     const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
 
+    // Display error if user tries to exceed maximum.
+    if (!!amount && parseFloat(bondQuote / Math.pow(10, 18)) > parseFloat(maxBondPrice / Math.pow(10,9)) ) {
+      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + parseFloat(maxBondPrice / Math.pow(10,9)).toFixed(2) + " OHM."});
+      commit('set', { toasts: [...rootState.toasts, toast] })
+    }
+
     commit('set', {
       daiBond: {
-        bondQuote,
+        bondQuote: bondQuote / Math.pow(10, 18),
         price: bondPrice,
         discount,
         maxBondPrice: maxBondPrice / Math.pow(10,9),

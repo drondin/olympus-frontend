@@ -88,7 +88,7 @@
             >
               <p class="price-label">You Will Get</p>
               <p id="bond-value-id" class="price-data">
-                {{ trimNumber($store.state.settings.daiBond.bondQuote / Math.pow(10, 18), 4) }} OHM
+                {{ trimNumber($store.state.settings.daiBond.bondQuote, 4) }} OHM
               </p>
             </div>
 
