@@ -47,16 +47,19 @@
       <router-link
         :to="{ name: 'stake' }"
         style="margin:2rem auto;max-width:200px; color: black !important;"
-        class="button button-primary button-centered"
+        class="button button-primary btn btn-lg button-centered"
       >
-        Enter Olympus
+        Enter App
       </router-link>
     </div>
 
+
     <div class="block">
-      <div class="row-responsive flex-centered" id="what">
-        <h3 class="centered-text py-8">Olympus Is</h3>
+      <div class="row-responsive flex-centered mb-9" id="what">
+        <h1 class="centered-text">What is Olympus?</h1>
       </div>
+
+
       <div class="row-responsive flex-centered">
         <div class="feature-box-module" style="">
           <div class="feature-block-image">
@@ -96,13 +99,15 @@
         </div>
       </div>
     </div>
+
+
     <div class="block row-responsive no-pad">
-      <div class="row-flex-max feature-row">
+      <div class="row-flex-max feature-row py-9">
         <div class="row-flex-desc">
           <h2>What makes Olympus unique?</h2>
           <p>
             Olympus is a floating algorithmic currency. This means that it has mechanisms to promote
-            stability and predictablility without directly pegging to any asset. However, we take it
+            stability and predictability without directly pegging to any asset. However, we take it
             one step further with the introduction of adjustable policy; the DAO can move certain
             variables up and down to target growth and profitability or stability and
             predictability.
@@ -115,9 +120,12 @@
     </div>
 
     <div class="block">
-      <div class="row-responsive flex-centered" id="how">
-        <h3 class="centered-text py-8">How It Works</h3>
+      <div class="row-responsive flex-centered mb-9" id="how">
+        <h1 class="centered-text">How It Works</h1>
       </div>
+
+
+
       <div class="row-responsive flex-centered">
         <div class="works-module-responsive">
           <div class="works-icon"><img src="~/@/assets/coin.png" alt="" /></div>
@@ -181,6 +189,31 @@
         </div>
       </div>
     </div>
+
+
+
+
+    <div class="block">
+      <div class="row-responsive flex-centered mb-11" id="how">
+        <h1 class="centered-text">Backed by</h1>
+      </div>
+
+
+      <div class="row-responsive justify-content-center mb-9">
+        <div class="col-3 text-center">
+          <img src="~/@/assets/investors/nascent.svg" alt="" style="height:96px;" />
+        </div>
+
+        <div class="col-3 col-offset-1 text-center">
+          <img src="~/@/assets/investors/d64.svg" alt="" style="height:96px;" />
+        </div>
+
+        <div class="col-3 text-center">
+          <img src="~/@/assets/investors/zeeprime.svg" alt="" style="height:96px;" />
+        </div>
+      </div>
+    </div>
+
 
     <Footer />
   </div>
