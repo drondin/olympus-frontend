@@ -256,7 +256,7 @@ export default {
 
     vestingPeriod() {
       const currentBlock = this.$store.state.settings.currentBlock;
-      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.vestingPeriodInBlocks);
+      const vestingBlock = parseInt(currentBlock) + parseInt(this.$store.state.settings.daiBond.vestingPeriodInBlocks);
       const seconds      = this.secondsUntilBlock(currentBlock, vestingBlock);
       return this.prettifySeconds(seconds, 'day');
     },
