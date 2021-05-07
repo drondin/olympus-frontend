@@ -115,7 +115,7 @@
         </div>
       </div>
       <div class="row-flex-image feature-image">
-        <img src="~/@/assets/Whatmakesolyuniue.png" alt="" />
+        <img src="~/@/assets/olympus1.svg" alt="" />
       </div>
     </div>
 
@@ -174,7 +174,7 @@
 
     <div class="block row-responsive no-pad">
       <div class="row-flex-image feature-image">
-        <img src="~/@/assets/worldofopp-image.png" alt="" />
+        <img src="~/@/assets/olympus2.svg" alt="" />
       </div>
 
       <div class="row-flex-max feature-row">
@@ -193,7 +193,7 @@
 
 
 
-    <div class="block">
+    <div class="py-10">
       <div class="row-responsive flex-centered mb-11" id="how">
         <h1 class="centered-text">Backed by</h1>
       </div>
@@ -214,7 +214,7 @@
       </div>
 
 
-      <div class="row justify-content-center mb-9">
+      <div class="row justify-content-center">
         <div class="col-3 text-center">
           <img src="~/@/assets/investors/nascent.svg" alt="" style="height:96px;" />
         </div>

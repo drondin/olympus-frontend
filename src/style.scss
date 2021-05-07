@@ -238,6 +238,7 @@ nav {
     min-height:100%;
     display: block;
     position: relative;
+    object-fit: cover;
   }
 }
 
@@ -1254,7 +1255,7 @@ input.input:read-only {
 }
 
 .bg-dark {
-  background-color: #161616;
+  background-color: #161616 !important;
 }
 
 .ohm-input-group {
