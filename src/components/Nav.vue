@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-dark bg-dark sticky-top py-2" style="width:100%;">
-    <div class="container-fluid" style="max-width: 1320px;">
+    <div class="container-fluid" style="max-width: 80%;">
       <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
         <img src="~/@/assets/logo.svg" class="logo" />
         <h4 class="ticker-name">Olympus</h4>
