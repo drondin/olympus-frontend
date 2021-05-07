@@ -175,8 +175,8 @@ const actions = {
     bondQuote = bondQuote / Math.pow(10, 9);
 
     // Display error if user tries to exceed maximum.
-    if (!!amount && parseFloat(bondQuote) > parseFloat(maxBondPrice / Math.pow(10,9)) ) {
-      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + parseFloat(maxBondPrice / Math.pow(10,9)).toFixed(2).toString() + " OHM."});
+    if (!!amount && parseFloat(bondQuote) > (maxBondPrice / Math.pow(10,9)) ) {
+      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + (maxBondPrice / Math.pow(10,9)).toFixed(2).toString() + " OHM."});
       commit('set', { toasts: [...rootState.toasts, toast] })
     }
 
@@ -258,8 +258,8 @@ const actions = {
     const debtRatio = await bondingCalcContract.calcDebtRatio(totalDebtDo, ohmSupply.circulating);
 
     // Display error if user tries to exceed maximum.
-    if (!!amount && parseFloat(bondQuote / Math.pow(10, 18)) > parseFloat(maxBondPrice / Math.pow(10,9)) ) {
-      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + parseFloat(maxBondPrice / Math.pow(10,9)).toFixed(2).toString() + " OHM."});
+    if (!!amount && (bondQuote / Math.pow(10, 18)) > (maxBondPrice / Math.pow(10,9)) ) {
+      const toast = mixin.methods.buildToast({title: 'Bond quote exceeds maximum payout', color: 'bg-warning', body: "You're trying to bond more than the maximum payout availabe! The maximum bond payout is " + (maxBondPrice / Math.pow(10,9)).toFixed(2).toString() + " OHM."});
       commit('set', { toasts: [...rootState.toasts, toast] })
     }
 
