@@ -25,11 +25,11 @@
           <div class="stake-price-data-column">
             <div class="stake-price-data-row">
               <p class="price-label">Balance</p>
-              <p class="price-data">{{ trim($store.state.settings.ohmBalance, 4) }} OHM</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.balance}">{{ trim($store.state.settings.ohmBalance, 4) }} OHM</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Staked</p>
-              <p class="price-data">{{ trim($store.state.settings.sohmBalance, 4) }} OHM</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.staked}">{{ trim($store.state.settings.sohmBalance, 4) }} OHM</p>
             </div>
 
             <div class="stake-price-data-row">
@@ -41,19 +41,19 @@
 
             <div class="stake-price-data-row">
               <p class="price-label">Upcoming rebase</p>
-              <p class="price-data">{{ trim($store.state.settings.stakingRebase * 100, 4) }}%</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.upcomingRebase}">{{ trim($store.state.settings.stakingRebase * 100, 4) }}%</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">ROI (5-day rate)</p>
-              <p class="price-data">{{ trim($store.state.settings.fiveDayRate * 100, 4) }}%</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.roi}">{{ trim($store.state.settings.fiveDayRate * 100, 4) }}%</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Current APY</p>
-              <p class="price-data">{{ trim($store.state.settings.stakingAPY * 100, 2) }}%</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.apy}">{{ trim($store.state.settings.stakingAPY * 100, 2) }}%</p>
             </div>
             <div class="stake-price-data-row">
               <p class="price-label">Current index</p>
-              <p class="price-data">{{ trim($store.state.settings.currentIndex, 4) }} OHM</p>
+              <p class="price-data" v-tooltip.right="{ content: tooltipContent.currentIndex }">{{ trim($store.state.settings.currentIndex, 4) }} OHM</p>
             </div>
           </div>
 
@@ -110,7 +110,15 @@ export default {
       },
       selectedMapOption: 'Stake',
       quantity: '',
-      stakeToggle: true
+      stakeToggle: true,
+      tooltipContent: { 
+        balance:'How many unstaked OHM are in your wallet. This is the maximum amount that you can stake.',
+        staked: 'Staked OHM in your wallet. This is the maximum amount that you can unstake.',
+        upcomingRebase: 'How much your sOHM balance will increase when the next epoch begins.',
+        currentIndex: 'Amount of OHM you would have now if you staked 1 OHM since the very first rebase.',
+        roi: 'Your estimated sOHM balance increase after 5 days.',
+        apy: 'Compounded annualized rate of the current epoch.',
+        }
     };
   },
   computed: {

@@ -14,11 +14,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import '@/style.scss';
 import ToggleSwitch from 'vuejs-toggle-switch';
+import VTooltip from 'v-tooltip'
 Vue.use(ToggleSwitch);
 Vue.use(VueParticles);
 Vue.use(VueUi);
 Vue.use(VueI18n);
 const i18n = new VueI18n({ locale: 'en', messages, numberFormats });
+Vue.use(VTooltip)
 
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
 requireComponent.keys().forEach(fileName => {
