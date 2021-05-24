@@ -62,7 +62,7 @@ const actions = {
     console.log('Logging in...');
     commit('set', { userDataLoading: true });
 
-    provider = rootState.provider;
+    provider = window.provider;
     network = rootState.network;
     address = rootState.address;
 
