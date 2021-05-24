@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import modules from './modules';
-import { ethers } from 'ethers';
 import addresses from '@/helpers/addresses';
+import providers from '@/helpers/provider';
 
 Vue.use(Vuex);
 
@@ -37,33 +37,40 @@ const store = new Vuex.Store({
   },
 
   actions: {
-    init: async ({ commit, dispatch }) => {
+    init: async ({ commit, dispatch, state }) => {
+      // TODO: this method is called when the app loads, but now we shortcircuit.
+      //    Whats the intended behavior here?
+      //    currently requires you to reselect the provider :bigthonk:
+      if (!state.provider || state.provider == null) {
+        return console.error('provider not set!');
+      }
+
       commit('set', { appLoading: true });
 
-      let signer, address, network;
-      const provider = await dispatch('getProvider');
+      const provider = state.provider;
 
-      if (!provider) {
-        console.error('This website require MetaMask');
-      } else {
-        signer = provider.getSigner();
-        network = await provider.getNetwork();
-        try {
-          address = await signer.getAddress();
-        } catch (error) {
-          console.log(error);
-        }
+      // @ts-ignore Complains that provider can be null, but thats not possible.
+      const signer = provider.getSigner();
+      // @ts-ignore Complains that provider can be null, but thats not possible.
+      const network = await provider.getNetwork();
 
-        commit('set', { address, network });
+      let address;
+      try {
+        address = await signer.getAddress();
+      } catch (error) {
+        console.log(error);
+      }
 
-        if (addresses[network.chainId]) {
-          dispatch('calcBondDetails', '');
-          dispatch('calcDaiBondDetails', '');
-          dispatch('calcStakeDetails');
-        }
+      commit('set', { address, network });
 
-        if (address)
-          dispatch('loadAccountDetails');
+      if (addresses[network.chainId]) {
+        dispatch('calcBondDetails', '');
+        dispatch('calcDaiBondDetails', '');
+        dispatch('calcStakeDetails');
+      }
+
+      if (address) {
+        dispatch('loadAccountDetails');
       }
 
       commit('set', { appLoading: false });
@@ -79,16 +86,28 @@ const store = new Vuex.Store({
     },
 
     disconnectWallet: ({ commit }) => {
-      commit('set', { address: null });
+      commit('set', { address: null, provider: null });
     },
 
-    getProvider: async ({ commit }) => {
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.providers.Web3Provider(window['ethereum']);
-        commit('set', { provider });
-        return provider;
+    setProvider: async({ commit, dispatch }, { providerName }) => {
+      let provider;
+      console.log('providerName:', providerName)
+      switch (providerName) {
+        case 'metamask':
+          provider = await providers.metamask();
+          break;
+        case 'walletconnect':
+          provider = await providers.walletConnect();
+          break;
+        default:
+          console.error('not a valid provider: ', providerName);
+          return;
       }
+
+      console.log('setting provider', provider);
+      commit('set', { provider });
+      // Run the init method after we've setup our wallet provider
+      dispatch('init');
     }
   }
 });
