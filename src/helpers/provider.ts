@@ -1,19 +1,20 @@
 import {providers} from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import WalletConnectQRCodeModal from '@walletconnect/qrcode-modal'
 
 
 const provider = {
-  walletConnect: async () => {
+  walletConnect: async ():Promise<providers.Web3Provider> => {
     // Do we want to expose this provider object or is the ethers interface good enough??
     const provider = new WalletConnectProvider({
-      infuraId: "be29ba1004a14966bee539713c939ca1", 
+      infuraId: "be29ba1004a14966bee539713c939ca1",
     });
 
     await provider.enable();
     return new providers.Web3Provider(provider)
   },
 
-  metamask: async () => {
+  metamask: async ():Promise<providers.Web3Provider> => {
     if (!window['ethereum']) {
       throw new Error('Cannot create ethers instance');
     }

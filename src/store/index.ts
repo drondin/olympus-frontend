@@ -121,4 +121,10 @@ if (ethereum) {
   });
 }
 
+// TODO: this is a stopgap solution to access to provider across the codebase. Pls remove when refactoring. 
+// Declare provider on the window global. 
+declare global {
+  interface Window { provider: any; }
+}
+
 export default store;
