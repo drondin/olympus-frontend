@@ -41,13 +41,13 @@ const store = new Vuex.Store({
       // TODO: this method is called when the app loads, but now we shortcircuit.
       //    Whats the intended behavior here?
       //    currently requires you to reselect the provider :bigthonk:
-      if (!state.provider || state.provider == null) {
+      if (!window.provider || window.provider == null) {
         return console.error('provider not set!');
       }
 
       commit('set', { appLoading: true });
 
-      const provider = state.provider;
+      const provider = window.provider;
 
       // @ts-ignore Complains that provider can be null, but thats not possible.
       const signer = provider.getSigner();
@@ -94,18 +94,16 @@ const store = new Vuex.Store({
       console.log('providerName:', providerName)
       switch (providerName) {
         case 'metamask':
-          provider = await providers.metamask();
+          window.provider = await providers.metamask();
           break;
         case 'walletconnect':
-          provider = await providers.walletConnect();
+          window.provider = await providers.walletConnect();
           break;
         default:
           console.error('not a valid provider: ', providerName);
           return;
       }
 
-      console.log('setting provider', provider);
-      commit('set', { provider });
       // Run the init method after we've setup our wallet provider
       dispatch('init');
     }
