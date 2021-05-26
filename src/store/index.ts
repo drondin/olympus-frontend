@@ -37,10 +37,20 @@ const store = new Vuex.Store({
   },
 
   actions: {
-    init: async ({ commit, dispatch, state }) => {
-      // TODO: this method is called when the app loads, but now we shortcircuit.
-      //    Whats the intended behavior here?
-      //    currently requires you to reselect the provider :bigthonk:
+    // Should only get called once when the app is created
+    initProvider: async ({ dispatch }) => {
+      // If there's already a window.provider we don't need to do any additional setup
+      if (window.provider || window.provider != null) {
+        return;
+      }
+      const localProviderName = providers.getLocalProviderName();
+      if (!localProviderName || localProviderName === '') {
+        return;
+      }
+      dispatch('setProvider', { providerName: localProviderName });
+    },
+    // Called to initialize the app after a provider is set
+    init: async ({ commit, dispatch }) => {
       if (!window.provider || window.provider == null) {
         return console.error('provider not set!');
       }
@@ -76,39 +86,30 @@ const store = new Vuex.Store({
       commit('set', { appLoading: false });
     },
 
-    login: async () => {
-      try {
-        // @ts-ignore
-        await window.ethereum.enable();
-      } catch (error) {
-        window.alert(error.message);
-      }
-    },
-
     disconnectWallet: ({ commit }) => {
-      commit('set', { address: null, provider: null });
+      providers.clearLocalProvider();
+      commit('set', { address: null });
     },
 
-    setProvider: async({ commit, dispatch }, { providerName }) => {
-      let provider;
-      console.log('providerName:', providerName)
+    setProvider: async ({ dispatch }, { providerName }) => {
+      console.log('providerName:', providerName);
       switch (providerName) {
         case 'metamask':
-          window.provider = await providers.metamask();
+          await providers.metamask();
           break;
         case 'walletconnect':
-          window.provider = await providers.walletConnect();
+          await providers.walletConnect();
           break;
         default:
           console.error('not a valid provider: ', providerName);
           return;
       }
-
       // Run the init method after we've setup our wallet provider
       dispatch('init');
     }
   }
 });
+
 
 const ethereum = window['ethereum'];
 if (ethereum) {
@@ -119,12 +120,6 @@ if (ethereum) {
   ethereum.on('networkChanged', () => {
     store.dispatch('init');
   });
-}
-
-// TODO: this is a stopgap solution to access to provider across the codebase. Pls remove when refactoring. 
-// Declare provider on the window global. 
-declare global {
-  interface Window { provider: any; }
 }
 
 export default store;
