@@ -4,7 +4,7 @@
       <div class="wallet-button" @click="handleProvider('metamask')">
         <div class="wallet-column py-4">
           <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
-          <div class="flex-auto py-2" style="color:black;">Metamask</div>
+          <div class="flex-auto py-2" style="color:black;">MetaMask</div>
           <div class="flex-auto" style="color:#c5c5c5">Connect to MetaMask</div>
         </div>
       </div>
@@ -26,8 +26,7 @@ export default {
   props: ['open'],
   data() {
     return {
-      isLoading: false,
-      providers: ['metamask', 'walletconnect'] // The disabled logic does nothing in the view /shrug
+      isLoading: false
     };
   },
   computed: {},
@@ -35,9 +34,6 @@ export default {
     ...mapActions(['setProvider']),
     async handleProvider(providerName) {
       await this.setProvider({ providerName });
-    },
-    isDisabled(providerName) {
-      return !this.providers.includes(providerName);
     }
   }
 };
