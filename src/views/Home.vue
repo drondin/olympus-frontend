@@ -39,9 +39,9 @@
       <div class="hero-icon">
         <img src="~/@/assets/logo.svg" alt="" />
       </div>
-      <h1 class="mb-4 main-title">An Algorithmic Currency Protocol</h1>
+      <h1 class="mb-4 main-title">A Decentralized Reserve Currency Protocol</h1>
       <p class="centered-text hero-desc">
-        Olympus utilizes Protocol Owned Value to enable price consistency and scarcity within an
+        Olympus utilizes Treasury Reserves to enable long-term price consistency and scarcity within an
         infinite supply system.
       </p>
       <router-link
