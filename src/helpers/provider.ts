@@ -38,12 +38,17 @@ const provider = {
     return;
   },
 
-  metamask: async function() {
+  metamask: async function(doConnect: boolean) {
     if (!window['ethereum']) {
       throw new Error('Cannot create ethers instance');
     }
     // Don't need legacy window.web3.currentProvider support
-    await window['ethereum'].enable();
+
+    if (doConnect) {
+      // On initial page load, we don't connect to the provider
+      await window['ethereum'].enable();
+    }
+
     const provider = new providers.Web3Provider(window['ethereum']);
     this.setLocalProvider('metamask', provider);
     return;

@@ -51,8 +51,8 @@ const store = new Vuex.Store({
         return;
       }
 
-      // Otherwise attempt to setup the default local provider (MetaMask)
-      dispatch('setProvider', { providerName: 'metamask' });
+      // Otherwise attempt to setup the default local provider (MetaMask) w/o login
+      dispatch('setProvider', { providerName: 'metamaskNoConnect' });
     },
     // Called to initialize the app after a provider is set
     init: async ({ commit, dispatch }) => {
@@ -100,7 +100,10 @@ const store = new Vuex.Store({
       console.log('providerName:', providerName);
       switch (providerName) {
         case 'metamask':
-          await providers.metamask();
+          await providers.metamask(true);
+          break;
+        case 'metamaskNoConnect':
+          await providers.metamask(false);
           break;
         case 'walletconnect':
           await providers.walletConnect();
