@@ -43,11 +43,16 @@ const store = new Vuex.Store({
       if (window.provider || window.provider != null) {
         return;
       }
+
+      // Attempt to read the last used provider from local storage
       const localProviderName = providers.getLocalProviderName();
-      if (!localProviderName || localProviderName === '') {
+      if (localProviderName && localProviderName !== '') {
+        dispatch('setProvider', { providerName: localProviderName });
         return;
       }
-      dispatch('setProvider', { providerName: localProviderName });
+
+      // Otherwise attempt to setup the default local provider (MetaMask)
+      dispatch('setProvider', { providerName: 'metamask' });
     },
     // Called to initialize the app after a provider is set
     init: async ({ commit, dispatch }) => {
