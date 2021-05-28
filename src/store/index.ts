@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import modules from './modules';
-import { ethers } from 'ethers';
 import addresses from '@/helpers/addresses';
+import providers from '@/helpers/provider';
 
 Vue.use(Vuex);
 
@@ -37,61 +37,87 @@ const store = new Vuex.Store({
   },
 
   actions: {
+    // Should only get called once when the app is created
+    initProvider: async ({ dispatch }) => {
+      // If there's already a window.provider we don't need to do any additional setup
+      if (window.provider || window.provider != null) {
+        return;
+      }
+
+      // Attempt to read the last used provider from local storage
+      const localProviderName = providers.getLocalProviderName();
+      if (localProviderName && localProviderName !== '') {
+        dispatch('setProvider', { providerName: localProviderName });
+        return;
+      }
+
+      // Otherwise attempt to setup the default local provider (MetaMask) w/o login
+      dispatch('setProvider', { providerName: 'metamaskNoConnect' });
+    },
+    // Called to initialize the app after a provider is set
     init: async ({ commit, dispatch }) => {
+      if (!window.provider || window.provider == null) {
+        return console.error('provider not set!');
+      }
+
       commit('set', { appLoading: true });
 
-      let signer, address, network;
-      const provider = await dispatch('getProvider');
+      const provider = window.provider;
 
-      if (!provider) {
-        console.error('This website require MetaMask');
-      } else {
-        signer = provider.getSigner();
-        network = await provider.getNetwork();
-        try {
-          address = await signer.getAddress();
-        } catch (error) {
-          console.log(error);
-        }
+      // @ts-ignore Complains that provider can be null, but thats not possible.
+      const signer = provider.getSigner();
+      // @ts-ignore Complains that provider can be null, but thats not possible.
+      const network = await provider.getNetwork();
 
-        commit('set', { address, network });
+      let address;
+      try {
+        address = await signer.getAddress();
+      } catch (error) {
+        console.log(error);
+      }
 
-        if (addresses[network.chainId]) {
-          dispatch('calcBondDetails', '');
-          dispatch('calcDaiBondDetails', '');
-          dispatch('calcStakeDetails');
-        }
+      commit('set', { address, network });
 
-        if (address)
-          dispatch('loadAccountDetails');
+      if (addresses[network.chainId]) {
+        dispatch('calcBondDetails', '');
+        dispatch('calcDaiBondDetails', '');
+        dispatch('calcStakeDetails');
+      }
+
+      if (address) {
+        dispatch('loadAccountDetails');
       }
 
       commit('set', { appLoading: false });
     },
 
-    login: async () => {
-      try {
-        // @ts-ignore
-        await window.ethereum.enable();
-      } catch (error) {
-        window.alert(error.message);
-      }
-    },
-
     disconnectWallet: ({ commit }) => {
+      providers.clearLocalProvider();
       commit('set', { address: null });
     },
 
-    getProvider: async ({ commit }) => {
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.providers.Web3Provider(window['ethereum']);
-        commit('set', { provider });
-        return provider;
+    setProvider: async ({ dispatch }, { providerName }) => {
+      console.log('providerName:', providerName);
+      switch (providerName) {
+        case 'metamask':
+          await providers.metamask(true);
+          break;
+        case 'metamaskNoConnect':
+          await providers.metamask(false);
+          break;
+        case 'walletconnect':
+          await providers.walletConnect();
+          break;
+        default:
+          console.error('not a valid provider: ', providerName);
+          return;
       }
+      // Run the init method after we've setup our wallet provider
+      dispatch('init');
     }
   }
 });
+
 
 const ethereum = window['ethereum'];
 if (ethereum) {

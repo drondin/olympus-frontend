@@ -50,15 +50,24 @@
               <div v-else class="col-lg-10 col-12 mt-4 mt-md-0">
                 <div class="d-flex align-items-center justify-content-center min-vh-100">
                   <div class="dapp-center-modal flex-column">
-                    <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
-                      <div class="wallet-button col w-100 text-center" @click="handleLogin">
-                        <div class="wallet-column py-4 w-100">
-                          <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
-                          <div class="flex-auto py-2" style="color:black;">MetaMask</div>
-                          <div class="flex-auto" style="color:#c5c5c5">Connect to MetaMask</div>
+                     <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
+                        <div class="wallet-button col w-100 text-center" @click="handleProvider('metamask')">
+                          <div class="wallet-column py-4">
+                            <img src="~/@/assets/metamask.svg" height="53" class="mt-2 pt-1" />
+                            <div class="flex-auto py-2" style="color:black;">Metamask</div>
+                            <div class="flex-auto" style="color:#c5c5c5">Connect to MetaMask</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
+                          <div class="wallet-button col w-100 text-center" @click="handleProvider('walletconnect')">
+                            <div class="wallet-column py-4">
+                              <img src="~/@/assets/walletConnect.svg" height="53" class="mt-2 pt-1" />
+                              <div class="flex-auto py-2" style="color:black;">WalletConnect</div>
+                              <div class="flex-auto" style="color:#c5c5c5">Connect to WalletConnect</div>
+                            </div>
+                          </div>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -88,10 +97,9 @@
   import { mapState, mapActions } from 'vuex';
 
   export default {
-    async created() {
-      this.init();
+    async mounted() {
+      this.initProvider();
     },
-
     data() {
       return {
         isLoading: false
@@ -112,14 +120,13 @@
       }
     },
     methods: {
-      ...mapActions(['init', 'login']),
+      ...mapActions(['initProvider', 'setProvider']),
       toggleNavbar() {
         this.$store.commit('toggleSidebar', !this.$store.state.isSidebarExpanded);
       },
 
-      async handleLogin() {
-        this.isLoading = true;
-        this.login();
+      async handleProvider(providerName) {
+        await this.setProvider({ providerName });
       }
     }
   };

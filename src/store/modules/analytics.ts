@@ -27,7 +27,7 @@ const actions = {
     const pairContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_ADDRESS,
       PairContract,
-      rootState.provider
+      window.provider
     );
     const reserves = await pairContract.getReserves();
     const marketPrice = reserves[1] / reserves[0];
@@ -40,13 +40,13 @@ const actions = {
     const ohmContract = new ethers.Contract(
       addresses[rootState.network.chainId].OHM_ADDRESS,
       ierc20Abi,
-      rootState.provider
+      window.provider
     );
 
     const circulatingSupplyContract = new ethers.Contract(
       addresses[rootState.network.chainId].CIRCULATING_SUPPLY_ADDRESS,
       CirculatingSupplyContract,
-      rootState.provider
+      window.provider
     );
 
     const ohmCircSupply  = await circulatingSupplyContract.OHMCirculatingSupply();
@@ -66,7 +66,7 @@ const actions = {
     const bondingContract = new ethers.Contract(
       addresses[rootState.network.chainId].BOND_ADDRESS,
       BondContract,
-      rootState.provider
+      window.provider
     );
     const bondDetails = await bondingContract.bondInfo(rootState.address);
     const interestDue = bondDetails[1];
@@ -81,12 +81,12 @@ const actions = {
   },
 
   async calcStakeDetails({ commit, dispatch, rootState }) {
-    const lpContract        = new ethers.Contract(addresses[rootState.network.chainId].LP_ADDRESS, ierc20Abi, rootState.provider);
-    const lpStakingContract = new ethers.Contract(addresses[rootState.network.chainId].LPSTAKING_ADDRESS, LPStaking, rootState.provider);
-    const ohmContract       = new ethers.Contract(addresses[rootState.network.chainId].OHM_ADDRESS, ierc20Abi, rootState.provider);
-    const stakingContract   = new ethers.Contract(addresses[rootState.network.chainId].STAKING_ADDRESS, OlympusStaking, rootState.provider);
-    const sohmContract      = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, ierc20Abi, rootState.provider);
-    const sohmMainContract  = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, sOHM, rootState.provider);
+    const lpContract        = new ethers.Contract(addresses[rootState.network.chainId].LP_ADDRESS, ierc20Abi, window.provider);
+    const lpStakingContract = new ethers.Contract(addresses[rootState.network.chainId].LPSTAKING_ADDRESS, LPStaking, window.provider);
+    const ohmContract       = new ethers.Contract(addresses[rootState.network.chainId].OHM_ADDRESS, ierc20Abi, window.provider);
+    const stakingContract   = new ethers.Contract(addresses[rootState.network.chainId].STAKING_ADDRESS, OlympusStaking, window.provider);
+    const sohmContract      = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, ierc20Abi, window.provider);
+    const sohmMainContract  = new ethers.Contract(addresses[rootState.network.chainId].SOHM_ADDRESS, sOHM, window.provider);
 
 
     // Calculate LP stake
@@ -111,7 +111,7 @@ const actions = {
 
     // NOTE: This will modify provider which is part of Vuex store. You'll
     // see Error: [vuex] do not mutate vuex store state outside mutation handlers.
-    const currentBlock = await rootState.provider.getBlockNumber();
+    const currentBlock = await window.provider.getBlockNumber();
 
     commit('set', {
       totalLPStaked: ethers.utils.formatUnits(totalLPStaked, 'ether'),
@@ -136,23 +136,23 @@ const actions = {
     const pairContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_ADDRESS,
       PairContract,
-      rootState.provider
+      window.provider
     );
     // If the user hasn't entered anything, let's calculate a fraction of SLP
     const bondingContract = new ethers.Contract(
       addresses[rootState.network.chainId].BOND_ADDRESS,
       BondContract,
-      rootState.provider
+      window.provider
     );
     const lpContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_ADDRESS,
       ierc20Abi,
-      rootState.provider
+      window.provider
     );
     const bondCalcContract = new ethers.Contract(
       addresses[rootState.network.chainId].LP_BONDINGCALC_ADDRESS,
       LpBondCalcContract,
-      rootState.provider
+      window.provider
     );
 
     const totalLP = await lpContract.totalSupply();
@@ -198,12 +198,12 @@ const actions = {
     const daiBondContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_BOND_ADDRESS,
       DaiBondContract,
-      rootState.provider
+      window.provider
     );
     const daiContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_ADDRESS,
       ierc20Abi,
-      rootState.provider
+      window.provider
     );
 
     const bondDetails = await daiBondContract.depositorInfo(rootState.address);
@@ -233,17 +233,17 @@ const actions = {
     const daiBondContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_BOND_ADDRESS,
       DaiBondContract,
-      rootState.provider
+      window.provider
     );
     const daiContract = new ethers.Contract(
       addresses[rootState.network.chainId].DAI_ADDRESS,
       ierc20Abi,
-      rootState.provider
+      window.provider
     );
     const bondingCalcContract = new ethers.Contract(
       addresses[rootState.network.chainId].BONDINGCALC_ADDRESS,
       BondCalcContract,
-      rootState.provider
+      window.provider
     );
 
     const marketPrice = await dispatch('getMarketPrice');
