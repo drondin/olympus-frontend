@@ -147,17 +147,19 @@ export default {
     },
 
     async seekApproval() {
-      switch (this.selectedMapOption) {
-        case 'Stake':
-          if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
-            alert('Please enter a value!');
-            return;
-          } else {
-            await this.getLPStakeApproval(this.quantity.toString());
-          }
-
-          break;
+      // There are only two options 'Stake' & 'Unstake'
+      if (this.selectedMapOption === 'Unstake') {
+        await this.getLPStakeApproval('1'); // Value for approval doesn't matter to unkstake
+        return;
       }
+
+      // The selected option is 'Stake'
+      if (isNaN(this.quantity) || this.quantity === 0 || this.quantity === '') {
+        alert('Please enter a valid staking value!');
+        return;
+      }
+
+      await this.getLPStakeApproval(this.quantity.toString());
     }
   }
 };
