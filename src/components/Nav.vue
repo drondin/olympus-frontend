@@ -45,9 +45,9 @@
 
       </ul>
 
-      <router-link :to="{ name: 'stake' }" class="button button-primary d-none d-sm-block mx-4" style="color: black !important;">
+      <a href="https://app.olympusdao.finance/#/" class="button button-primary d-none d-sm-block mx-4" style="color: black !important;">
         Enter App
-      </router-link>
+      </a>
 
       <a role="button" @click="clickedGetOHM" class="btn btn-dark btn-overwrite-primer d-none d-sm-block" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">
         Get OHM

@@ -41,13 +41,13 @@
       </div>
 
       <div class="footer-app-button">
-        <router-link
-          :to="{ name: 'stake' }"
+        <a
+          href="https://app.olympusdao.finance/#/"
           class="button button-primary"
           style="color: black !important;"
         >
           Enter App
-        </router-link>
+        </a>
       </div>
     </div>
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
