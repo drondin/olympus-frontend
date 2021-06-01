@@ -44,13 +44,13 @@
         Olympus utilizes Treasury Reserves to enable long-term price consistency and scarcity within an
         infinite supply system.
       </p>
-      <router-link
-        :to="{ name: 'stake' }"
+      <a
+        href="https://app.olympusdao.finance/#/"
         style="margin:2rem auto;max-width:200px; color: black !important;"
         class="button button-primary btn btn-lg button-centered"
       >
         Enter App
-      </router-link>
+      </a>
     </div>
 
 
