@@ -28,6 +28,9 @@
             <a href="https://olympusdao.medium.com/">
               <p>Blog</p>
             </a>
+	    <a href="https://docs.olympusdao.finance/basics/basics">
+              <p>FAQ</p>
+            </a>
           </div>
         </li>
 
