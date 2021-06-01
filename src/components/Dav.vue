@@ -15,10 +15,6 @@
     <router-link :to="{ name: 'lpstake' }" class="button button-dapp-menu">
       LP Staking
     </router-link>
-
-    <router-link :to="{ name: 'migrate' }" class="button button-dapp-menu">
-      Reclaim AlphaOHM
-    </router-link>
   </div>
 </template>
 
