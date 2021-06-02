@@ -8,7 +8,6 @@
       <div class="footer-menu">
         <div class="footer-menu-column">
           <h4>Developers</h4>
-          <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
           <a href="https://github.com/olympusDAO"><p>Github</p></a>
         </div>
         <!-- <div class="footer-menu-column">
@@ -37,6 +36,10 @@
           <a href="https://twitter.com/OlympusDAO"><p>Twitter</p></a>
           <a href="https://discord.gg/tmbtUpR6CF"><p>Discord</p></a>
           <a href="https://olympusdao.medium.com/"><p>Medium</p></a>
+        </div>
+	<div class="footer-menu-column">
+          <h4>Docs</h4>
+          <a href="https://docs.olympusdao.finance"><p>GitBook</p></a>
         </div>
       </div>
 
