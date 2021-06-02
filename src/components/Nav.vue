@@ -11,7 +11,6 @@
         <li class="nav-item drop-menu-item">
           <h4>Developers</h4>
           <div class="drop-menu-hidden">
-            <a href="https://docs.olympusdao.finance"><p>Documentation</p></a>
             <a href="https://github.com/olympusDAO"><p>Github</p></a>
           </div>
         </li>
@@ -44,6 +43,12 @@
               <p>Forum</p>
             </a>
           </div>
+        </li>
+
+        <li class="nav-item drop-menu-item">
+          <h4>
+	    <a href="https://docs.olympusdao.finance">Docs</a>
+	  </h4>
         </li>
 
       </ul>
