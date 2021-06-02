@@ -43,11 +43,11 @@
                 @click="toggleNavbar"
               ></div>
 
-              <div v-if="isConnected || isPublic" class="col-lg-10 col-12 mt-4 mt-md-0">
+              <div v-if="(isConnected || isPublic) && isLPStake" class="col-lg-10 col-12 mt-4 mt-md-0">
                 <router-view :key="$route.path" />
               </div>
 
-              <div v-else class="col-lg-10 col-12 mt-4 mt-md-0">
+              <div v-else-if="!isConnected && isLPStake" class="col-lg-10 col-12 mt-4 mt-md-0">
                 <div class="d-flex align-items-center justify-content-center min-vh-100">
                   <div class="dapp-center-modal flex-column">
                      <div class="d-flex flex-row align-items-center my-2 px-2 my-md-4 px-md-4">
@@ -71,6 +71,25 @@
                   </div>
                 </div>
               </div>
+
+              <div v-else class="col-lg-10 col-12 mt-4 mt-md-0">
+                <div class="d-flex align-items-center justify-content-center min-vh-100">
+                  <div class="alert alert-warning text-center" style="max-width:330px;">
+                    <p>Staking and bonding is now accessible on OlympusDAO v1.1</p>
+                    <br />
+                    <a href="https://app.olympusdao.finance" class="link-primary text-center">
+                      https://app.olympusdao.finance
+                    </a>
+                    <br />
+                    <br />
+                    <p>PS: Don't forget to update your bookmarks!</p>
+                  </div>
+                </div>
+              </div>
+
+
+
+
             </div>
           </div>
         </div>
@@ -115,6 +134,11 @@
           ['dashboard', 'choose_bond', 'bond', 'bondai'].indexOf(this.$route.name) >= 0 || this.isHome
         );
       },
+
+      isLPStake() {
+        return ['lpstake'].indexOf(this.$route.name) >= 0
+      },
+
       isHome() {
         return this.$route.name === 'home';
       }
