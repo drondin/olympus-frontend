@@ -13,6 +13,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import '@/style.scss';
+import '@/style_v1-1.scss';
 import ToggleSwitch from 'vuejs-toggle-switch';
 Vue.use(ToggleSwitch);
 Vue.use(VueParticles);
