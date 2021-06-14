@@ -22,18 +22,18 @@
 
     </div>
 
-    <div class="block white-background ohm-statistics text-center">
+    <div class="block ohm-statistics text-center">
       <div class="container">
         <div class="row">
-          <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12 col-md-4">
             <h2>Total Treasury Balance</h2>
             <h1>$17,590,059</h1>
           </div>
-          <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12 col-md-4 mt-5 mt-md-0">
             <h2>Current APY</h2>
             <h1>21,404%</h1>
           </div>
-          <div class="col-xs-12 col-sm-4">
+          <div class="col-xs-12 col-md-4 mt-5 mt-md-0">
             <h2>Ohmie Accounts</h2>
             <h1>4110</h1>
           </div>
@@ -42,6 +42,7 @@
     </div>
 
   </div>
+
 </template>
 
 <script>
