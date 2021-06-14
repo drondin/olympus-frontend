@@ -21,6 +21,9 @@ $border: 1px solid $bg-color;
 @font-face {font-family: 'Square-Light';
   src: url('./assets/fonts/EuclidSquare-Light.ttf');
 }
+@font-face {font-family: 'Square-SemiBold';
+  src: url('./assets/fonts/EuclidSquare-SemiBold.ttf');
+}
 
 // TODO: This formats the button unfortunately.
 @import '~@primer/css/index.scss';
@@ -32,19 +35,22 @@ $border: 1px solid $bg-color;
 .navbar {
     padding-top: 0 !important;
     height: 125px !important;
-  z-index: 9999;
+    z-index: 9999;
   .drop-menu-item {
-    height: 125px !important;
-    width: 175px !important;
     text-align: center;
       h4 a {
-        color: black !important;
+        color: black;
       }
   }
 }
 
 .drop-menu-item {
-  padding: 0 !important;
+  //width: 175px !important;
+  //height: 62px !important;
+  padding: 0 50px !important;
+  &:hover h4, &:hover h4 a {
+    color: #759AAE !important;
+  }
   &:hover .drop-menu-hidden, &:active .drop-menu-hidden {
     padding: 0 !important;
     border-radius: 0.5rem;
@@ -59,12 +65,12 @@ $border: 1px solid $bg-color;
     transition: opacity 0.5s, height 0.5s ease;
     transition-delay: 0s;
     z-index: 5;
-    margin: 60px auto 0 auto;
+    margin: 10px auto 0 auto;
 
     a {
-      width: 175px !important;
-      height: 62px !important;
-      line-height: 62px !important;
+      width: 125px !important;
+      height: 50px !important;
+      line-height: 50px !important;
       margin: 0 !important;
       color: white;
       font-family: 'Square', cursive;
@@ -86,7 +92,7 @@ $border: 1px solid $bg-color;
 }
 
 .drop-menu-item h4 {
-  line-height: 125px !important;
+  //line-height: 125px !important;
 }
 
 .bg-light {
@@ -98,7 +104,8 @@ $border: 1px solid $bg-color;
 }
 
 .hero-block {
-  background-image: url(./assets/olympus-hero-background2.png) !important;
+  background: rgb(255,255,255);
+  background-image: linear-gradient(90deg, rgba(255,255,255,1) 30%, rgba(255,255,255,0) 100%), url(./assets/olympus-ohm-hero-background.png) !important;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -124,10 +131,10 @@ $border: 1px solid $bg-color;
 }
 
 .btn {
+  width: 175px;
   background-image: none !important;
   line-height: 30px !important;
-  font-family: 'Square-Light', cursive !important;
-  font-weight: 300 !important;
+  font-family: 'Square-SemiBold', cursive !important;
 }
 
 .primary {
@@ -144,12 +151,12 @@ $border: 1px solid $bg-color;
 
 .secondary {
   background-color: #ffffff !important;
-  border: 1px solid #363636 !important;
-  color: black !important;
+  border: 1px solid #333333 !important;
+  color: #333333 !important;
   &:hover {
-    background-color: #759AAE !important;
+    background-color: #ffffff !important;
     border: 1px solid #759AAE !important;
-    color: white !important;
+    color: #759AAE !important;
     opacity: 1;
     background-position: revert;
   }
@@ -202,7 +209,53 @@ $border: 1px solid $bg-color;
 }
 
 .ohm-statistics {
-  height: 150px !important;
+  min-height: 150px;
+  max-height: 150px;
   padding: 35px 0 !important;
+  background: rgb(117,154,174);
+  background: linear-gradient(90deg, rgba(117,154,174,1) 0%, rgba(79,84,148,1) 100%);
 }
 
+.navbar-light .navbar-toggler {
+  color: #363636;
+  border: 1px solid #363636;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+// MOBILE CSS media queries (max width instead of min width - reversed!)
+
+// Small devices (landscape phones, 576px and down)
+@media (max-width: 576px) {
+  .hero-block, .main-title {
+    text-align: center;
+  }
+
+  .navbar-collapse {
+    background-color: white;
+  }
+
+
+}
+
+// Medium devices (tablets, 768px and down)
+@media (max-width: 768px) {
+  .ohm-statistics {
+    max-height: revert !important;
+  }
+}
+
+// Large devices (desktops, 992px and down)
+@media (max-width: 992px) { }
+
+// X-Large devices (large desktops, 1200px and down)
+@media (max-width: 1200px) {
+  .drop-menu-item {
+    padding: 0 30px !important;
+  }
+}
+
+// XX-Large devices (larger desktops, 1400px and down)
+@media (max-width: 1400px) { }
