@@ -1,34 +1,22 @@
 <template>
-  <nav class="navbar navbar-dark bg-dark sticky-top py-2" style="width:100%;">
+  <nav class="navbar navbar-dark bg-light py-2" style="width:100%;">
     <div class="container-fluid" style="max-width: 80%;">
       <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
         <img src="~/@/assets/logo.svg" class="logo" />
+        <img src="~/@/assets/ohm-logo.svg" class="logo" />
         <h4 class="ticker-name">Olympus</h4>
         <h1 class="py-4"></h1>
       </router-link>
 
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row">
+      <ul class="navbar-nav mb-2 mb-lg-0 d-flex flex-row float-right">
         <li class="nav-item drop-menu-item">
-          <h4>Developers</h4>
+          <h4>Products</h4>
           <div class="drop-menu-hidden">
-            <a href="https://github.com/olympusDAO"><p>Github</p></a>
-          </div>
-        </li>
-
-        <li class="nav-item drop-menu-item">
-          <h4>Learn</h4>
-          <div class="drop-menu-hidden">
-            <a href="#what">
-              <p>What is Olympus?</p>
+            <a href="https://docs.olympusdao.finance/basics/staking">
+              <p>Stake</p>
             </a>
-            <a href="#how">
-              <p>How it works</p>
-            </a>
-            <a href="https://olympusdao.medium.com/">
-              <p>Blog</p>
-            </a>
-	    <a href="https://docs.olympusdao.finance/basics/basics">
-              <p>FAQ</p>
+            <a href="https://docs.olympusdao.finance/basics/bonding">
+              <p>Bond</p>
             </a>
           </div>
         </li>
@@ -47,19 +35,49 @@
 
         <li class="nav-item drop-menu-item">
           <h4>
-	    <a href="https://docs.olympusdao.finance">Docs</a>
-	  </h4>
+            <a href="https://docs.olympusdao.finance" style="padding: 54px 68px">Docs</a>
+          </h4>
         </li>
+
+        <li class="nav-item drop-menu-item highlight">
+          <h4>
+            <a href="https://app.olympusdao.finance/#/"  style="padding: 54px 50px">
+              Enter App
+            </a>
+          </h4>
+        </li>
+
+          <li class="nav-item drop-menu-item">
+          <h4>Social</h4>
+          <div class="drop-menu-hidden">
+            <a href="https://twitter.com/OlympusDAO" target="_blank">
+              <p>Twitter</p>
+            </a>
+            <a href="https://discord.gg/6QjjtUcfM4" target="_blank">
+              <p>Discord</p>
+            </a>
+            <a href="https://github.com/OlympusDAO/" target="_blank">
+              <p>Github</p>
+            </a>
+            <a href="https://olympusdao.medium.com/" target="_blank">
+              <p>Medium</p>
+            </a>
+          </div>
+        </li>
+
+<!--        <li class="nav-item drop-menu-item">-->
+<!--          <h4>-->
+<!--            <a role="button" @click="clickedGetOHM" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">-->
+<!--              Get OHM-->
+<!--            </a>-->
+<!--          </h4>-->
+<!--        </li>-->
 
       </ul>
 
-      <a href="https://app.olympusdao.finance/#/" class="button button-primary d-none d-sm-block mx-4" style="color: black !important;">
-        Enter App
-      </a>
 
-      <a role="button" @click="clickedGetOHM" class="btn btn-dark btn-overwrite-primer d-none d-sm-block" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">
-        Get OHM
-      </a>
+
+
     </div>
 
 
