@@ -68,7 +68,7 @@
             </a>
           </div>
           <div class="col-lg-6 d-none d-sm-block d-sm-none d-md-block d-md-none d-lg-block text-center">
-<!--            <img src="~/@/assets/ohmie.png" class="ohmie" />-->
+            <img src="~/@/assets/ohmie.png" class="ohmie" />
           </div>
         </div>
 
