@@ -46,7 +46,6 @@ $border: 1px solid $bg-color;
 }
 
 .drop-menu-item {
-  //width: 175px !important;
   height: 50px !important;
   vertical-align: middle;
   padding: 0 50px !important;
@@ -266,6 +265,10 @@ ul.dropdown-menu::before, ul.dropdown-menu::after {
 // Medium devices (tablets, 768px and down)
 @media (max-width: 768px) {
 
+}
+
+// Large devices (desktops, 992px and down)
+@media (max-width: 992px) {
   //bootstrap mobile styling
   .dropdown-menu{
     display: block;
@@ -367,9 +370,6 @@ ul.dropdown-menu::before, ul.dropdown-menu::after {
 
 }
 
-// Large devices (desktops, 992px and down)
-@media (max-width: 992px) { }
-
 // X-Large devices (large desktops, 1200px and down)
 @media (max-width: 1200px) {
   .drop-menu-item {
@@ -383,7 +383,7 @@ ul.dropdown-menu::before, ul.dropdown-menu::after {
 
 @media (min-width: 992px) {
 
-  .navbar-expand-md .navbar-nav .dropdown-menu {
+  .navbar-expand-lg .navbar-nav .dropdown-menu {
     padding: 0 !important;
     border-radius: 0.5rem;
     //display: flex;

@@ -2,15 +2,13 @@
   <div class="column">
 
     <div class="hero-block">
-      <nav class="navbar navbar-expand-md py-2" role="navigation">
+      <nav class="navbar navbar-expand-lg py-2" role="navigation">
         <div class="container-fluid" style="max-width: 80%;">
           <router-link :to="{ name: 'home' }" class="navbar-brand align-items-center">
-<!--            <img src="~/@/assets/logo.svg" class="logo" />-->
             <img src="~/@/assets/ohm-logo.svg" class="logo" />
           </router-link>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#OhmNavBarNav" aria-controls="OhmNavBarNav" aria-expanded="false" aria-label="Toggle navigation">
-<!--            <span class="navbar-toggler-icon"></span>-->
             <img src="~/@/assets/mobile-menu.png" />
           </button>
 
@@ -57,7 +55,7 @@
       <div class="container">
 
         <div class="row">
-          <div class="col-xs-12 col-lg-6">
+          <div class="col-xs-12 col-md-6">
             <h1 class="mb-4 main-title">The Decentralized Reserve Currency</h1>
             <h3 class="sub-title">Financial tools to grow your wealth — stake and earn compounding interest.</h3>
             <a href="https://app.olympusdao.finance/#/" class="button button-primary primary btn btn-lg button-centered">
@@ -67,7 +65,7 @@
               Documentation
             </a>
           </div>
-          <div class="col-lg-6 d-none d-sm-block d-sm-none d-md-block d-md-none d-lg-block text-center">
+          <div class="col-md-6 d-none d-sm-block d-sm-none d-md-block d-lg-block text-center">
             <img src="~/@/assets/ohmie.png" class="ohmie" />
           </div>
         </div>
