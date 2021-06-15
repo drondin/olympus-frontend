@@ -45,62 +45,6 @@ $border: 1px solid $bg-color;
   }
 }
 
-.drop-menu-item {
-  height: 50px !important;
-  vertical-align: middle;
-  padding: 0 50px !important;
-  &:hover h4, &:hover h4 a {
-    color: #759AAE !important;
-  }
-  &:hover .drop-menu-hidden, &:active .drop-menu-hidden {
-    padding: 0 !important;
-    border-radius: 0.5rem;
-    display: flex;
-    height: auto;
-    flex-flow: column;
-    justify-content: center;
-    background: #759AAE !important;
-    position: absolute;
-    text-align: center;
-    opacity: 1;
-    transition: opacity 0.5s, height 0.5s ease;
-    transition-delay: 0s;
-    z-index: 5;
-    margin: 10px auto 0 auto;
-
-    a {
-      width: 125px !important;
-      height: 50px !important;
-      line-height: 50px !important;
-      margin: 0 !important;
-      color: white;
-      font-family: 'Square', cursive;
-      &:hover {
-        background-color: #93AEBC;
-      }
-    }
-  }
-}
-
-.drop-menu-item.highlight {
-  background-color: #759AAE;
-  &:hover {
-    background-color: #93AEBC;
-  }
-    h4 a {
-      color: white !important;
-    }
-}
-
-.drop-menu-item h4 {
-  color: #363636;
-  margin: 10px 0;
-}
-
-.bg-light {
-  background-color: white !important;
-}
-
 .navbar-brand .logo svg {
   filter: invert(1);
 }
@@ -170,14 +114,6 @@ $border: 1px solid $bg-color;
   }
 }
 
-.social-icons {
-  margin-top: 125px;
-  display: none !important;
-}
-.social-icons a {
-  filter: invert(1);
-}
-
 .white-background {
   background-color: #ffffff !important;
   color: #363636 !important;
@@ -188,10 +124,6 @@ $border: 1px solid $bg-color;
   background-color: #fafafa !important;
   color: #363636 !important;
   padding: 60px 24px !important;
-}
-
-.feature-box-module {
-  background-color: #ffffff !important;
 }
 
 .block {
@@ -248,9 +180,6 @@ $border: 1px solid $bg-color;
 ul.dropdown-menu::before, ul.dropdown-menu::after {
   content: none;
 }
-
-
-
 
 // MOBILE CSS media queries (max width instead of min width - reversed!)
 
