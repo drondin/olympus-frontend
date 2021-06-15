@@ -1,11 +1,65 @@
 <template>
   <div class="column">
+
     <div class="hero-block">
+      <nav class="navbar navbar-expand-md py-2" role="navigation">
+        <div class="container-fluid" style="max-width: 80%;">
+          <router-link :to="{ name: 'home' }" class="navbar-brand align-items-center">
+<!--            <img src="~/@/assets/logo.svg" class="logo" />-->
+            <img src="~/@/assets/ohm-logo.svg" class="logo" />
+          </router-link>
+
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#OhmNavBarNav" aria-controls="OhmNavBarNav" aria-expanded="false" aria-label="Toggle navigation">
+<!--            <span class="navbar-toggler-icon"></span>-->
+            <img src="~/@/assets/mobile-menu.png" />
+          </button>
+
+          <div class="collapse navbar-collapse justify-content-end" id="OhmNavBarNav">
+            <ul class="nav navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Products</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="https://docs.olympusdao.finance/basics/staking">Stake</a></li>
+                  <li><a class="dropdown-item" href="https://docs.olympusdao.finance/basics/bonding">Bond</a></li>
+                </ul>
+              </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Governance</a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="https://forum.olympusdao.finance">Forum</a></li>
+                    <li><a class="dropdown-item" href="http://vote.olympusdao.finance">Vote</a></li>
+                  </ul>
+                </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Social</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="https://twitter.com/OlympusDAO">Twitter</a></li>
+                  <li><a class="dropdown-item" href="https://discord.gg/6QjjtUcfM4">Discord</a></li>
+                  <li><a class="dropdown-item" href="https://github.com/OlympusDAO">Github</a></li>
+                  <li><a class="dropdown-item" href="https://olympusdao.medium.com">Medium</a></li>
+                  <li><a class="dropdown-item" href="https://defipulse.com/">DeFi Pulse</a></li>
+                </ul>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Docs</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="https://docs.olympusdao.finance">Docs</a></li>
+                </ul>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </nav>
       <div class="container">
+
         <div class="row">
           <div class="col-xs-12 col-lg-6">
-            <h1 class="mb-4 main-title">A Decentralized Reserve Currency Protocol</h1>
-            <h3 class="sub-title">Take back control of your investments, stake and earn interest. No more bank BS — you’re in control.</h3>
+            <h1 class="mb-4 main-title">The Decentralized Reserve Currency</h1>
+            <h3 class="sub-title">Financial tools to grow your wealth — stake and earn compounding interest.</h3>
             <a href="https://app.olympusdao.finance/#/" class="button button-primary primary btn btn-lg button-centered">
               Enter App
             </a>

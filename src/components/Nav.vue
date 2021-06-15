@@ -1,96 +1,92 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light py-2" style="width:100%;" role="navigation">
-    <div class="container-fluid" style="max-width: 80%;">
-      <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">
-        <img src="~/@/assets/logo.svg" class="logo" />
-        <img src="~/@/assets/ohm-logo.svg" class="logo" />
-      </router-link>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#OhmNavBarNav" aria-controls="OhmNavBarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<!--  NAV + Landing page is now fully in Home.vue-->
 
-      <div class="collapse navbar-collapse justify-content-end" id="OhmNavBarNav">
-        <ul class="nav navbar-nav">
-          <li class="nav-item drop-menu-item">
-            <h4>Products</h4>
-            <div class="drop-menu-hidden">
-              <a href="https://docs.olympusdao.finance/basics/staking">
-                <p>Stake</p>
-              </a>
-              <a href="https://docs.olympusdao.finance/basics/bonding">
-                <p>Bond</p>
-              </a>
-            </div>
-          </li>
+<!--  <nav class="navbar navbar-expand-lg navbar-light bg-light py-2" style="width:100%;" role="navigation">-->
+<!--    <div class="container-fluid" style="max-width: 80%;">-->
+<!--      <router-link :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center">-->
+<!--        <img src="~/@/assets/logo.svg" class="logo" />-->
+<!--        <img src="~/@/assets/ohm-logo.svg" class="logo" />-->
+<!--      </router-link>-->
 
-          <li class="nav-item drop-menu-item">
-            <h4>Governance</h4>
-            <div class="drop-menu-hidden">
-              <a href="https://forum.olympusdao.finance">
-                <p>Forum</p>
-              </a>
-              <a href="http://vote.olympusdao.finance/">
-                <p>Vote</p>
-              </a>
-            </div>
-          </li>
+<!--      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#OhmNavBarNav" aria-controls="OhmNavBarNav" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--        <span class="navbar-toggler-icon"></span>-->
+<!--      </button>-->
 
-          <li class="nav-item drop-menu-item">
-            <h4>Social</h4>
-            <div class="drop-menu-hidden">
-              <a href="https://twitter.com/OlympusDAO" target="_blank">
-                <p>Twitter</p>
-              </a>
-              <a href="https://discord.gg/6QjjtUcfM4" target="_blank">
-                <p>Discord</p>
-              </a>
-              <a href="https://github.com/OlympusDAO/" target="_blank">
-                <p>Github</p>
-              </a>
-              <a href="https://olympusdao.medium.com/" target="_blank">
-                <p>Medium</p>
-              </a>
-            </div>
-          </li>
+<!--      <div class="collapse navbar-collapse justify-content-end" id="OhmNavBarNav">-->
+<!--        <ul class="nav navbar-nav">-->
+<!--          <li class="nav-item drop-menu-item">-->
+<!--            <h4>Products</h4>-->
+<!--            <div class="drop-menu-hidden">-->
+<!--              <a href="https://docs.olympusdao.finance/basics/staking">-->
+<!--                <p>Stake</p>-->
+<!--              </a>-->
+<!--              <a href="https://docs.olympusdao.finance/basics/bonding">-->
+<!--                <p>Bond</p>-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </li>-->
 
-          <li class="nav-item drop-menu-item">
-            <h4>
-              <a href="https://docs.olympusdao.finance">Docs</a>
-            </h4>
-          </li>
+<!--          <li class="nav-item drop-menu-item">-->
+<!--            <h4>Governance</h4>-->
+<!--            <div class="drop-menu-hidden">-->
+<!--              <a href="https://forum.olympusdao.finance">-->
+<!--                <p>Forum</p>-->
+<!--              </a>-->
+<!--              <a href="http://vote.olympusdao.finance/">-->
+<!--                <p>Vote</p>-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </li>-->
 
-  <!--        <li class="nav-item drop-menu-item highlight">-->
-  <!--          <h4>-->
-  <!--            <a href="https://app.olympusdao.finance/#/"  style="padding: 54px 50px">-->
-  <!--              Enter App-->
-  <!--            </a>-->
-  <!--          </h4>-->
-  <!--        </li>-->
+<!--          <li class="nav-item drop-menu-item">-->
+<!--            <h4>Social</h4>-->
+<!--            <div class="drop-menu-hidden">-->
+<!--              <a href="https://twitter.com/OlympusDAO" target="_blank">-->
+<!--                <p>Twitter</p>-->
+<!--              </a>-->
+<!--              <a href="https://discord.gg/6QjjtUcfM4" target="_blank">-->
+<!--                <p>Discord</p>-->
+<!--              </a>-->
+<!--              <a href="https://github.com/OlympusDAO/" target="_blank">-->
+<!--                <p>Github</p>-->
+<!--              </a>-->
+<!--              <a href="https://olympusdao.medium.com/" target="_blank">-->
+<!--                <p>Medium</p>-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </li>-->
 
-  <!--        <li class="nav-item drop-menu-item">-->
-  <!--          <h4>-->
-  <!--            <a role="button" @click="clickedGetOHM" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">-->
-  <!--              Get OHM-->
-  <!--            </a>-->
-  <!--          </h4>-->
-  <!--        </li>-->
+<!--          <li class="nav-item drop-menu-item">-->
+<!--            <h4>-->
+<!--              <a href="https://docs.olympusdao.finance">Docs</a>-->
+<!--            </h4>-->
+<!--          </li>-->
 
-        </ul>
-      </div>
+<!--  &lt;!&ndash;        <li class="nav-item drop-menu-item highlight">&ndash;&gt;-->
+<!--  &lt;!&ndash;          <h4>&ndash;&gt;-->
+<!--  &lt;!&ndash;            <a href="https://app.olympusdao.finance/#/"  style="padding: 54px 50px">&ndash;&gt;-->
+<!--  &lt;!&ndash;              Enter App&ndash;&gt;-->
+<!--  &lt;!&ndash;            </a>&ndash;&gt;-->
+<!--  &lt;!&ndash;          </h4>&ndash;&gt;-->
+<!--  &lt;!&ndash;        </li>&ndash;&gt;-->
 
+<!--  &lt;!&ndash;        <li class="nav-item drop-menu-item">&ndash;&gt;-->
+<!--  &lt;!&ndash;          <h4>&ndash;&gt;-->
+<!--  &lt;!&ndash;            <a role="button" @click="clickedGetOHM" href="https://app.sushi.com/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0x383518188c0c6d7730d91b2c03a03c837814a899" target="_blank">&ndash;&gt;-->
+<!--  &lt;!&ndash;              Get OHM&ndash;&gt;-->
+<!--  &lt;!&ndash;            </a>&ndash;&gt;-->
+<!--  &lt;!&ndash;          </h4>&ndash;&gt;-->
+<!--  &lt;!&ndash;        </li>&ndash;&gt;-->
 
+<!--        </ul>-->
+<!--      </div>-->
 
-
-    </div>
-
-
-
-
+<!--    </div>-->
 
 
     <ModalLogin :open="modalLoginOpen" @close="modalLoginOpen = false" />
-  </nav>
+<!--  </nav>-->
 </template>
 
 <script>
